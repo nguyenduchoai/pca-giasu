@@ -1,0 +1,860 @@
+// ============================================================================
+// ĐẶC TẢ CƠ SỞ DỮ LIỆU NỀN TẢNG OYLG (v1.0) – M01 ĐẾN M21
+// Chuẩn Multi-tenant (tenant_id), Bảo vệ dữ liệu trẻ em (NĐ 13/2023),
+// Đồ thị YCCĐ GDPT 2018, Hoa hồng 2 cấp PAY_AS_COLLECTED, Giám sát M20 & Nội trú M21
+// ============================================================================
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [pgvector(map: "vector")]
+}
+
+// ----------------------------------------------------------------------------
+// ENUMS (VAI TRÒ & MÁY TRẠNG THÁI MỤC 2 & MỤC 8)
+// ----------------------------------------------------------------------------
+
+enum RoleCode {
+  PARENT
+  STUDENT
+  CAREER_EXPERT
+  LIFE_COACH
+  SUBJECT_EXPERT
+  ADMIN
+  CONTENT_EDITOR
+  ACCOUNTANT
+  SALES_LEADER
+  SALES_AGENT
+  OFFICE_STAFF
+  CARE_AGENT
+  CARE_LEAD
+  AI_SUPERVISOR
+  SUBJECT_LEAD
+  CONTENT_APPROVER
+  BOARDING_MANAGER
+  BOARDING_STAFF
+  SUPER_ADMIN
+  TENANT_ADMIN
+}
+
+enum ToolkitCode {
+  B1_CAREER
+  B2_KNOWLEDGE
+  B3_MENTAL
+  B4_PHYSICAL_SKILLS
+}
+
+enum QuestionType {
+  YES_NO
+  SCALE
+  SINGLE_CHOICE
+  MULTI_CHOICE
+  SHORT_ANSWER
+  RANKING
+  OPEN_INTERVIEW
+}
+
+enum ContentStatus {
+  DRAFT
+  IN_REVIEW
+  APPROVED
+  RETIRED
+}
+
+enum AssessmentMode {
+  GUIDED
+  SELF
+}
+
+enum AssessmentSessionStatus {
+  CREATED
+  IN_PROGRESS
+  PAUSED
+  COMPLETED
+  ANALYZED
+  CANCELLED
+}
+
+enum MasteryStatus {
+  MASTERED
+  PARTIAL
+  NOT_MASTERED
+  INFERRED_MASTERED
+  UNCHECKED
+}
+
+enum ReportType {
+  R1_CAREER
+  R2_HEALTH_3D
+  R3_TARGET_GAP
+  R4_PROGRESS
+}
+
+enum ReportStatus {
+  AI_DRAFT
+  IN_REVIEW
+  APPROVED
+  PUBLISHED
+  REVISED
+  REJECTED
+}
+
+enum RoadmapStatus {
+  DRAFT
+  PENDING_PARENT
+  ACTIVE
+  ADJUSTING
+  COMPLETED
+  CANCELLED
+}
+
+enum RoadmapItemType {
+  KNOWLEDGE_STUDY
+  PHYSICAL_TRAINING
+  LIFE_SKILLS
+  MENTAL_CARE
+  CAREER_EXPERIENCE
+}
+
+enum DeliveryMode {
+  ONLINE_ZOOM
+  AT_CENTER
+  AT_HOME
+}
+
+enum ClassType {
+  ONE_ON_ONE
+  SMALL_GROUP
+  LARGE_GROUP
+}
+
+enum BookingType {
+  CAREER_SESSION
+  SCREENING_SESSION
+  COACHING_SESSION
+  TUTORING_SESSION
+}
+
+enum BookingStatus {
+  REQUESTED
+  CONFIRMED
+  RESCHEDULED
+  IN_SESSION
+  DONE_PENDING_NOTE
+  COMPLETED
+  CANCELLED_BY_PARENT
+  CANCELLED_BY_EXPERT
+  NO_SHOW_STUDENT
+  NO_SHOW_EXPERT
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PARTIALLY_REFUNDED
+  REFUNDED
+  FAILED
+  EXPIRED
+}
+
+enum OrderChannel {
+  ONLINE
+  OFFICE
+  EVENT
+}
+
+enum OrderKind {
+  NEW
+  RENEWAL
+  ADD_ON
+}
+
+enum SafetyLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum SafetyFlagStatus {
+  OPEN
+  ACKNOWLEDGED
+  IN_HANDLING
+  RESOLVED
+  ESCALATED
+}
+
+enum CommissionTier {
+  DIRECT
+  LEADER
+  LEADER_SELF
+}
+
+enum CommissionStatus {
+  PENDING
+  APPROVED
+  PAID
+  CANCELLED
+  CLAWBACK
+}
+
+enum TicketStatus {
+  NEW
+  ASSIGNED
+  IN_PROGRESS
+  WAITING_CUSTOMER
+  RESOLVED
+  CLOSED
+  REOPENED
+}
+
+enum HealthLight {
+  GREEN
+  YELLOW
+  RED
+}
+
+enum ResidencyType {
+  BOARDING
+  DAY_BOARDING
+}
+
+enum BoardingCheckinType {
+  ARRIVE
+  LEAVE
+  NIGHT
+  MORNING
+  OUT
+  BACK
+}
+
+// ----------------------------------------------------------------------------
+// M16 – NHƯỢNG QUYỀN / ĐA ĐƠN VỊ (TENANT)
+// ----------------------------------------------------------------------------
+
+model Tenant {
+  id           String    @id @default(uuid())
+  code         String    @unique
+  name         String
+  brand        Json?     // Logo, màu sắc, tên miền phụ
+  revenueShare Json?     // Cấu hình chia sẻ doanh thu GĐ2
+  status       String    @default("ACTIVE")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
+
+  users        User[]
+  userRoles    UserRole[]
+  students     Student[]
+  facilities   Facility[]
+
+  @@map("tenants")
+}
+
+// ----------------------------------------------------------------------------
+// M01 & M02 – TÀI KHOẢN, PHÂN QUYỀN & HỒ SƠ (IAM & PROFILE)
+// ----------------------------------------------------------------------------
+
+model User {
+  id            String     @id @default(uuid())
+  tenantId      String     @map("tenant_id")
+  phone         String?    @unique
+  email         String?    @unique
+  passwordHash  String     @map("password_hash")
+  fullName      String     @map("full_name")
+  status        String     @default("ACTIVE")
+  twoFactorEnabled Boolean @default(false) @map("two_factor_enabled")
+  lastLoginAt   DateTime?  @map("last_login_at")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+  deletedAt     DateTime?  @map("deleted_at")
+
+  tenant        Tenant     @relation(fields: [tenantId], references: [id])
+  roles         UserRole[]
+  parentProfile Parent?
+  studentProfile Student?
+  expertProfile Expert?
+  salesAgent    SalesAgent?
+
+  @@index([tenantId, phone])
+  @@map("users")
+}
+
+model UserRole {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  tenantId  String   @map("tenant_id")
+  role      RoleCode
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user      User     @relation(fields: [userId], references: [id])
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+
+  @@unique([userId, role, tenantId])
+  @@map("user_roles")
+}
+
+model Parent {
+  id         String          @id @default(uuid())
+  tenantId   String          @map("tenant_id")
+  userId     String          @unique @map("user_id")
+  fullName   String          @map("full_name")
+  relation   String          @default("MOTHER")
+  address    String?
+  occupation String?
+  createdAt  DateTime        @default(now()) @map("created_at")
+  updatedAt  DateTime        @updatedAt @map("updated_at")
+
+  user       User            @relation(fields: [userId], references: [id])
+  children   ParentStudent[]
+  consents   Consent[]
+  orders     Order[]
+  tickets    Ticket[]
+  health     CustomerHealth?
+
+  @@map("parents")
+}
+
+model Student {
+  id           String          @id @default(uuid())
+  tenantId     String          @map("tenant_id")
+  userId       String?         @unique @map("user_id") // Từ lớp 6 có tài khoản riêng
+  code         String          @unique                 // Mã ẩn danh gửi AI Gateway (VD: HS-2026-0089)
+  fullName     String          @map("full_name")
+  dob          DateTime
+  gender       String?
+  currentGrade Int             @map("current_grade")   // 1..12
+  schoolName   String?         @map("school_name")
+  provinceCode String?         @map("province_code")
+  wardCode     String?         @map("ward_code")
+  targetNote   String?         @map("target_note")
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt @map("updated_at")
+  deletedAt    DateTime?       @map("deleted_at")
+
+  tenant       Tenant          @relation(fields: [tenantId], references: [id])
+  user         User?           @relation(fields: [userId], references: [id])
+  parents      ParentStudent[]
+  consents     Consent[]
+  assignments  Assignment[]
+  sessions     AssessmentSession[]
+  masteryStates MasteryState[]
+  reports      Report[]
+  roadmaps     Roadmap[]
+  learningCases LearningCase[]
+  residencies  Residency[]
+  safetyFlags  SafetyFlag[]
+
+  @@index([tenantId, currentGrade])
+  @@map("students")
+}
+
+model ParentStudent {
+  parentId  String  @map("parent_id")
+  studentId String  @map("student_id")
+  isPrimary Boolean @default(true) @map("is_primary")
+
+  parent    Parent  @relation(fields: [parentId], references: [id])
+  student   Student @relation(fields: [studentId], references: [id])
+
+  @@id([parentId, studentId])
+  @@map("parent_student")
+}
+
+model Consent {
+  id        String    @id @default(uuid())
+  tenantId  String    @map("tenant_id")
+  studentId String    @map("student_id")
+  parentId  String    @map("parent_id")
+  type      String    // DATA_PROCESSING | ZOOM_RECORDING | MENTAL_SCREENING
+  version   String
+  grantedAt DateTime  @default(now()) @map("granted_at")
+  revokedAt DateTime? @map("revoked_at")
+
+  student   Student   @relation(fields: [studentId], references: [id])
+  parent    Parent    @relation(fields: [parentId], references: [id])
+
+  @@map("consents")
+}
+
+// ----------------------------------------------------------------------------
+// M04 – NGÂN HÀNG CÂU HỎI & ĐỒ THỊ YCCĐ CHƯƠNG TRÌNH GDPT 2018 (QBANK)
+// ----------------------------------------------------------------------------
+
+model Subject {
+  id        String           @id @default(uuid())
+  code      String           @unique // TOAN, LY, HOA, ANH, VAN
+  name      String
+  units     CurriculumUnit[]
+
+  @@map("subjects")
+}
+
+model CurriculumUnit {
+  id          String             @id @default(uuid())
+  code        String             @unique // VD: TOAN.09.HPT.01
+  subjectId   String             @map("subject_id")
+  grade       Int                // 1..12
+  chapter     String
+  title       String
+  description String?
+  textbookTag String             @default("KET_NOI_TRI_THUC") @map("textbook_tag")
+  weightExam  Json?              @map("weight_exam") // Trọng số trong kỳ thi vào 10 / THPT
+  status      ContentStatus      @default(APPROVED)
+  approvedBy  String?            @map("approved_by") // Cố vấn Tracie Anh duyệt cuối
+  createdAt   DateTime           @default(now()) @map("created_at")
+
+  subject     Subject            @relation(fields: [subjectId], references: [id])
+  prereqs     CurriculumPrereq[] @relation("UnitToPrereq")
+  dependents  CurriculumPrereq[] @relation("PrereqToUnit")
+  mastery     MasteryState[]
+
+  @@index([subjectId, grade])
+  @@map("curriculum_units")
+}
+
+model CurriculumPrereq {
+  unitId       String         @map("unit_id")
+  prereqUnitId String         @map("prereq_unit_id")
+
+  unit         CurriculumUnit @relation("UnitToPrereq", fields: [unitId], references: [id])
+  prereqUnit   CurriculumUnit @relation("PrereqToUnit", fields: [prereqUnitId], references: [id])
+
+  @@id([unitId, prereqUnitId])
+  @@map("curriculum_prereqs")
+}
+
+model Question {
+  id                String        @id @default(uuid())
+  code              String        @unique
+  toolkit           ToolkitCode
+  type              QuestionType
+  content           Json          // Markdown + LaTeX KaTeX + media
+  options           Json?
+  answerKey         Json?         @map("answer_key")
+  curriculumUnitIds String[]      @map("curriculum_unit_ids")
+  dimensionTags     String[]      @map("dimension_tags") // RIASEC-R, BIG5-O, SAFETY_TRIGGER...
+  difficulty        Int           @default(2)            // 1: Nhận biết .. 4: Vận dụng cao
+  irtParams         Json?         @map("irt_params")
+  gradeMin          Int           @map("grade_min")
+  gradeMax          Int           @map("grade_max")
+  audience          AssessmentMode @default(SELF)
+  isSafetyTrigger   Boolean       @default(false) @map("is_safety_trigger")
+  source            String        @default("AI_GENERATED") // HUMAN | AI_GENERATED
+  status            ContentStatus @default(DRAFT)
+  subjectLeadBy     String?       @map("subject_lead_by")
+  finalApprovedBy   String?       @map("final_approved_by") // CONTENT_APPROVER (Tracie Anh)
+  stats             Json?         // Số lần dùng, tỉ lệ đúng, độ phân biệt
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  @@index([toolkit, status, gradeMin, gradeMax])
+  @@map("questions")
+}
+
+// ----------------------------------------------------------------------------
+// M05, M06, M07 – ĐÁNH GIÁ THÍCH ỨNG, BÁO CÁO & LỘ TRÌNH (ASSESS, REPORT, ROADMAP)
+// ----------------------------------------------------------------------------
+
+model AssessmentSession {
+  id        String                  @id @default(uuid())
+  tenantId  String                  @map("tenant_id")
+  studentId String                  @map("student_id")
+  expertId  String?                 @map("expert_id")
+  toolkit   ToolkitCode
+  mode      AssessmentMode
+  scope     Json                    // Môn, phạm vi lớp
+  status    AssessmentSessionStatus @default(CREATED)
+  startedAt DateTime?               @map("started_at")
+  endedAt   DateTime?               @map("ended_at")
+  createdAt DateTime                @default(now()) @map("created_at")
+
+  student   Student                 @relation(fields: [studentId], references: [id])
+
+  @@map("assessment_sessions")
+}
+
+model MasteryState {
+  id               String         @id @default(uuid())
+  studentId        String         @map("student_id")
+  curriculumUnitId String         @map("curriculum_unit_id")
+  pMastery         Float          @map("p_mastery") // 0.0 -> 1.0
+  status           MasteryStatus
+  confidence       Float          @default(0.8)
+  isRootGap        Boolean        @default(false) @map("is_root_gap")
+  sourceSessionId  String?        @map("source_session_id")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+
+  student          Student        @relation(fields: [studentId], references: [id])
+  curriculumUnit   CurriculumUnit @relation(fields: [curriculumUnitId], references: [id])
+
+  @@unique([studentId, curriculumUnitId])
+  @@map("mastery_states")
+}
+
+model Report {
+  id                 String       @id @default(uuid())
+  tenantId           String       @map("tenant_id")
+  studentId          String       @map("student_id")
+  type               ReportType
+  sessionIds         String[]     @map("session_ids")
+  status             ReportStatus @default(AI_DRAFT)
+  version            Int          @default(1)
+  content            Json         // Bản đầy đủ cho chuyên gia
+  parentSafeContent  Json?        @map("parent_safe_content") // Lớp hiển thị tóm tắt B3 cho phụ huynh
+  pdfUrl             String?      @map("pdf_url")
+  aiGenerationId     String?      @map("ai_generation_id")
+  approvedBy         String?      @map("approved_by")
+  approvedAt         DateTime?    @map("approved_at")
+  publishedAt        DateTime?    @map("published_at")
+  createdAt          DateTime     @default(now()) @map("created_at")
+
+  student            Student      @relation(fields: [studentId], references: [id])
+
+  @@map("reports")
+}
+
+model Roadmap {
+  id          String        @id @default(uuid())
+  tenantId    String        @map("tenant_id")
+  studentId   String        @map("student_id")
+  goal        Json          // Trường, ngành, nghề mục tiêu, điểm chuẩn
+  startDate   DateTime      @map("start_date")
+  targetDate  DateTime      @map("target_date")
+  remedialPct Int           @default(60) @map("remedial_pct") // 60% lấp nền / 40% hiện tại
+  status      RoadmapStatus @default(DRAFT)
+  approvedBy  String?       @map("approved_by")
+  createdAt   DateTime      @default(now()) @map("created_at")
+
+  student     Student       @relation(fields: [studentId], references: [id])
+
+  @@map("roadmaps")
+}
+
+// ----------------------------------------------------------------------------
+// M08, M09, M10, M11 – CHUYÊN GIA, ĐẶT LỊCH, GIÁ B6 & THÙ LAO (EXPERT, BOOKING, BILLING, PAYOUT)
+// ----------------------------------------------------------------------------
+
+model Expert {
+  id          String       @id @default(uuid())
+  tenantId    String       @map("tenant_id")
+  userId      String       @unique @map("user_id")
+  tier        Int          @default(2) // Cấp 1 (1.0), Cấp 2 (1.3), Cấp 3 (1.7)
+  bio         String?
+  maxStudents Int          @default(20) @map("max_students") // Cố vấn tối đa 15-20 học sinh
+  status      String       @default("ACTIVE")
+  ratingAvg   Float        @default(5.0) @map("rating_avg")
+  ratingCount Int          @default(0) @map("rating_count")
+  verifiedAt  DateTime?    @map("verified_at")
+
+  user        User         @relation(fields: [userId], references: [id])
+  assignments Assignment[]
+
+  @@map("experts")
+}
+
+model Assignment {
+  id         String    @id @default(uuid())
+  tenantId   String    @map("tenant_id")
+  studentId  String    @map("student_id")
+  expertId   String    @map("expert_id")
+  roleInCase String    @map("role_in_case") // COACH | TUTOR | CAREER_ADVISOR
+  subjectId  String?   @map("subject_id")
+  startAt    DateTime  @default(now()) @map("start_at")
+  endAt      DateTime? @map("end_at")
+  status     String    @default("ACTIVE") // Hết phân công mất quyền truy cập ngay (BR-IAM-02)
+
+  student    Student   @relation(fields: [studentId], references: [id])
+  expert     Expert    @relation(fields: [expertId], references: [id])
+
+  @@index([studentId, expertId, status])
+  @@map("assignments")
+}
+
+model PriceMatrix {
+  id            String       @id @default(uuid())
+  tenantId      String       @map("tenant_id")
+  serviceType   BookingType  @map("service_type")
+  expertTier    Int          @map("expert_tier")
+  mode          DeliveryMode
+  classType     ClassType    @map("class_type")
+  basePrice     Int          @map("base_price")
+  calculatedPrice Int        @map("calculated_price")
+  effectiveFrom DateTime     @map("effective_from")
+
+  @@map("price_matrix")
+}
+
+model Order {
+  id              String       @id @default(uuid())
+  tenantId        String       @map("tenant_id")
+  code            String       @unique
+  parentId        String       @map("parent_id")
+  studentId       String       @map("student_id")
+  packageCode     String       @map("package_code")
+  amount          Int          // Số tiền thực trả kỳ này
+  discount        Int          @default(0)
+  status          OrderStatus  @default(PENDING)
+  channel         OrderChannel @default(ONLINE)
+  eventId         String?      @map("event_id")
+  orderKind       OrderKind    @default(NEW) @map("order_kind")
+  isRenewal       Boolean      @default(false) @map("is_renewal")
+  advisedByUserId String?      @map("advised_by_user_id")
+  advisedByRole   RoleCode?    @map("advised_by_role") // CARE_AGENT tư vấn mua thêm -> không tính HH CTV
+  isSelfPurchase  Boolean      @default(false) @map("is_self_purchase") // CTV tự mua cho con
+  paidAt          DateTime?    @map("paid_at")
+  createdAt       DateTime     @default(now()) @map("created_at")
+
+  parent          Parent       @relation(fields: [parentId], references: [id])
+  attribution     OrderAttribution?
+  commissions     Commission[]
+
+  @@map("orders")
+}
+
+// ----------------------------------------------------------------------------
+// M14 – CẢNH BÁO AN TOÀN TÂM LÝ (SAFETY – BẮT BUỘC TRONG MVP)
+// ----------------------------------------------------------------------------
+
+model SafetyFlag {
+  id          String           @id @default(uuid())
+  tenantId    String           @map("tenant_id")
+  studentId   String           @map("student_id")
+  sourceType  String           @map("source_type") // B3_RESPONSE | LESSON_RECORD | CHAT_MESSAGE | BOARDING_INCIDENT
+  sourceId    String           @map("source_id")
+  level       SafetyLevel
+  reason      String
+  detectedBy  String           @map("detected_by") // AI_GUARDRAIL | HUMAN_REPORT
+  status      SafetyFlagStatus @default(OPEN)
+  handledBy   String?          @map("handled_by")
+  handledAt   DateTime?        @map("handled_at")
+  resolution  String?
+  createdAt   DateTime         @default(now()) @map("created_at")
+
+  student     Student          @relation(fields: [studentId], references: [id])
+
+  @@index([tenantId, level, status])
+  @@map("safety_flags")
+}
+
+// ----------------------------------------------------------------------------
+// M18 – BÁN HÀNG & HOA HỒNG 2 CẤP ĐÚNG PHÁP LUẬT (SALES & COMMISSIONS)
+// ----------------------------------------------------------------------------
+
+model SalesAgent {
+  id               String       @id @default(uuid())
+  tenantId         String       @map("tenant_id")
+  userId           String       @unique @map("user_id")
+  level            String       // LEADER | AGENT (Cố định tối đa 2 cấp)
+  leaderId         String?      @map("leader_id")
+  refCode          String       @unique @map("ref_code")
+  status           String       @default("APPLIED") // APPLIED -> CONTRACTED -> TRAINED -> ACTIVE
+  contractSignedAt DateTime?    @map("contract_signed_at")
+  trainedAt        DateTime?    @map("trained_at") // Phải đạt bài kiểm tra mới kích hoạt
+  createdAt        DateTime     @default(now()) @map("created_at")
+
+  user             User         @relation(fields: [userId], references: [id])
+  leader           SalesAgent?  @relation("LeaderAgents", fields: [leaderId], references: [id])
+  teamMembers      SalesAgent[] @relation("LeaderAgents")
+
+  @@map("sales_agents")
+}
+
+model OrderAttribution {
+  id                    String   @id @default(uuid())
+  orderId               String   @unique @map("order_id")
+  agentId               String   @map("agent_id")
+  leaderId              String?  @map("leader_id")
+  sellerIsLeader        Boolean  @default(false) @map("seller_is_leader")
+  source                String   // REF_CODE | COOKIE | OFFLINE_PICK
+  firstPaymentAmount    Int      @map("first_payment_amount")
+  sixMonthValue         Int      @map("six_month_value")
+  commissionBase        Int      @map("commission_base") // DTHH = max(kỳ đầu, 6 tháng)
+  directRateSnapshot    Float    @map("direct_rate_snapshot") // 0.10 hoặc 0.15
+  leaderRateSnapshot    Float    @map("leader_rate_snapshot") // 0.05 hoặc 0.00
+  totalCommissionDirect Int      @map("total_commission_direct")
+  totalCommissionLeader Int      @map("total_commission_leader")
+  createdAt             DateTime @default(now()) @map("created_at")
+
+  order                 Order    @relation(fields: [orderId], references: [id])
+
+  @@map("order_attributions")
+}
+
+model Commission {
+  id            String           @id @default(uuid())
+  tenantId      String           @map("tenant_id")
+  orderId       String           @map("order_id")
+  paymentId     String           @map("payment_id")
+  beneficiaryId String           @map("beneficiary_id")
+  tier          CommissionTier
+  baseAmount    Int              @map("base_amount")
+  rate          Float
+  amount        Int              // Số tiền chi dần theo kỳ thực thu: Tổng HH * (Tiền kỳ này / DTHH)
+  status        CommissionStatus @default(PENDING)
+  holdUntil     DateTime         @map("hold_until") // Giữ 14 ngày theo hạn hoàn tiền
+  clawbackOf    String?          @map("clawback_of")
+  createdAt     DateTime         @default(now()) @map("created_at")
+
+  order         Order            @relation(fields: [orderId], references: [id])
+
+  @@map("commissions")
+}
+
+// ----------------------------------------------------------------------------
+// M19 – CHĂM SÓC KHÁCH HÀNG & TRỢ LÝ AI CSKH 24/7 (CARE)
+// ----------------------------------------------------------------------------
+
+model Ticket {
+  id                  String       @id @default(uuid())
+  tenantId            String       @map("tenant_id")
+  parentId            String       @map("parent_id")
+  studentId           String?      @map("student_id")
+  channel             String       // ZALO_OA | WEB_CHAT | HOTLINE | APP
+  category            String
+  priority            String       @default("NORMAL")
+  subject             String
+  status              TicketStatus @default(NEW)
+  assigneeId          String?      @map("assignee_id")
+  slaFirstResponseDue DateTime     @map("sla_first_response_due")
+  slaResolveDue       DateTime     @map("sla_resolve_due")
+  escalationLevel     Int          @default(1) @map("escalation_level")
+  createdAt           DateTime     @default(now()) @map("created_at")
+
+  parent              Parent       @relation(fields: [parentId], references: [id])
+
+  @@map("tickets")
+}
+
+model CustomerHealth {
+  parentId   String      @id @map("parent_id")
+  score      Int         // 0..100
+  level      HealthLight @default(GREEN)
+  factors    Json        // Chuyên cần, CSAT, Tiến độ, Phản hồi, Khiếu nại, Thanh toán
+  computedAt DateTime    @default(now()) @map("computed_at")
+
+  parent     Parent      @relation(fields: [parentId], references: [id])
+
+  @@map("customer_health")
+}
+
+model KbAnswer {
+  id               String        @id @default(uuid())
+  tenantId         String        @map("tenant_id")
+  topic            String
+  questionVariants String[]      @map("question_variants")
+  answer           String        // Nội dung chuẩn đã duyệt cho AI CSKH 24/7
+  status           ContentStatus @default(APPROVED)
+  approvedBy       String        @map("approved_by") // AI_SUPERVISOR
+  version          Int           @default(1)
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+
+  @@map("kb_answers")
+}
+
+// ----------------------------------------------------------------------------
+// M20 – GIÁM SÁT LỘ TRÌNH ĐÀO TẠO & KHO GIẢI PHÁP CHÍNH THỐNG (MONITOR)
+// ----------------------------------------------------------------------------
+
+model LearningCase {
+  id           String      @id @default(uuid())
+  tenantId     String      @map("tenant_id")
+  studentId    String      @map("student_id")
+  roadmapId    String      @map("roadmap_id")
+  ownerCoachId String      @map("owner_coach_id")
+  statusLight  HealthLight @default(GREEN) @map("status_light")
+  riskTrend    String      @default("STABLE") @map("risk_trend") // IMPROVING | STABLE | WORSENING
+  status       String      @default("ACTIVE")
+  openedAt     DateTime    @default(now()) @map("opened_at")
+  closedAt     DateTime?   @map("closed_at")
+
+  student      Student     @relation(fields: [studentId], references: [id])
+
+  @@map("learning_cases")
+}
+
+model SolutionPlaybook {
+  id                 String   @id @default(uuid())
+  riskCode           String   @map("risk_code") // ROOT_GAP_STUCK, BEHIND_SCHEDULE, OVERLOAD...
+  role               RoleCode
+  title              String
+  content            String
+  sourceCitation     String   @map("source_citation") // Bắt buộc ghi nguồn: Playbook # / Bộ GD&ĐT / UNICEF / WHO
+  effectivenessScore Float    @default(0.85) @map("effectiveness_score")
+  active             Boolean  @default(true)
+
+  @@map("solution_playbooks")
+}
+
+// ----------------------------------------------------------------------------
+// M21 – NỘI TRÚ & BÁN TRÚ (BOARDING – CẦN NGAY TRONG MVP)
+// ----------------------------------------------------------------------------
+
+model Facility {
+  id          String      @id @default(uuid())
+  tenantId    String      @map("tenant_id")
+  name        String
+  address     String
+  type        String      @default("BOTH") // BOARDING | DAY_BOARDING | BOTH
+  residencies Residency[]
+
+  tenant      Tenant      @relation(fields: [tenantId], references: [id])
+
+  @@map("facilities")
+}
+
+model Residency {
+  id               String             @id @default(uuid())
+  tenantId         String             @map("tenant_id")
+  studentId        String             @map("student_id")
+  facilityId       String             @map("facility_id")
+  type             ResidencyType
+  roomName         String             @map("room_name")
+  bedLabel         String?            @map("bed_label")
+  startDate        DateTime           @map("start_date")
+  endDate          DateTime?          @map("end_date")
+  allergies        String?
+  medications      String?
+  emergencyPhone   String             @map("emergency_phone")
+  status           String             @default("ACTIVE")
+
+  student          Student            @relation(fields: [studentId], references: [id])
+  facility         Facility           @relation(fields: [facilityId], references: [id])
+  authorizedPickups AuthorizedPickup[]
+  checkins         BoardingCheckin[]
+
+  @@map("residencies")
+}
+
+model AuthorizedPickup {
+  id          String    @id @default(uuid())
+  residencyId String    @map("residency_id")
+  name        String
+  relation    String
+  phone       String
+  photoUrl    String    @map("photo_url")
+  active      Boolean   @default(true)
+
+  residency   Residency @relation(fields: [residencyId], references: [id])
+
+  @@map("authorized_pickups")
+}
+
+model BoardingCheckin {
+  id           String              @id @default(uuid())
+  residencyId  String              @map("residency_id")
+  type         BoardingCheckinType
+  method       String              @default("QR_CARD") // QR_CARD | TABLET_MANUAL
+  byStaffId    String              @map("by_staff_id")
+  pickedUpById String?             @map("picked_up_by_id")
+  at           DateTime            @default(now())
+  note         String?
+
+  residency    Residency           @relation(fields: [residencyId], references: [id])
+
+  @@map("boarding_checkins")
+}

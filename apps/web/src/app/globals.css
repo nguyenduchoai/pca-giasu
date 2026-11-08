@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+:root {
+  --bg-canvas: #fbf9f5;
+  --bg-surface: #ffffff;
+  --text-primary: #141413;
+  --text-secondary: #575653;
+  --border-subtle: #e8e5df;
+  --font-sans: "Be Vietnam Pro", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Be Vietnam Pro", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: "Be Vietnam Pro", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-editorial {
+  font-family: "Be Vietnam Pro", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  letter-spacing: -0.02em;
+}
+
+.font-code {
+  font-family: var(--font-mono), monospace;
+}
+
+/* Hallmark / Open Design Double-Bezel Surface */
+.double-bezel-shell {
+  background: rgba(20, 20, 19, 0.03);
+  border: 1px solid rgba(20, 20, 19, 0.07);
+  padding: 0.375rem;
+  border-radius: 2rem;
+}
+
+.double-bezel-core {
+  background: #ffffff;
+  border: 1px solid rgba(20, 20, 19, 0.06);
+  border-radius: calc(2rem - 0.375rem);
+  box-shadow: 0 2px 12px rgba(20, 20, 19, 0.03);
+}
+
+/* Explicit high-contrast button & surface classes (fallback-safe across all browsers) */
+.btn-oylg-primary {
+  background-color: #e85d3f !important;
+  background-image: linear-gradient(135deg, #ff6b4a 0%, #d94e30 100%) !important;
+  color: #ffffff !important;
+}
+.btn-oylg-primary:hover {
+  background-color: #d94e30 !important;
+  background-image: linear-gradient(135deg, #e85d3f 0%, #c23e20 100%) !important;
+  color: #ffffff !important;
+}
+
+.btn-oylg-emerald {
+  background-color: #059669 !important;
+  background-image: linear-gradient(135deg, #059669 0%, #0d9488 100%) !important;
+  color: #ffffff !important;
+}
+
+.btn-oylg-indigo {
+  background-color: #4f46e5 !important;
+  background-image: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%) !important;
+  color: #ffffff !important;
+}
+
+.btn-oylg-amber {
+  background-color: #d97706 !important;
+  background-image: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%) !important;
+  color: #ffffff !important;
+}
+
+.surface-oylg-dark {
+  background-color: #112a22 !important;
+  background-image: linear-gradient(135deg, #0f5132 0%, #112a22 55%, #1e1b4b 100%) !important;
+  color: #ffffff !important;
+}
+
+.surface-oylg-indigo-dark {
+  background-color: #1e1b4b !important;
+  background-image: linear-gradient(135deg, #1e1b4b 0%, #112a22 100%) !important;
+  color: #ffffff !important;
+}
+
+/* Custom sleek scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.6);
+}

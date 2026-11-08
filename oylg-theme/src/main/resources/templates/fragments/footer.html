@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<footer th:fragment="footer" class="bg-[#141413] text-[#D4D2CC] py-12 mt-16 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 pb-8 border-b border-white/10 text-xs">
+            <div class="md:col-span-6 space-y-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl btn-oylg-primary text-white flex items-center justify-center font-extrabold text-xs">
+                        OYLG
+                    </div>
+                    <span class="text-base font-bold text-white tracking-tight">All Your Life</span>
+                </div>
+                <p class="text-stone-400 leading-relaxed max-w-md">
+                    Đồng hành Hướng nghiệp, Cố vấn Cuộc sống và Gia sư 1-1 bù lỗ hổng kiến thức cho học sinh Lớp 1–12.
+                </p>
+                <div class="text-emerald-400 font-semibold">
+                    Hotline: 1900 636 888 · TP. Buôn Ma Thuột, Đắk Lắk
+                </div>
+            </div>
+
+            <div class="md:col-span-3 space-y-2.5">
+                <div class="font-bold text-white uppercase tracking-wider">Chương trình</div>
+                <ul class="space-y-2 text-stone-400">
+                    <li><a href="/#lo-trinh-3-tang" class="hover:text-white transition">Mô hình 3 Tầng</a></li>
+                    <li><a href="/#bang-gia-b6" class="hover:text-white transition">Gói học &amp; Học phí</a></li>
+                    <li><a href="/#doi-ngu-chuyen-gia" class="hover:text-white transition">Hội đồng Chuyên gia</a></li>
+                    <li><a href="/#noi-tru-an-toan" class="hover:text-white transition">Nội trú &amp; Bán trú</a></li>
+                </ul>
+            </div>
+
+            <div class="md:col-span-3 space-y-2.5">
+                <div class="font-bold text-white uppercase tracking-wider">Dành cho Gia đình</div>
+                <ul class="space-y-2 text-stone-400">
+                    <li><a href="/#tu-van-1-1" class="hover:text-white transition">Đặt lịch tư vấn 1-1</a></li>
+                    <li><a href="/#bang-gia-b6" class="hover:text-white transition">Tra cứu gói học</a></li>
+                    <li><button type="button" onclick="if(window.openOylgRoleModal){window.openOylgRoleModal();}" class="hover:text-white transition cursor-pointer">Đăng nhập thành viên</button></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="pt-6 flex flex-wrap items-center justify-between gap-4 text-xs text-stone-400">
+            <div>&copy; 2026 Công ty TNHH All Your Life.</div>
+            <div>Hoàn học phí 100% số buổi chưa học trong 14 ngày đầu.</div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

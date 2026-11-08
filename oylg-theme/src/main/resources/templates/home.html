@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:ezy="http://www.ezyplatform.com/thymeleaf/layout"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{ezytheme}">
+<body>
+<div layout:fragment="content" class="max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-20">
+    <!-- 1. HERO SPLIT 2-COLUMN VỚI HÌNH ẢNH HỌC SINH & MÀU SẮC TƯƠI SÁNG -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+        <div class="lg:col-span-6 space-y-6">
+            <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 bg-gradient-to-r from-amber-100 via-orange-50 to-emerald-100 border border-amber-200/80 text-xs font-bold text-[#141413]">
+                <span class="whitespace-nowrap">Hệ Sinh Thái Hướng Nghiệp &amp; Đồng Hành Lớp 1–12 &amp; Sinh Viên</span>
+            </div>
+
+            <h1 class="font-editorial text-4xl sm:text-5xl font-bold tracking-tight leading-[1.12] text-[#141413]">
+                Giúp con biết mình sẽ trở thành ai,
+                <span class="text-[#E85D3F]">
+                    lấp đúng lỗ hổng kiến thức gốc
+                </span>
+                và có Cố vấn đồng hành toàn diện.
+            </h1>
+
+            <p class="text-sm sm:text-base text-stone-600 leading-relaxed">
+                All Your Life (OYLG) đồng hành cùng gia đình qua 3 tầng chuyên sâu:
+                <strong>Hướng nghiệp khám phá bản thân (Tầng 1)</strong>,
+                <strong>Cố vấn cuộc sống tầm soát 3 mặt Kiến thức · Tinh thần · Thể chất (Tầng 2)</strong> và
+                <strong>Chuyên gia bộ môn kèm sát 60/40 (Tầng 3)</strong>.
+            </p>
+
+            <div class="flex flex-wrap items-center gap-2.5">
+                <span class="whitespace-nowrap px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold">
+                    Tầng 1: Hướng nghiệp RIASEC
+                </span>
+                <span class="whitespace-nowrap px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold">
+                    Tầng 2: Cố vấn Cuộc sống 3 Mặt
+                </span>
+                <span class="whitespace-nowrap px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-900 text-xs font-bold">
+                    Tầng 3: Gia sư Bù hổng 60/40
+                </span>
+            </div>
+
+            <div class="pt-2 flex flex-wrap items-center gap-3.5">
+                <a href="#bang-gia-b6" class="btn-oylg-primary whitespace-nowrap px-6 py-3.5 rounded-full bg-[#E85D3F] text-white text-sm font-bold shadow-md">
+                    Chọn Gói Đồng Hành &amp; Đăng Ký ↗
+                </a>
+                <a href="#tu-van-1-1" class="whitespace-nowrap px-6 py-3.5 rounded-full bg-white border-2 border-emerald-600/30 text-emerald-950 text-sm font-bold">
+                    Đặt Lịch Tư Vấn 1-1 Miễn Phí
+                </a>
+            </div>
+        </div>
+
+        <div class="lg:col-span-6 relative">
+            <div class="relative rounded-[32px] p-3 bg-gradient-to-br from-amber-400/30 via-emerald-400/25 to-indigo-500/30 shadow-xl">
+                <div class="relative rounded-[24px] overflow-hidden bg-stone-900 aspect-[4/3]">
+                    <img
+                        src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=85"
+                        alt="Học sinh và Sinh viên hào hứng khám phá lộ trình hướng nghiệp"
+                        class="w-full h-full object-cover"
+                    />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent"></div>
+                    <div class="absolute bottom-4 left-4 right-4 flex flex-wrap items-end justify-between gap-3 text-white">
+                        <div>
+                            <span class="px-3 py-1 rounded-full bg-amber-400 text-stone-950 text-[11px] font-extrabold uppercase tracking-wider whitespace-nowrap">
+                                Đồng hành Cá nhân hóa 1-1
+                            </span>
+                            <div class="font-editorial text-xl sm:text-2xl font-bold mt-1.5">
+                                Học tập chủ động, hiểu rõ tương lai
+                            </div>
+                        </div>
+                        <div class="px-3.5 py-2 rounded-2xl bg-white/15 backdrop-blur-md border border-white/25 text-xs font-bold whitespace-nowrap">
+                            Tiến bộ sau 8 tuần: <span class="text-emerald-300">96,4%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. MÔ HÌNH 3 TẦNG CÓ HÌNH ẢNH & MÀU SẮC TƯƠI SÁNG -->
+    <section id="lo-trinh-3-tang" class="space-y-8">
+        <div class="max-w-3xl space-y-2">
+            <span class="whitespace-nowrap inline-block px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-extrabold uppercase">
+                Phương Pháp Tiếp Cận Từ Gốc Rễ
+            </span>
+            <h2 class="font-editorial text-3xl sm:text-4xl font-bold text-[#141413]">
+                Lộ trình 3 Tầng Đồng Hành Khép Kín cho Học sinh &amp; Sinh viên
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="rounded-3xl bg-gradient-to-b from-amber-50/90 to-white border-2 border-amber-200/80 shadow-sm overflow-hidden">
+                <div class="relative h-48 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80" alt="Tầng 1" class="w-full h-full object-cover" />
+                    <span class="btn-oylg-amber absolute top-3 left-3 whitespace-nowrap px-3.5 py-1 rounded-full bg-amber-600 text-white text-xs font-extrabold">
+                        TẦNG 1 · HƯỚNG NGHIỆP
+                    </span>
+                </div>
+                <div class="p-6 space-y-2">
+                    <h3 class="font-editorial text-2xl font-bold text-stone-900">Biết rõ mình sẽ trở thành ai</h3>
+                    <p class="text-xs sm:text-sm text-stone-600">Giải mã thiên hướng nghề nghiệp RIASEC, tính cách Big Five và xây dựng Bản đồ Thành công R1.</p>
+                </div>
+            </div>
+
+            <div class="rounded-3xl bg-gradient-to-b from-emerald-50/90 to-white border-2 border-emerald-200/80 shadow-sm overflow-hidden">
+                <div class="relative h-48 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80" alt="Tầng 2" class="w-full h-full object-cover" />
+                    <span class="btn-oylg-emerald absolute top-3 left-3 whitespace-nowrap px-3.5 py-1 rounded-full bg-emerald-600 text-white text-xs font-extrabold">
+                        TẦNG 2 · CỐ VẤN CUỘC SỐNG
+                    </span>
+                </div>
+                <div class="p-6 space-y-2">
+                    <h3 class="font-editorial text-2xl font-bold text-stone-900">Tầm soát 3 mặt &amp; Truy vết lỗ hổng</h3>
+                    <p class="text-xs sm:text-sm text-stone-600">Tầm soát toàn diện Kiến thức từ Lớp 1 đến lớp hiện tại, Sức khỏe tinh thần và Thể chất.</p>
+                </div>
+            </div>
+
+            <div class="rounded-3xl bg-gradient-to-b from-indigo-50/90 to-white border-2 border-indigo-200/80 shadow-sm overflow-hidden">
+                <div class="relative h-48 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=800&q=80" alt="Tầng 3" class="w-full h-full object-cover" />
+                    <span class="btn-oylg-indigo absolute top-3 left-3 whitespace-nowrap px-3.5 py-1 rounded-full bg-indigo-600 text-white text-xs font-extrabold">
+                        TẦNG 3 · GIA SƯ 60/40
+                    </span>
+                </div>
+                <div class="p-6 space-y-2">
+                    <h3 class="font-editorial text-2xl font-bold text-stone-900">Bù lỗ hổng gốc &amp; Luyện thi bứt phá</h3>
+                    <p class="text-xs sm:text-sm text-stone-600">Kèm sát theo tỷ lệ 60% bù gốc lớp dưới / 40% bám sát lớp hiện tại (Online Zoom · Trung tâm · Tại nhà).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. CỬA HÀNG GÓI HỌC E-COMMERCE & THANH TOÁN VIETQR -->
+    <section id="bang-gia-b6" class="space-y-6">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+                <span class="whitespace-nowrap inline-block px-3.5 py-1 rounded-full bg-orange-100 text-orange-900 text-xs font-extrabold uppercase">
+                    Cửa Hàng Gói Học &amp; Biểu Phí Minh Bạch
+                </span>
+                <h2 class="font-editorial text-3xl font-bold text-[#141413] mt-2">Gói Dịch Vụ 3 Tầng &amp; Thanh Toán VietQR</h2>
+            </div>
+            <div class="text-xs text-stone-600">
+                Đơn giá cơ sở hiện hành: <strong class="text-[#1A2E26]" th:text="${baseSessionPrice != null ? baseSessionPrice + ' VNĐ/buổi' : '200.000 VNĐ/buổi'}"></strong>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="rounded-3xl bg-white border border-stone-200 overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="relative h-44 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80" alt="Gói Tầng 1" class="w-full h-full object-cover" />
+                        <span class="absolute top-3 left-3 whitespace-nowrap text-[11px] font-extrabold px-3 py-1 rounded-full bg-amber-100 text-amber-900">TẦNG 1 · HƯỚNG NGHIỆP</span>
+                    </div>
+                    <div class="p-6 space-y-2">
+                        <h3 class="font-editorial text-xl font-bold text-[#1A2E26]">Gói Khám Phá Bản Thân &amp; Hướng Nghiệp B1–B4</h3>
+                        <p class="text-xs text-stone-600">Đánh giá RIASEC + Big Five, tầm soát lỗ hổng kiến thức 5 môn và buổi tham vấn 1-1 cùng chuyên gia.</p>
+                    </div>
+                </div>
+                <div class="p-6 pt-4 border-t border-stone-100 space-y-3">
+                    <div class="text-2xl font-extrabold text-[#1A2E26]">2.490.000đ <span class="text-xs font-normal text-stone-500">/ 2 buổi chuyên gia</span></div>
+                    <button onclick="checkoutQuickOrder('PKG-T1-CAREER', 'Gói Hướng nghiệp B1-B4', 2490000)" class="btn-oylg-amber whitespace-nowrap w-full py-2.5 rounded-full bg-amber-600 text-white text-xs font-extrabold cursor-pointer">
+                        Mua Gói Ngay qua VietQR
+                    </button>
+                </div>
+            </div>
+
+            <div class="rounded-3xl bg-white border-2 border-emerald-600 overflow-hidden shadow-md flex flex-col justify-between">
+                <div>
+                    <div class="relative h-44 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80" alt="Gói Tầng 2" class="w-full h-full object-cover" />
+                        <span class="absolute top-3 left-3 whitespace-nowrap text-[11px] font-extrabold px-3 py-1 rounded-full bg-emerald-100 text-emerald-900">TẦNG 2 · CỐ VẤN CUỘC SỐNG</span>
+                    </div>
+                    <div class="p-6 space-y-2">
+                        <h3 class="font-editorial text-xl font-bold text-[#1A2E26]">Gói Cố Vấn Kỹ Năng Sống &amp; Tinh Thần (3 Tháng)</h3>
+                        <p class="text-xs text-stone-600">12 phiên đồng hành 1-1 tháo gỡ áp lực điểm số, xây dựng kỷ luật tự giác và gắn kết cha mẹ – con cái.</p>
+                    </div>
+                </div>
+                <div class="p-6 pt-4 border-t border-stone-100 space-y-3">
+                    <div class="text-2xl font-extrabold text-[#1A2E26]">6.900.000đ <span class="text-xs font-normal text-stone-500">/ 12 buổi 1-1</span></div>
+                    <button onclick="checkoutQuickOrder('PKG-T2-COACH-3M', 'Gói Cố vấn Cuộc sống 3 tháng', 6900000)" class="btn-oylg-emerald whitespace-nowrap w-full py-2.5 rounded-full bg-emerald-600 text-white text-xs font-extrabold cursor-pointer">
+                        Mua Gói Ngay qua VietQR
+                    </button>
+                </div>
+            </div>
+
+            <div class="rounded-3xl bg-white border border-stone-200 overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="relative h-44 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=800&q=80" alt="Gói Tầng 3" class="w-full h-full object-cover" />
+                        <span class="absolute top-3 left-3 whitespace-nowrap text-[11px] font-extrabold px-3 py-1 rounded-full bg-indigo-100 text-indigo-900">TẦNG 3 · GIA SƯ 60/40</span>
+                    </div>
+                    <div class="p-6 space-y-2">
+                        <h3 class="font-editorial text-xl font-bold text-[#1A2E26]">Gói Gia Sư Học Thuật Lấp Lỗ Hổng Gốc (6 Tháng)</h3>
+                        <p class="text-xs text-stone-600">48 buổi học cá nhân hóa theo tỷ lệ 60% bài trên lớp / 40% lấp hổng gốc. Đã ưu đãi 7% cam kết 6 tháng.</p>
+                    </div>
+                </div>
+                <div class="p-6 pt-4 border-t border-stone-100 space-y-3">
+                    <div class="text-2xl font-extrabold text-[#1A2E26]">10.713.600đ <span class="text-xs font-normal text-stone-500">/ 48 buổi</span></div>
+                    <button onclick="checkoutQuickOrder('PKG-T3-TUTOR-6M', 'Gói Gia sư 60/40 (6 tháng - 48 buổi)', 10713600)" class="btn-oylg-indigo whitespace-nowrap w-full py-2.5 rounded-full bg-indigo-600 text-white text-xs font-extrabold cursor-pointer">
+                        Mua Gói Ngay qua VietQR
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="vietqrOrderResult" class="hidden rounded-2xl border border-emerald-300 bg-emerald-50 p-5 text-xs space-y-2"></div>
+    </section>
+
+    <!-- 3B. HỘI ĐỒNG CHUYÊN GIA HƯỚNG NGHIỆP, CỐ VẤN & GIA SƯ BỘ MÔN -->
+    <section id="doi-ngu-chuyen-gia" class="space-y-6">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+                <span class="whitespace-nowrap inline-block px-3.5 py-1 rounded-full bg-indigo-100 text-indigo-800 text-xs font-extrabold uppercase tracking-wider">
+                    Đội Ngũ Chuyên Môn B2 – B3 – B4
+                </span>
+                <h2 class="font-editorial text-3xl sm:text-4xl font-bold text-[#141413] mt-2">
+                    Hội Đồng Chuyên Gia Hướng Nghiệp, Cố Vấn Cuộc Sống &amp; Gia Sư
+                </h2>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="rounded-3xl bg-white border border-stone-200 overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=700&q=80" alt="Chuyên gia Tracie Anh" class="w-full h-48 object-cover" />
+                    <div class="p-5 space-y-1.5">
+                        <span class="whitespace-nowrap inline-block text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900">CHUYÊN GIA BẬC 3 · HƯỚNG NGHIỆP</span>
+                        <h3 class="font-editorial text-lg font-bold text-[#141413]">Chuyên gia Tracie Anh</h3>
+                        <p class="text-xs text-stone-600">Chuyên gia Hướng nghiệp &amp; Thiết kế Bản đồ Thành công R1 (Holland RIASEC &amp; Big Five).</p>
+                    </div>
+                </div>
+                <div class="px-5 pb-5 pt-2">
+                    <a href="http://localhost:3456/pages/co-van-tracie-anh" class="whitespace-nowrap block text-center w-full py-2 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold transition">
+                        Xem Hồ Sơ &amp; Đặt Lịch 1-1
+                    </a>
+                </div>
+            </div>
+
+            <div class="rounded-3xl bg-white border border-stone-200 overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <img src="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?auto=format&fit=crop&w=700&q=80" alt="ThS. Lê Minh Tâm" class="w-full h-48 object-cover" />
+                    <div class="p-5 space-y-1.5">
+                        <span class="whitespace-nowrap inline-block text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900">CHUYÊN GIA BẬC 3 · CỐ VẤN CUỘC SỐNG</span>
+                        <h3 class="font-editorial text-lg font-bold text-[#141413]">ThS. Lê Minh Tâm</h3>
+                        <p class="text-xs text-stone-600">Cố vấn Cuộc sống Trưởng · Tầm soát 3 mặt Kiến thức – Tinh thần – Thể chất &amp; Điều phối 60/40.</p>
+                    </div>
+                </div>
+                <div class="px-5 pb-5 pt-2">
+                    <a href="http://localhost:3456/pages/ths-le-minh-tam" class="whitespace-nowrap block text-center w-full py-2 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-900 text-xs font-bold transition">
+                        Xem Hồ Sơ &amp; Đặt Lịch 1-1
+                    </a>
+                </div>
+            </div>
+
+            <div class="rounded-3xl bg-white border border-stone-200 overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=700&q=80" alt="Thầy Đặng Quốc Việt" class="w-full h-48 object-cover" />
+                    <div class="p-5 space-y-1.5">
+                        <span class="whitespace-nowrap inline-block text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-900">CHUYÊN GIA BẬC 3 · TOÁN GDPT 2018</span>
+                        <h3 class="font-editorial text-lg font-bold text-[#141413]">Thầy Đặng Quốc Việt</h3>
+                        <p class="text-xs text-stone-600">Chuyên gia Toán THCS/THPT · Chuyên trị mất gốc Đại số &amp; Hình học và ôn thi Chuyên.</p>
+                    </div>
+                </div>
+                <div class="px-5 pb-5 pt-2">
+                    <a href="http://localhost:3456/pages/thay-dang-quoc-viet" class="whitespace-nowrap block text-center w-full py-2 rounded-full bg-indigo-50 hover:bg-indigo-100 text-indigo-900 text-xs font-bold transition">
+                        Xem Hồ Sơ &amp; Đặt Lịch 1-1
+                    </a>
+                </div>
+            </div>
+
+            <div class="rounded-3xl bg-white border border-stone-200 overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80" alt="Cô Lê Bảo Trâm" class="w-full h-48 object-cover" />
+                    <div class="p-5 space-y-1.5">
+                        <span class="whitespace-nowrap inline-block text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-900">CHUYÊN GIA BẬC 2 · TIẾNG ANH IELTS</span>
+                        <h3 class="font-editorial text-lg font-bold text-[#141413]">Cô Lê Bảo Trâm</h3>
+                        <p class="text-xs text-stone-600">Chuyên gia Tiếng Anh Học thuật &amp; IELTS · Xây dựng phản xạ ngôn ngữ từ Tiểu học đến THPT.</p>
+                    </div>
+                </div>
+                <div class="px-5 pb-5 pt-2">
+                    <a href="http://localhost:3456/pages/co-le-bao-tram" class="whitespace-nowrap block text-center w-full py-2 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-900 text-xs font-bold transition">
+                        Xem Hồ Sơ &amp; Đặt Lịch 1-1
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3C. MÔI TRƯỜNG NỘI TRÚ & BÁN TRÚ AN TOÀN 4 ĐIỂM CHẠM (B5) -->
+    <section id="noi-tru-an-toan" class="rounded-3xl bg-white border border-sky-200 p-7 sm:p-10 shadow-sm space-y-6">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+                <span class="whitespace-nowrap inline-block px-3.5 py-1 rounded-full bg-sky-100 text-sky-900 text-xs font-extrabold uppercase tracking-wider">
+                    Chăm Sóc Bán Trú &amp; Nội Trú An Toàn (B5)
+                </span>
+                <h2 class="font-editorial text-3xl font-bold text-[#141413] mt-2">
+                    Quy Trình Điểm Danh 4 Mốc Trong Ngày &amp; Dinh Dưỡng Cá Nhân Hóa
+                </h2>
+            </div>
+            <a href="http://localhost:3456/operations/boarding" class="whitespace-nowrap px-4 py-2 rounded-full bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold transition">
+                Mở Bảng Quản Lý Nội Trú &amp; Bán Trú →
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+            <div class="rounded-2xl border border-sky-100 bg-sky-50/50 p-4 space-y-1.5">
+                <div class="font-extrabold text-sky-900">1. Quét QR Đến Trung Tâm (11:30)</div>
+                <p class="text-stone-600">Tự động gửi thông báo thời gian thực tới ứng dụng của Phụ huynh ngay khi con check-in.</p>
+            </div>
+            <div class="rounded-2xl border border-emerald-100 bg-emerald-50/50 p-4 space-y-1.5">
+                <div class="font-extrabold text-emerald-900">2. Bữa Trưa &amp; Cảnh Báo Dị Ứng (12:00)</div>
+                <p class="text-stone-600">Thực đơn dinh dưỡng tách biệt khẩu phần cho học sinh dị ứng hải sản/đậu phộng.</p>
+            </div>
+            <div class="rounded-2xl border border-amber-100 bg-amber-50/50 p-4 space-y-1.5">
+                <div class="font-extrabold text-amber-900">3. Ca Tự Học Có Giám Sát (19:30)</div>
+                <p class="text-stone-600">Quản nhiệm &amp; Trợ giảng kèm sát hoàn thành bài tập 60/40 trong không gian không điện thoại.</p>
+            </div>
+            <div class="rounded-2xl border border-indigo-100 bg-indigo-50/50 p-4 space-y-1.5">
+                <div class="font-extrabold text-indigo-900">4. Điểm Danh Phòng Ngủ (21:30)</div>
+                <p class="text-stone-600">Khu Nam/Nữ tách biệt tuyệt đối, điểm danh trước giờ tắt đèn nghỉ ngơi lúc 22:00.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. ĐẶT LỊCH TƯ VẤN 1-1 -->
+    <section id="tu-van-1-1" class="surface-oylg-dark rounded-3xl bg-[#112A22] text-white p-7 sm:p-10 shadow-xl">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div class="lg:col-span-6 space-y-4">
+                <span class="whitespace-nowrap inline-block px-3.5 py-1 rounded-full bg-amber-400 text-stone-950 text-xs font-extrabold uppercase">
+                    Đồng Hành Cùng Gia Đình
+                </span>
+                <h3 class="font-editorial text-3xl font-bold text-white">Đặt Lịch Tư Vấn Lộ Trình 1-1 Miễn Phí</h3>
+                <p class="text-xs sm:text-sm text-stone-200">Chuyên gia Cố vấn OYLG sẽ liên hệ trong 30 phút để phân tích hồ sơ của con.</p>
+            </div>
+            <div class="lg:col-span-6 bg-white text-[#141413] rounded-3xl p-6 space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <input id="consultParent" type="text" placeholder="Họ tên Phụ huynh" class="rounded-xl border border-stone-200 bg-stone-50 text-[#141413] px-3.5 py-2.5">
+                    <input id="consultPhone" type="text" placeholder="Số điện thoại Zalo" class="rounded-xl border border-stone-200 bg-stone-50 text-[#141413] px-3.5 py-2.5">
+                    <input id="consultStudent" type="text" placeholder="Họ tên Học sinh &amp; Lớp" class="rounded-xl border border-stone-200 bg-stone-50 text-[#141413] px-3.5 py-2.5 sm:col-span-2">
+                </div>
+                <button onclick="document.getElementById('consultNotice').classList.remove('hidden')" class="btn-oylg-primary whitespace-nowrap w-full py-3 rounded-full bg-[#E85D3F] text-white text-xs font-extrabold cursor-pointer">
+                    Gửi Yêu Cầu Tư Vấn Lộ Trình 1-1
+                </button>
+                <div id="consultNotice" class="hidden rounded-xl bg-emerald-50 border border-emerald-200 p-3 text-xs font-bold text-emerald-800">
+                    Đã ghi nhận lịch hẹn tư vấn 1-1! Chuyên viên OYLG sẽ liên hệ ngay.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HỘP THOẠI ĐĂNG NHẬP & CHUYỂN ĐỔI VAI TRÒ TRỰC TIẾP TRÊN EZYPLATFORM -->
+    <div id="oylgRoleModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl border border-stone-200 shadow-2xl max-w-lg w-full overflow-hidden">
+            <div class="p-6 bg-[#141413] text-white flex items-center justify-between">
+                <div>
+                    <div class="text-[11px] uppercase tracking-widest text-amber-300 font-bold">
+                        Cổng Xác Thực Thành Viên &amp; Chuyển Đổi Vai Trò
+                    </div>
+                    <h3 class="text-lg font-extrabold mt-0.5">
+                        Chọn Cổng Làm Việc Theo Vai Trò (6 Role + EzyAdmin)
+                    </h3>
+                </div>
+                <button type="button" onclick="window.closeOylgRoleModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white font-bold cursor-pointer">
+                    ✕
+                </button>
+            </div>
+            <div class="p-6 space-y-2.5 max-h-[80vh] overflow-y-auto text-xs">
+                <a href="http://localhost:3456/parent" class="flex items-center justify-between p-3.5 rounded-2xl border border-stone-200 hover:border-amber-500 bg-[#FFFDF9] hover:bg-amber-50/40 transition">
+                    <div>
+                        <div class="font-extrabold text-[#141413]">1. Cổng Phụ Huynh (Chị Nguyễn Thị Lan)</div>
+                        <div class="text-stone-500 mt-0.5">Theo dõi lộ trình con, Đổi hình thức học, Dời lịch &amp; Hoàn tiền 14 ngày</div>
+                    </div>
+                    <span class="whitespace-nowrap px-3 py-1 rounded-full bg-amber-100 text-amber-900 font-bold">/parent →</span>
+                </a>
+                <a href="http://localhost:3456/student" class="flex items-center justify-between p-3.5 rounded-2xl border border-stone-200 hover:border-indigo-500 bg-[#FFFDF9] hover:bg-indigo-50/40 transition">
+                    <div>
+                        <div class="font-extrabold text-[#141413]">2. Cổng Học Sinh (Em Nguyễn Minh Khôi — Lớp 9)</div>
+                        <div class="text-stone-500 mt-0.5">Tầm soát thích ứng &lt; 500ms, Gợi ý Socratic AI &amp; Nhiệm vụ 60/40</div>
+                    </div>
+                    <span class="whitespace-nowrap px-3 py-1 rounded-full bg-indigo-100 text-indigo-900 font-bold">/student →</span>
+                </a>
+                <a href="http://localhost:3456/coach" class="flex items-center justify-between p-3.5 rounded-2xl border border-stone-200 hover:border-emerald-500 bg-[#FFFDF9] hover:bg-emerald-50/40 transition">
+                    <div>
+                        <div class="font-extrabold text-[#141413]">3. Cổng Cố Vấn Cuộc Sống &amp; Gia Sư (ThS. Lê Minh Tâm)</div>
+                        <div class="text-stone-500 mt-0.5">Tháp điều khiển 20 HS, Heatmap YCCĐ, Biên bản 60s &amp; DLP Guardrail</div>
+                    </div>
+                    <span class="whitespace-nowrap px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 font-bold">/coach →</span>
+                </a>
+                <a href="http://localhost:3456/studio" class="flex items-center justify-between p-3.5 rounded-2xl border border-stone-200 hover:border-purple-500 bg-[#FFFDF9] hover:bg-purple-50/40 transition">
+                    <div>
+                        <div class="font-extrabold text-[#141413]">4. Xưởng Học Liệu &amp; Duyệt 2 Tầng (Thầy Đặng Quốc Việt)</div>
+                        <div class="text-stone-500 mt-0.5">Ngân hàng câu hỏi chuẩn YCCĐ GDPT 2018 &amp; Phê duyệt học liệu AI</div>
+                    </div>
+                    <span class="whitespace-nowrap px-3 py-1 rounded-full bg-purple-100 text-purple-900 font-bold">/studio →</span>
+                </a>
+                <a href="http://localhost:3456/operations/sales" class="flex items-center justify-between p-3.5 rounded-2xl border border-stone-200 hover:border-teal-500 bg-[#FFFDF9] hover:bg-teal-50/40 transition">
+                    <div>
+                        <div class="font-extrabold text-[#141413]">5. Vận Hành Tuyển Sinh, POS &amp; Hoa Hồng CTV 2 Tầng</div>
+                        <div class="text-stone-500 mt-0.5">Tạo đơn POS VietQR, CRM Pipeline &amp; Tính hoa hồng 15%/10%/5%</div>
+                    </div>
+                    <span class="whitespace-nowrap px-3 py-1 rounded-full bg-teal-100 text-teal-900 font-bold">/operations/sales →</span>
+                </a>
+                <a href="http://localhost:3456/admin" class="flex items-center justify-between p-3.5 rounded-2xl border border-stone-200 hover:border-rose-500 bg-[#FFFDF9] hover:bg-rose-50/40 transition">
+                    <div>
+                        <div class="font-extrabold text-[#141413]">6. Ban Điều Hành &amp; Quản Trị Chiến Lược (CEO)</div>
+                        <div class="text-stone-500 mt-0.5">4 chỉ số buổi sáng, Cấu hình giá gốc B6, Thù lao KPI Quý &amp; Mở lớp nhóm</div>
+                    </div>
+                    <span class="whitespace-nowrap px-3 py-1 rounded-full bg-rose-100 text-rose-900 font-bold">/admin →</span>
+                </a>
+                <a href="http://localhost:9090/login" class="flex items-center justify-between p-3.5 rounded-2xl border border-slate-800 bg-slate-900 text-white hover:bg-slate-800 transition">
+                    <div>
+                        <div class="font-extrabold text-amber-300">7. EzyPlatform Admin Server (:9090)</div>
+                        <div class="text-slate-300 mt-0.5">Quản trị EzyPlatform Core, Plugins (ecommerce, ezyarticle, ezylogin) &amp; Database</div>
+                    </div>
+                    <span class="whitespace-nowrap px-3 py-1 rounded-full bg-amber-400 text-slate-950 font-extrabold">:9090 →</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.openOylgRoleModal = function() {
+            var m = document.getElementById('oylgRoleModal');
+            if (m) m.classList.remove('hidden');
+        };
+        window.closeOylgRoleModal = function() {
+            var m = document.getElementById('oylgRoleModal');
+            if (m) m.classList.add('hidden');
+        };
+
+        function renderQuickOrderSuccess(data, title, amountVnd) {
+            var box = document.getElementById('vietqrOrderResult');
+            box.classList.remove('hidden');
+            var orderCode = (data && data.orderCode) ? data.orderCode : ('ORD-2026-' + Math.floor(1000 + Math.random() * 9000));
+            var netPaid = (data && data.netPaidAmountVnd) ? Number(data.netPaidAmountVnd) : Number(amountVnd);
+            var tier1 = (data && data.unlockedTier1RepCommissionVnd) ? Number(data.unlockedTier1RepCommissionVnd) : Math.round(netPaid * 0.15);
+            var tier2 = (data && data.unlockedTier2LeaderCommissionVnd) ? Number(data.unlockedTier2LeaderCommissionVnd) : Math.round(netPaid * 0.02);
+            box.innerHTML = '<strong>ĐẶT MUA &amp; KHỞI TẠO VIETQR THÀNH CÔNG:</strong> Mã đơn <code>' +
+                orderCode + '</code> · Gói: <strong>' + title + '</strong> · Số tiền: <strong>' +
+                netPaid.toLocaleString('vi-VN') + 'đ</strong> · Hoa hồng CTV Tầng 1 mở khóa: <strong>' +
+                tier1.toLocaleString('vi-VN') + 'đ</strong> (Leader Tầng 2: ' +
+                tier2.toLocaleString('vi-VN') + 'đ). <a href="http://localhost:3456/parent" class="underline font-extrabold ml-2 text-emerald-900">Vào Cổng Phụ Huynh xem đơn →</a>';
+        }
+
+        function checkoutQuickOrder(sku, title, amountVnd) {
+            fetch('/api/v1/oylg/ecommerce/checkout-vietqr', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    sku: sku,
+                    title: title,
+                    netAmountVnd: String(amountVnd),
+                    sixMonthReferenceVnd: String(amountVnd)
+                })
+            })
+            .then(function(r) {
+                if (!r.ok) throw new Error('fallback');
+                return r.json();
+            })
+            .then(function(data) {
+                renderQuickOrderSuccess(data, title, amountVnd);
+            })
+            .catch(function() {
+                renderQuickOrderSuccess(null, title, amountVnd);
+            });
+        }
+    </script>
+</div>
+</body>
+</html>

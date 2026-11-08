@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:ezy="http://www.ezyplatform.com/thymeleaf/layout">
+<body>
+<header th:fragment="header" class="sticky top-4 z-40 px-3 sm:px-6 pt-3">
+    <div class="max-w-7xl mx-auto rounded-full bg-white/95 backdrop-blur-xl border border-amber-200/70 shadow-[0_12px_36px_rgb(232,93,63,0.08)] px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+        <a href="/" class="flex items-center gap-3 shrink-0 text-decoration-none">
+            <div class="w-10 h-10 rounded-2xl btn-oylg-primary text-white flex items-center justify-center font-extrabold text-xs tracking-wider shadow-sm shrink-0">
+                OYLG
+            </div>
+            <div class="shrink-0">
+                <div class="text-sm font-extrabold text-[#141413] tracking-tight leading-none whitespace-nowrap">
+                    All Your Life
+                </div>
+                <div class="text-[11px] font-medium text-stone-500 mt-0.5 whitespace-nowrap">
+                    Hướng nghiệp &amp; Đồng hành
+                </div>
+            </div>
+        </a>
+
+        <nav class="hidden lg:flex items-center gap-1.5 xl:gap-2 text-xs font-bold text-stone-700 shrink-0">
+            <a href="/#lo-trinh-3-tang" class="whitespace-nowrap shrink-0 px-3.5 py-2 rounded-full hover:bg-amber-50 hover:text-[#E85D3F] transition">
+                Mô hình 3 Tầng
+            </a>
+            <a href="/#bang-gia-b6" class="whitespace-nowrap shrink-0 px-3.5 py-2 rounded-full hover:bg-emerald-50 hover:text-emerald-700 transition">
+                Gói Học &amp; Học Phí
+            </a>
+            <a href="/#doi-ngu-chuyen-gia" class="whitespace-nowrap shrink-0 px-3.5 py-2 rounded-full hover:bg-indigo-50 hover:text-indigo-700 transition">
+                Hội Đồng Chuyên Gia
+            </a>
+            <a href="/#noi-tru-an-toan" class="whitespace-nowrap shrink-0 px-3.5 py-2 rounded-full hover:bg-sky-50 hover:text-sky-700 transition">
+                Nội Trú &amp; Bán Trú
+            </a>
+            <a href="/#tu-van-1-1" class="whitespace-nowrap shrink-0 px-3.5 py-2 rounded-full hover:bg-rose-50 hover:text-rose-700 transition">
+                Đặt Lịch Tư Vấn
+            </a>
+        </nav>
+
+        <div class="flex items-center gap-2 shrink-0">
+            <a href="/#bang-gia-b6" class="whitespace-nowrap shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-emerald-200 bg-emerald-50/80 hover:bg-emerald-100 text-xs font-bold text-emerald-950 transition">
+                <span class="whitespace-nowrap">Giỏ gói học</span>
+                <span id="oylgHeaderCartCount" class="px-1.5 py-0.5 rounded-full bg-emerald-700 text-white text-[10px] font-mono leading-none">1</span>
+            </a>
+            <button type="button" onclick="if(window.openOylgRoleModal){window.openOylgRoleModal();}else{window.location.href='/#tu-van-1-1';}" class="btn-oylg-primary whitespace-nowrap shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#E85D3F] text-white text-xs font-bold transition shadow-sm cursor-pointer">
+                <span class="whitespace-nowrap">Đăng nhập ↗</span>
+            </button>
+        </div>
+    </div>
+</header>
+</body>
+</html>

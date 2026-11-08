@@ -1,0 +1,16 @@
+{
+  "name": "oylg-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Nền tảng OYLG (All Your Life) – Hướng nghiệp, Cố vấn Cuộc sống & Đồng hành Học sinh AI-First (M01-M21)",
+  "packageManager": "pnpm@10.33.2",
+  "scripts": {
+    "dev": "pnpm --filter @oylg/web dev",
+    "build": "pnpm --filter @oylg/shared build && pnpm --filter @oylg/web build",
+    "test": "pnpm --filter @oylg/shared test",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

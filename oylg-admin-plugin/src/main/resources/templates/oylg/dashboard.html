@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{ezyadmin}">
+<head>
+    <script>
+        const oylg = {};
+    </script>
+</head>
+<body>
+<div layout:fragment="content" class="row">
+    <!-- 4 Chỉ số Morning Pulse chuẩn EzyAdmin (AdminLTE 3 Small Boxes) -->
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3 id="redSafetyAlertCount">2</h3>
+                <p>[[#{safety_alerts}]] (111 / 115)</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <a href="/oylg/safety-alerts" class="small-box-footer">
+                Xử lý khẩn cấp <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3 id="pendingApprovalCount">18</h3>
+                <p>Chờ duyệt Nội dung AI &amp; R1-R4 (M04)</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-check-double"></i>
+            </div>
+            <a href="/oylg/content-approvals" class="small-box-footer">
+                Duyệt hàng loạt (Cố vấn Tracie Anh) <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3 id="activeCaseCount">142</h3>
+                <p>Hồ sơ Học tập 3 Tầng đang chạy</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <a href="/oylg/cases" class="small-box-footer">
+                Xem Bản đồ Thành công &amp; YCCĐ <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3 id="boardingSafeRate">99.4%</h3>
+                <p>Tỷ lệ Đón trả QR An toàn &amp; Nội trú</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-bed"></i>
+            </div>
+            <a href="/oylg/boarding" class="small-box-footer">
+                Kiểm tra 4 Điểm danh &amp; QR <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Bảng Hồ sơ Học tập 3 Tầng & Trạng thái Duyệt Báo cáo R1/R2/R3 -->
+    <div class="col-12">
+        <div class="card card-primary card-outline">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title">
+                    <i class="fas fa-layer-group mr-1"></i>
+                    Điều phối Hồ sơ Học tập 3 Tầng (Hướng nghiệp R1 ➔ Cố vấn Cuộc sống R2/R3 ➔ Bù hổng 60/40)
+                </h3>
+                <div class="card-tools">
+                    <a href="/ezyarticle/pages/fragments" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-puzzle-piece"></i> Sửa Page Fragments Website
+                    </a>
+                </div>
+            </div>
+            <div class="card-body table-responsive p-0">
+                <table id="oylgCasesTable" class="table table-bordered table-hover text-nowrap">
+                    <thead>
+                    <tr>
+                        <th>Mã Case</th>
+                        <th>Học sinh / Lớp</th>
+                        <th>Tầng Dịch vụ Hiện tại</th>
+                        <th>Báo cáo R1 / R2 / R3</th>
+                        <th>Gốc rễ Hổng YCCĐ</th>
+                        <th>Tỷ lệ Lộ trình</th>
+                        <th>Bảo vệ DLP &amp; An toàn</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody id="oylgCasesTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="modals">
+    <th:block th:replace="~{fragments/prompt :: content(id='approve-batch-modal', title=#{confirm}, body=#{confirm_approve_batch}, confirmButton=#{approve_selected}, closeButton=#{close})}" />
+</th:block>
+
+<script layout:fragment="scripts" th:inline="javascript">
+/*<![CDATA[*/
+ezyadmin.messages.save_successfully = /*[[#{save_successfully}]]*/ 'Lưu thành công!';
+/*]]>*/
+oylg.onBatchApproveClick = function() {
+    $('#approve-batch-modal').modal('show');
+};
+ezyadmin.onPromptConfirmed = function(modalId) {
+    if (modalId === 'approve-batch-modal') {
+        ezyadmin.shortToast('bg-success', 'OYLG Content Gate', ezyadmin.messages.save_successfully);
+    }
+};
+</script>
+</body>
+</html>
