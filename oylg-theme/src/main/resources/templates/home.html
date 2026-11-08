@@ -141,7 +141,7 @@
                 <h2 class="font-editorial text-3xl font-bold text-[#141413] mt-2">Gói Dịch Vụ 3 Tầng &amp; Thanh Toán VietQR</h2>
             </div>
             <div class="text-xs text-stone-600">
-                Đơn giá cơ sở hiện hành: <strong class="text-[#1A2E26]" th:text="${baseSessionPrice != null ? baseSessionPrice + ' VNĐ/buổi' : '200.000 VNĐ/buổi'}"></strong>
+                Đơn giá cơ sở hiện hành: <strong class="text-[#1A2E26]" th:text="${baseSessionPrice != null ? #numbers.formatInteger(baseSessionPrice, 3, 'POINT') + ' VNĐ/buổi' : '200.000 VNĐ/buổi'}"></strong>
             </div>
         </div>
 
@@ -192,7 +192,7 @@
                     </div>
                     <div class="p-6 space-y-2">
                         <h3 class="font-editorial text-xl font-bold text-[#1A2E26]">Gói Gia Sư Học Thuật Lấp Lỗ Hổng Gốc (6 Tháng)</h3>
-                        <p class="text-xs text-stone-600">48 buổi học cá nhân hóa theo tỷ lệ 60% bài trên lớp / 40% lấp hổng gốc. Đã ưu đãi 7% cam kết 6 tháng.</p>
+                        <p class="text-xs text-stone-600">48 buổi học cá nhân hóa theo tỷ lệ 60% lấp hổng gốc / 40% bám sát bài trên lớp. Đã ưu đãi 7% cam kết 6 tháng.</p>
                     </div>
                 </div>
                 <div class="p-6 pt-4 border-t border-stone-100 space-y-3">

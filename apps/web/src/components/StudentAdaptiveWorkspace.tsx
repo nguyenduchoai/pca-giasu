@@ -267,6 +267,9 @@ export function StudentAdaptiveWorkspace() {
                 Không Gian Học Tập Của {activeStudent.fullName} (Lớp{" "}
                 {activeStudent.grade})
               </span>
+              <span className="text-[11px] text-slate-400 whitespace-nowrap">
+                Tài khoản demo:
+              </span>
               {studentCases.map((st) => (
                 <button
                   key={st.id}

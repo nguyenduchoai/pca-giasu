@@ -57,7 +57,11 @@ const PICKUP_CANDIDATES: PickupCandidate[] = [
   },
 ];
 
-export function SalesCareBoardingWorkspace() {
+export function SalesCareBoardingWorkspace({
+  showBoardingKiosk = false,
+}: {
+  showBoardingKiosk?: boolean;
+} = {}) {
   // State cho Mô phỏng Hoa hồng 2 cấp đúng pháp luật (M18.5 & 18.5b)
   const [billingModel, setBillingModel] =
     useState<PackageBillingModel>("MONTHLY");
@@ -417,7 +421,7 @@ export function SalesCareBoardingWorkspace() {
                       <th className="py-2 px-3">Tiền thực thu</th>
                       <th className="py-2 px-3">Chi CTV (10%)</th>
                       <th className="py-2 px-3">
-                        Chi Leader ({commissionPlan.leaderRate * 100}%)
+                        Chi Leader ({Math.round(commissionPlan.leaderRate * 100)}%)
                       </th>
                       <th className="py-2 px-3">Ghi chú hạch toán</th>
                     </tr>
@@ -450,7 +454,8 @@ export function SalesCareBoardingWorkspace() {
         </div>
       </div>
 
-      {/* 2. KIOSK QUẢN SINH NỘI TRÚ & BÁN TRÚ (M21 – CẦN NGAY TRONG MVP) */}
+      {/* 2. KIOSK QUẢN SINH NỘI TRÚ & BÁN TRÚ (M21) — mặc định ẩn ở Cổng Tuyển sinh, đã có trang /operations/boarding riêng */}
+      {showBoardingKiosk && (
       <div className="rounded-2xl border border-teal-200 bg-white p-5 shadow-xs space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2.5">
@@ -583,6 +588,7 @@ export function SalesCareBoardingWorkspace() {
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }

@@ -75,6 +75,44 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const activeStudent =
     studentCases.find((s) => s.id === selectedStudentId) ?? studentCases[0];
 
+  // Persona hiển thị phải khớp với cổng đang mở (tránh hiện "Phụ huynh" trên trang Cố vấn/Quản trị)
+  const routePersonaId: ActivePersonaId | undefined = pathname.startsWith("/parent")
+    ? "PARENT_LAN"
+    : pathname.startsWith("/student")
+    ? "STUDENT_KHOI"
+    : pathname.startsWith("/coach/sessions")
+    ? "TUTOR_VIET"
+    : pathname.startsWith("/coach")
+    ? "COACH_TAM"
+    : pathname.startsWith("/studio")
+    ? "APPROVER_TRACIE"
+    : pathname.startsWith("/operations/sales")
+    ? "SALES_LEADER_MINH"
+    : pathname.startsWith("/operations/boarding")
+    ? "BOARDING_STAFF_NAM"
+    : pathname.startsWith("/admin") || pathname.startsWith("/ezyadmin")
+    ? "ADMIN_OYLG"
+    : undefined;
+  const personaFitsRoute =
+    isLoggedIn &&
+    (pathname.startsWith(currentPersona.defaultRoute.split("/").slice(0, 2).join("/")) ||
+      (currentPersona.id === "ADMIN_OYLG" && isEnterpriseAdminRoute));
+  const displayPersona =
+    personaFitsRoute || !routePersonaId
+      ? currentPersona
+      : PERSONA_ACCOUNTS.find((p) => p.id === routePersonaId) ?? currentPersona;
+  const isParentPortal = pathname.startsWith("/parent");
+  const isStudentPortal = pathname.startsWith("/student");
+  const enterprisePageTitle = pathname.startsWith("/studio")
+    ? "Phê duyệt Học liệu & Đề AI"
+    : pathname.startsWith("/operations/sales")
+    ? "Đơn hàng, Tuyển sinh & Hoa hồng"
+    : pathname.startsWith("/operations/boarding")
+    ? "Nội trú, Bán trú & Đón trả QR"
+    : pathname.startsWith("/ezyadmin/page-fragments")
+    ? "Nội dung Website (CMS)"
+    : "Tổng quan Ban Điều hành";
+
   const pendingApprovalsCount = questions.filter(
     (q) => q.finalApprovalStatus === "PENDING_TRACIE_ANH"
   ).length;
@@ -358,16 +396,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
             <div className="p-4 border-b border-white/10 flex items-center gap-3">
               <div
-                className={`w-9 h-9 rounded-full ${currentPersona.avatarBg} text-white flex items-center justify-center text-xs font-bold`}
+                className={`w-9 h-9 rounded-full ${displayPersona.avatarBg} text-white flex items-center justify-center text-xs font-bold`}
               >
-                {currentPersona.avatarInitials}
+                {displayPersona.avatarInitials}
               </div>
               <div className="min-w-0 flex-1">
                 <div className="text-xs font-bold text-white truncate">
-                  {currentPersona.fullName}
+                  {displayPersona.fullName}
                 </div>
                 <div className="text-[11px] text-emerald-400 truncate">
-                  Đang trực: {currentPersona.roleCode}
+                  Đang trực: {displayPersona.roleCode}
                 </div>
               </div>
             </div>
@@ -409,7 +447,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       <BookOpenCheck className="w-4 h-4" />
                       <span>Phê duyệt Học liệu & Đề AI</span>
                     </span>
-                    <span className="px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 font-bold text-[10px]">
+                    <span
+                      className={`shrink-0 whitespace-nowrap px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                        pathname === "/studio"
+                          ? "bg-amber-100 text-amber-800"
+                          : "bg-amber-400/20 text-amber-300"
+                      }`}
+                    >
                       {pendingApprovalsCount} chờ duyệt
                     </span>
                   </Link>
@@ -426,7 +470,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       <BadgePercent className="w-4 h-4" />
                       <span>Đơn hàng E-Com, POS & Hoa hồng</span>
                     </span>
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-400/20 text-emerald-300 font-bold text-[10px]">
+                    <span
+                      className={`shrink-0 whitespace-nowrap px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                        pathname === "/operations/sales"
+                          ? "bg-emerald-100 text-emerald-800"
+                          : "bg-emerald-400/20 text-emerald-300"
+                      }`}
+                    >
                       {orders.length} đơn
                     </span>
                   </Link>
@@ -487,69 +537,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </aside>
 
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between sticky top-0 z-30">
-            <div className="flex items-center gap-3">
-              <span className="px-2.5 py-1 rounded-md bg-slate-900 text-white text-xs font-semibold">
-                Quản Trị Doanh Nghiệp
+          <header className="h-16 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between gap-3 sticky top-0 z-30">
+            <div className="flex items-center gap-3 min-w-0">
+              <span className="whitespace-nowrap truncate px-2.5 py-1 rounded-md bg-slate-900 text-white text-xs font-semibold">
+                {enterprisePageTitle}
               </span>
-              <div className="hidden md:flex items-center gap-1.5 text-xs">
-                <Link
-                  href="/admin"
-                  className={`px-2.5 py-1 rounded-lg font-semibold ${
-                    pathname === "/admin"
-                      ? "bg-slate-100 text-slate-900"
-                      : "text-slate-500 hover:text-slate-900"
-                  }`}
-                >
-                  Ban Điều Hành
-                </Link>
-                <Link
-                  href="/studio"
-                  className={`px-2.5 py-1 rounded-lg font-semibold ${
-                    pathname === "/studio"
-                      ? "bg-slate-100 text-slate-900"
-                      : "text-slate-500 hover:text-slate-900"
-                  }`}
-                >
-                  Duyệt Học Liệu ({pendingApprovalsCount})
-                </Link>
-                <Link
-                  href="/operations/sales"
-                  className={`px-2.5 py-1 rounded-lg font-semibold ${
-                    pathname === "/operations/sales"
-                      ? "bg-slate-100 text-slate-900"
-                      : "text-slate-500 hover:text-slate-900"
-                  }`}
-                >
-                  Đơn Hàng & Hoa Hồng ({orders.length})
-                </Link>
-                <Link
-                  href="/operations/boarding"
-                  className={`px-2.5 py-1 rounded-lg font-semibold ${
-                    pathname === "/operations/boarding"
-                      ? "bg-slate-100 text-slate-900"
-                      : "text-slate-500 hover:text-slate-900"
-                  }`}
-                >
-                  Nội Trú & Bán Trú
-                </Link>
-                <Link
-                  href="/ezyadmin/page-fragments"
-                  className={`px-2.5 py-1 rounded-lg font-semibold ${
-                    pathname === "/ezyadmin/page-fragments"
-                      ? "bg-slate-100 text-slate-900"
-                      : "text-slate-500 hover:text-slate-900"
-                  }`}
-                >
-                  Nội Dung Website (CMS)
-                </Link>
-              </div>
-            </div>
+                          </div>
 
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2.5 shrink-0">
               <Link
                 href="/"
-                className="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-xs font-semibold text-slate-700 flex items-center gap-1.5"
+                className="whitespace-nowrap px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-xs font-semibold text-slate-700 flex items-center gap-1.5"
               >
                 <Globe className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Website Công Khai</span>
@@ -557,18 +555,40 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
               <button
                 onClick={() => setIsEzyLoginModalOpen(true)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-800"
+                className="whitespace-nowrap flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-800"
               >
                 <span
-                  className={`w-5 h-5 rounded-full ${currentPersona.avatarBg} text-white flex items-center justify-center text-[10px] font-bold`}
+                  className={`w-5 h-5 rounded-full ${displayPersona.avatarBg} text-white flex items-center justify-center text-[10px] font-bold`}
                 >
-                  {currentPersona.avatarInitials}
+                  {displayPersona.avatarInitials}
                 </span>
-                <span>{currentPersona.fullName}</span>
+                <span className="hidden sm:inline">{displayPersona.fullName}</span>
                 <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
               </button>
             </div>
           </header>
+              <nav className="lg:hidden sticky top-16 z-20 bg-white border-b border-slate-200 px-3 py-2 flex items-center gap-1 text-xs whitespace-nowrap overflow-x-auto">
+                {[
+                  { href: "/admin", label: "Điều hành" },
+                  { href: "/studio", label: `Học liệu (${pendingApprovalsCount})` },
+                  { href: "/operations/sales", label: `Đơn hàng (${orders.length})` },
+                  { href: "/operations/boarding", label: "Nội trú" },
+                  { href: "/ezyadmin/page-fragments", label: "CMS" },
+                ].map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`whitespace-nowrap px-2.5 py-1 rounded-lg font-semibold ${
+                      pathname === item.href
+                        ? "bg-slate-100 text-slate-900"
+                        : "text-slate-500 hover:text-slate-900"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+
 
           <main className="flex-1 p-6 max-w-7xl w-full mx-auto">{children}</main>
         </div>
@@ -585,21 +605,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="min-h-screen flex flex-col bg-[#FBF9F5] text-[#141413]">
         <header className="bg-white/95 backdrop-blur-md border-b border-[#E8E5DF] sticky top-0 z-30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <Link href="/" className="flex items-center gap-2.5">
+            <div className="flex items-center gap-4 min-w-0">
+              <Link href="/" className="flex items-center gap-2.5 shrink-0">
                 <div className="w-9 h-9 rounded-xl bg-[#141413] text-[#FBF9F5] flex items-center justify-center font-bold text-sm">
                   OY
                 </div>
-                <div>
-                  <div className="text-sm font-bold text-[#141413] leading-none">
+                <div className="hidden sm:block">
+                  <div className="text-sm font-bold text-[#141413] leading-none whitespace-nowrap">
                     All Your Life
                   </div>
-                  <div className="text-[11px] text-[#575653] mt-0.5">
-                    {pathname.startsWith("/parent")
-                      ? "Cổng Đồng Hành Phụ Huynh"
-                      : pathname.startsWith("/student")
-                      ? "Không Gian Học Tập Học Sinh"
-                      : "Không Gian Chuyên Gia & Cố Vấn"}
+                  <div className="text-[11px] text-[#575653] mt-0.5 whitespace-nowrap">
+                    {isParentPortal
+                      ? "Cổng Phụ huynh"
+                      : isStudentPortal
+                      ? "Không gian Học sinh"
+                      : "Không gian Cố vấn"}
                   </div>
                 </div>
               </Link>
@@ -608,77 +628,83 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <div className="hidden md:flex items-center gap-1 pl-4 border-l border-[#E8E5DF]">
                   <Link
                     href="/coach"
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                    className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
                       pathname === "/coach"
                         ? "bg-[#141413] text-white"
                         : "text-[#575653] hover:bg-black/5"
                     }`}
                   >
-                    Hồ sơ Đồng hành & Bản đồ nhiệt
+                    Hồ sơ &amp; Bản đồ nhiệt
                   </Link>
                   <Link
                     href="/coach/sessions"
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                    className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
                       pathname === "/coach/sessions"
                         ? "bg-[#141413] text-white"
                         : "text-[#575653] hover:bg-black/5"
                     }`}
                   >
-                    Sổ đầu bài & Thù lao KPI
+                    Sổ đầu bài
                   </Link>
                 </div>
               )}
             </div>
 
-            <div className="flex items-center gap-2.5">
-              {/* Chọn hồ sơ học sinh đang theo dõi */}
-              <div className="hidden sm:flex items-center gap-1.5 bg-[#FBF9F5] px-3 py-1.5 rounded-full border border-[#E8E5DF]">
-                <span className="text-[11px] text-[#575653]">Học sinh:</span>
-                <select
-                  value={selectedStudentId}
-                  onChange={(e) => setSelectedStudentId(e.target.value)}
-                  className="bg-transparent text-xs font-bold text-[#141413] focus:outline-none cursor-pointer"
-                >
-                  {studentCases.map((st) => (
-                    <option key={st.id} value={st.id}>
-                      {st.fullName} (Lớp {st.grade} · Ví: {st.sessionCreditsRemaining} buổi)
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Chọn hồ sơ: Phụ huynh chọn con, Cố vấn chọn học sinh phụ trách. Học sinh không thấy hồ sơ người khác. */}
+              {!isStudentPortal && (
+                <div className="hidden sm:flex items-center gap-1.5 bg-[#FBF9F5] px-3 py-1.5 rounded-full border border-[#E8E5DF]">
+                  <span className="text-[11px] text-[#575653] whitespace-nowrap">
+                    {isParentPortal ? "Con:" : "Học sinh:"}
+                  </span>
+                  <select
+                    value={selectedStudentId}
+                    onChange={(e) => setSelectedStudentId(e.target.value)}
+                    className="bg-transparent text-xs font-bold text-[#141413] focus:outline-none cursor-pointer max-w-[190px] truncate"
+                  >
+                    {studentCases.map((st) => (
+                      <option key={st.id} value={st.id}>
+                        {st.fullName} · Lớp {st.grade}
+                        {isParentPortal ? ` · Ví ${st.sessionCreditsRemaining} buổi` : ""}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
-              {/* Nút mở Giỏ Gói Học E-Commerce */}
-              <button
-                onClick={() => setIsCartOpen(true)}
-                className="px-3.5 py-1.5 rounded-full bg-[#112A22] hover:bg-emerald-950 text-[#FBF9F5] text-xs font-semibold flex items-center gap-1.5 transition shadow-xs"
-              >
-                <ShoppingBag className="w-3.5 h-3.5 text-amber-300" />
-                <span className="hidden md:inline">Mua / Nạp gói học</span>
-                <span className="px-1.5 py-0.2 rounded-full bg-white/15 text-[10px] font-mono font-bold">
-                  {cartTotalCount}
-                </span>
-              </button>
+              {/* Giỏ gói học chỉ dành cho Phụ huynh (người thanh toán) */}
+              {isParentPortal && (
+                <button
+                  onClick={() => setIsCartOpen(true)}
+                  className="whitespace-nowrap px-3.5 py-1.5 rounded-full bg-[#112A22] hover:bg-emerald-950 text-[#FBF9F5] text-xs font-semibold flex items-center gap-1.5 transition shadow-xs"
+                >
+                  <ShoppingBag className="w-3.5 h-3.5 text-amber-300" />
+                  <span className="hidden md:inline">Giỏ gói học</span>
+                  <span className="px-1.5 rounded-full bg-white/15 text-[10px] font-mono font-bold">
+                    {cartTotalCount}
+                  </span>
+                </button>
+              )}
 
               <button
                 onClick={() => setIsAiAssistantOpen(!isAiAssistantOpen)}
-                className="px-3 py-1.5 rounded-full bg-emerald-950/5 hover:bg-emerald-950/10 text-emerald-900 border border-emerald-900/15 text-xs font-semibold flex items-center gap-1.5 transition"
+                title="Trợ lý AI"
+                className="whitespace-nowrap px-3 py-1.5 rounded-full bg-emerald-950/5 hover:bg-emerald-950/10 text-emerald-900 border border-emerald-900/15 text-xs font-semibold flex items-center gap-1.5 transition"
               >
                 <Sparkles className="w-3.5 h-3.5 text-emerald-700" />
-                <span className="hidden lg:inline">Trợ lý AI</span>
+                <span className="hidden xl:inline">Trợ lý AI</span>
               </button>
 
               <button
                 onClick={() => setIsEzyLoginModalOpen(true)}
-                className="flex items-center gap-2 pl-2 pr-3 py-1 rounded-full border border-[#E8E5DF] bg-white hover:bg-[#FBF9F5] text-xs font-semibold"
+                className="whitespace-nowrap flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full border border-[#E8E5DF] bg-white hover:bg-[#FBF9F5] text-xs font-semibold"
               >
                 <span
-                  className={`w-6 h-6 rounded-full ${currentPersona.avatarBg} text-white flex items-center justify-center text-[10px] font-bold`}
+                  className={`w-6 h-6 rounded-full ${displayPersona.avatarBg} text-white flex items-center justify-center text-[10px] font-bold`}
                 >
-                  {currentPersona.avatarInitials}
+                  {displayPersona.avatarInitials}
                 </span>
-                <span className="hidden md:inline">
-                  {currentPersona.fullName}
-                </span>
+                <span className="hidden lg:inline">{displayPersona.fullName}</span>
                 <ChevronDown className="w-3.5 h-3.5 text-[#575653]" />
               </button>
 

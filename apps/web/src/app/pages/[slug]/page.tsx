@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { usePlatform } from "@/lib/platform-store";
 import {
   Star,
@@ -25,9 +25,28 @@ const EXPERT_PORTRAITS: Record<string, string> = {
     "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80",
 };
 
+// Các slug trang thông tin chung được chuyển về đúng khu vực trên Trang chủ
+const SECTION_SLUG_REDIRECTS: Record<string, string> = {
+  "mo-hinh-3-tang": "/#lo-trinh-3-tang",
+  "bang-gia": "/#bang-gia-goi-hoc",
+  "goi-hoc": "/#bang-gia-goi-hoc",
+  "chuyen-gia": "/#doi-ngu-chuyen-gia",
+  "noi-tru": "/#noi-tru-an-toan",
+  "dat-lich-tu-van": "/#dang-ky-tu-van",
+};
+
 export default function EzyTeamMemberLandingPage() {
   const params = useParams<{ slug: string }>();
+  const router = useRouter();
   const { ezyTeamMembers, addLeadAndOrder } = usePlatform();
+
+  const sectionRedirect = params?.slug
+    ? SECTION_SLUG_REDIRECTS[params.slug]
+    : undefined;
+
+  useEffect(() => {
+    if (sectionRedirect) router.replace(sectionRedirect);
+  }, [sectionRedirect, router]);
 
   const currentMember =
     ezyTeamMembers.find((m) => m.slug === params?.slug) ?? ezyTeamMembers[0];
