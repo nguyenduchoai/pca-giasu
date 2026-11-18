@@ -21,55 +21,55 @@
                     <span class="oylg-sidebar__mark">OY</span>
                     <div>
                         <div style="font-size:14px;font-weight:500;color:#ededed;line-height:1.1;">All Your Life</div>
-                        <div style="font-size:11px;color:#85858b;margin-top:2px;">Hệ thống Điều hành</div>
+                        <div style="font-size:11px;color:#85858b;margin-top:2px;">Quản lý Gia sư</div>
                     </div>
                 </a>
 
-                <div class="oylg-sidebar__group-label">Chuyên môn &amp; Đồng hành</div>
+                <div class="oylg-sidebar__group-label">Giảng dạy</div>
                 <nav class="oylg-sidebar__nav">
                     <a href="/coach" class="oylg-sidebar__item" th:classappend="${activeNav == 'coach' ? 'is-active' : ''}">
-                        <span class="oylg-sidebar__item-left">Hồ sơ &amp; Bản đồ nhiệt YCCĐ</span>
+                        <span class="oylg-sidebar__item-left">Hồ sơ học sinh</span>
                     </a>
                     <a href="/coach/sessions" class="oylg-sidebar__item" th:classappend="${activeNav == 'coach_sessions' ? 'is-active' : ''}">
-                        <span class="oylg-sidebar__item-left">Sổ đầu bài 60s &amp; Thù lao</span>
+                        <span class="oylg-sidebar__item-left">Sổ đầu bài</span>
                     </a>
                     <a href="/studio" class="oylg-sidebar__item" th:classappend="${activeNav == 'studio' ? 'is-active' : ''}">
-                        <span class="oylg-sidebar__item-left">Thẩm định Học liệu B1–B4</span>
+                        <span class="oylg-sidebar__item-left">Ngân hàng đề</span>
                         <span class="oylg-sidebar__count" th:text="${pendingQuestionCount}">4</span>
                     </a>
                 </nav>
 
-                <div class="oylg-sidebar__group-label">Vận hành &amp; Điều hành</div>
+                <div class="oylg-sidebar__group-label">Vận hành</div>
                 <nav class="oylg-sidebar__nav">
                     <a href="/admin" class="oylg-sidebar__item" th:classappend="${activeNav == 'admin' ? 'is-active' : ''}">
-                        <span class="oylg-sidebar__item-left">Ban Điều hành &amp; Bảng giá B6</span>
+                        <span class="oylg-sidebar__item-left">Tổng quan</span>
                     </a>
                     <a href="/operations/sales" class="oylg-sidebar__item" th:classappend="${activeNav == 'sales' ? 'is-active' : ''}">
-                        <span class="oylg-sidebar__item-left">Tuyển sinh &amp; Hoa hồng 2 cấp</span>
+                        <span class="oylg-sidebar__item-left">Tuyển sinh</span>
                         <span class="oylg-sidebar__count" th:text="${totalOrderCount}">2</span>
                     </a>
                     <a href="/operations/boarding" class="oylg-sidebar__item" th:classappend="${activeNav == 'boarding' ? 'is-active' : ''}">
-                        <span class="oylg-sidebar__item-left">Nội trú &amp; Đón trả QR</span>
+                        <span class="oylg-sidebar__item-left">Bán trú</span>
                     </a>
                 </nav>
 
-                <div class="oylg-sidebar__group-label">Cổng Gia đình</div>
+                <div class="oylg-sidebar__group-label">Gia đình</div>
                 <nav class="oylg-sidebar__nav">
                     <a href="/parent" class="oylg-sidebar__item">
                         <span class="oylg-sidebar__item-left">Cổng Phụ huynh</span>
                     </a>
                     <a href="/student" class="oylg-sidebar__item">
-                        <span class="oylg-sidebar__item-left">Không gian Học sinh</span>
+                        <span class="oylg-sidebar__item-left">Cổng Học sinh</span>
                     </a>
                 </nav>
             </div>
 
             <div class="oylg-sidebar__foot">
                 <a href="http://localhost:9090/oylg/dashboard" target="_blank" class="oylg-sidebar__item">
-                    <span class="oylg-sidebar__item-left">Mở EzyAdmin (:9090)</span>
+                    <span class="oylg-sidebar__item-left">Trang Quản trị</span>
                 </a>
                 <a href="/" class="oylg-sidebar__item">
-                    <span class="oylg-sidebar__item-left">Về Trang chủ Website</span>
+                    <span class="oylg-sidebar__item-left">Trang chủ</span>
                 </a>
             </div>
         </aside>
@@ -77,24 +77,23 @@
         <div class="oylg-app-main">
             <header class="oylg-app-header">
                 <div class="row-inline">
-                    <span style="font-size:14px;font-weight:500;" th:text="${personaRole != null ? personaRole : 'Bàn làm việc Chuyên môn'}">Bàn làm việc</span>
+                    <span style="font-size:14px;font-weight:500;" th:text="${personaRole != null ? personaRole : 'Bàn làm việc'}">Bàn làm việc</span>
                 </div>
                 <div class="row-inline">
-                    <a href="/" class="btn btn--sm btn--outline">Website công khai</a>
+                    <a href="/" class="btn btn--sm btn--outline">Trang chủ</a>
                     <button type="button" class="btn btn--sm btn--secondary" onclick="oylg.openModal('oylgRoleModal')">
-                        <span class="mono" style="font-size:11px;" th:text="${personaInitials != null ? personaInitials : 'OY'}">OY</span>
                         <span th:text="${personaName != null ? personaName : 'Đổi vai trò'}">Đổi vai trò</span>
                     </button>
                 </div>
             </header>
 
             <nav class="oylg-app-mobile-nav">
-                <a href="/coach" class="btn btn--sm" th:classappend="${activeNav == 'coach' ? 'btn--primary' : 'btn--secondary'}">Cố vấn</a>
+                <a href="/coach" class="btn btn--sm" th:classappend="${activeNav == 'coach' ? 'btn--primary' : 'btn--secondary'}">Hồ sơ</a>
                 <a href="/coach/sessions" class="btn btn--sm" th:classappend="${activeNav == 'coach_sessions' ? 'btn--primary' : 'btn--secondary'}">Sổ đầu bài</a>
-                <a href="/studio" class="btn btn--sm" th:classappend="${activeNav == 'studio' ? 'btn--primary' : 'btn--secondary'}">Học liệu</a>
-                <a href="/admin" class="btn btn--sm" th:classappend="${activeNav == 'admin' ? 'btn--primary' : 'btn--secondary'}">Điều hành</a>
-                <a href="/operations/sales" class="btn btn--sm" th:classappend="${activeNav == 'sales' ? 'btn--primary' : 'btn--secondary'}">Hoa hồng</a>
-                <a href="/operations/boarding" class="btn btn--sm" th:classappend="${activeNav == 'boarding' ? 'btn--primary' : 'btn--secondary'}">Nội trú</a>
+                <a href="/studio" class="btn btn--sm" th:classappend="${activeNav == 'studio' ? 'btn--primary' : 'btn--secondary'}">Ngân hàng đề</a>
+                <a href="/admin" class="btn btn--sm" th:classappend="${activeNav == 'admin' ? 'btn--primary' : 'btn--secondary'}">Tổng quan</a>
+                <a href="/operations/sales" class="btn btn--sm" th:classappend="${activeNav == 'sales' ? 'btn--primary' : 'btn--secondary'}">Tuyển sinh</a>
+                <a href="/operations/boarding" class="btn btn--sm" th:classappend="${activeNav == 'boarding' ? 'btn--primary' : 'btn--secondary'}">Bán trú</a>
             </nav>
 
             <main class="oylg-app-content">

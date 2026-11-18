@@ -8,8 +8,8 @@
 
     <div class="row-between">
         <div>
-            <h1 class="page-title">Kiosk Quản sinh Nội trú, Bán trú &amp; Đón trả QR An toàn (M21)</h1>
-            <div class="muted" style="font-size:13px;">Cơ sở Trung tâm TP. Buôn Ma Thuột · Điểm danh 4 mốc/ngày, tách thực đơn dị ứng và xác thực người đón</div>
+            <h1 class="page-title">Quản lý Bán trú &amp; Đón trả học sinh</h1>
+            <div class="muted" style="font-size:13px;">Theo dõi phòng nghỉ, dị ứng thực phẩm, điểm danh hàng ngày và kiểm tra người đón con</div>
         </div>
     </div>
 
@@ -18,7 +18,7 @@
         <div th:each="res : ${residencies}" class="card stack-8">
             <div class="row-between">
                 <span class="tag mono" th:text="${res.roomCode + ' · ' + res.bedCode}"></span>
-                <span class="tag tag--pos" th:text="${res.residencyType}">DAY_BOARDING</span>
+                <span class="tag tag--pos" th:text="${res.residencyType == 'DAY_BOARDING' ? 'Bán trú' : 'Nội trú'}">Bán trú</span>
             </div>
             <div style="font-size:16px;font-weight:500;" th:text="${res.studentName + ' (Lớp ' + res.grade + ')'}"></div>
             <div class="secondary" style="font-size:12px;" th:text="${res.allergyWarning}"></div>
@@ -26,9 +26,9 @@
         </div>
 
         <div class="card stack-8">
-            <div class="stat-label">Công suất lưu trú hiện tại</div>
+            <div class="stat-label">Số giường đang sử dụng</div>
             <div class="stat-figure">24 / 30 giường</div>
-            <div class="stat-delta">Ca trực hiện tại: Thầy Vũ Hải Nam (Ca Chiều – Tối)</div>
+            <div class="stat-delta">Giáo viên trực: Thầy Vũ Hải Nam (Ca Chiều – Tối)</div>
         </div>
     </div>
 
@@ -36,8 +36,8 @@
     <div class="grid-2">
         <div class="card stack-16">
             <div>
-                <h2 class="card-title">Xác thực Người đón học sinh Bán trú (Nguyễn Minh Khôi)</h2>
-                <div class="muted" style="font-size:12px;">Đối chiếu mã QR và CCCD với danh sách được Phụ huynh ủy quyền trước khi bàn giao</div>
+                <h2 class="card-title">Kiểm tra người đón học sinh (Nguyễn Minh Khôi)</h2>
+                <div class="muted" style="font-size:12px;">Đối chiếu danh sách người thân đã đăng ký và mã đón con trên điện thoại</div>
             </div>
 
             <div class="stack-8">
@@ -46,7 +46,7 @@
                      th:style="${pk.authorized ? 'background:var(--bg-page);' : 'background:var(--neg-soft);'}">
                     <div>
                         <div style="font-weight:500;" th:text="${pk.guardianFullName + ' · ' + pk.relationship}"></div>
-                        <div class="muted mono" style="font-size:11px;" th:text="${'SĐT: ' + pk.phoneNumber + ' · CCCD: ' + pk.nationalIdMasked + ' · TOTP 60s: ' + liveTotpMap.get(pk.id)}"></div>
+                        <div class="muted mono" style="font-size:11px;" th:text="${'SĐT: ' + pk.phoneNumber + ' · CCCD: ' + pk.nationalIdMasked + ' · Mã đón: ' + liveTotpMap.get(pk.id)}"></div>
                         <div style="font-size:12px;margin-top:4px;"
                              th:style="${pk.authorized ? 'color:var(--pos);' : 'color:var(--neg);font-weight:500;'}"
                              th:text="${pk.verificationNote}"></div>
@@ -55,7 +55,7 @@
                             class="btn btn--sm"
                             th:classappend="${pk.authorized ? 'btn--primary' : 'btn--outline'}"
                             th:attr="onclick='oylg.verifyPickup(' + ${pk.id} + ')'"
-                            th:text="${pk.authorized ? 'Quét QR bàn giao' : 'Thử quét người lạ'}">
+                            th:text="${pk.authorized ? 'Xác nhận bàn giao' : 'Thử người lạ'}">
                     </button>
                 </div>
             </div>
@@ -65,8 +65,8 @@
 
         <div class="card stack-16">
             <div>
-                <h2 class="card-title">Nhật ký Điểm danh 4 Mốc &amp; Bàn giao Thời gian thực</h2>
-                <div class="muted" style="font-size:12px;">Lưu trữ trực tiếp vào MySQL và đồng bộ tức thời sang Cổng Phụ huynh</div>
+                <h2 class="card-title">Nhật ký điểm danh hôm nay</h2>
+                <div class="muted" style="font-size:12px;">Tự động gửi thông báo về điện thoại Phụ huynh ngay khi điểm danh</div>
             </div>
 
             <div class="stack-8">
@@ -78,9 +78,9 @@
                         </div>
                         <div class="secondary" style="font-size:12px;margin-top:4px;" th:text="${ci.notes}"></div>
                     </div>
-                    <span class="tag mono"
+                    <span class="tag"
                           th:classappend="${ci.verificationStatus == 'VERIFIED_SAFE' ? 'tag--pos' : 'tag--neg'}"
-                          th:text="${ci.checkpointType}"></span>
+                          th:text="${ci.checkpointType == 'ARRIVE' ? 'Đến lớp' : (ci.checkpointType == 'MEAL' ? 'Ăn trưa' : (ci.checkpointType == 'PICKUP' ? 'Đón về' : (ci.checkpointType == 'NIGHT_ROLLCALL' ? 'Điểm danh tối' : 'Chặn người lạ')))}"></span>
                 </div>
             </div>
         </div>

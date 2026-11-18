@@ -3,80 +3,49 @@
 <body>
 <th:block th:fragment="modals">
 
-    <!-- 1. ROLE SWITCHER & PORTAL ACCESS MODAL -->
+    <!-- 1. ROLE SWITCHER MODAL (CONCISE, HUMAN-READABLE) -->
     <div id="oylgRoleModal" class="modal-backdrop" onclick="if(event.target===this)oylg.closeModal('oylgRoleModal')">
-        <div class="modal-panel stack-20">
+        <div class="modal-panel stack-16">
             <div class="row-between">
                 <div>
-                    <div class="card-title">Truy cập Cổng thành viên theo Vai trò</div>
-                    <div class="muted" style="font-size:12px;margin-top:2px;">Hỗ trợ cả chuyển nhanh để kiểm thử và đăng nhập phân quyền thật tại <a href="/login" style="color:var(--accent);text-decoration:underline;">/login</a></div>
+                    <div class="card-title">Chọn không gian làm việc</div>
+                    <div class="muted" style="font-size:12px;margin-top:2px;">Hoặc <a href="/login" style="color:var(--accent);text-decoration:underline;">đăng nhập bằng tài khoản riêng</a></div>
                 </div>
                 <button type="button" class="btn btn--sm btn--secondary" onclick="oylg.closeModal('oylgRoleModal')">Đóng</button>
             </div>
 
-            <div class="stack-8">
-                <a href="/parent" class="card card--compact row-between">
-                    <div>
-                        <div style="font-weight:500;">Chị Nguyễn Thị Lan · Phụ huynh</div>
-                        <div class="muted" style="font-size:12px;">Ví buổi học, đổi hình thức học từng buổi, dời lịch &amp; hoàn tiền 14 ngày</div>
-                    </div>
-                    <span class="tag tag--accent">/parent</span>
+            <div class="grid-2" style="gap:10px;">
+                <a href="/parent" class="card card--compact stack-4">
+                    <div style="font-weight:500;">Phụ huynh</div>
+                    <div class="muted" style="font-size:12px;">Lịch học, ví buổi học &amp; hoàn phí</div>
                 </a>
-                <a href="/student" class="card card--compact row-between">
-                    <div>
-                        <div style="font-weight:500;">Nguyễn Minh Khôi · Học sinh Lớp 9</div>
-                        <div class="muted" style="font-size:12px;">Tầm soát truy ngược lỗ hổng gốc, nhiệm vụ 60/40 &amp; chế độ Tiểu học</div>
-                    </div>
-                    <span class="tag">/student</span>
+                <a href="/student" class="card card--compact stack-4">
+                    <div style="font-weight:500;">Học sinh</div>
+                    <div class="muted" style="font-size:12px;">Kiểm tra lỗ hổng &amp; bài tập ngày</div>
                 </a>
-                <a href="/coach" class="card card--compact row-between">
-                    <div>
-                        <div style="font-weight:500;">ThS. Lê Minh Tâm · Cố vấn Cuộc sống</div>
-                        <div class="muted" style="font-size:12px;">Tháp hồ sơ đồng hành, bản đồ nhiệt YCCĐ 4D &amp; báo cáo 2 lớp B3</div>
-                    </div>
-                    <span class="tag">/coach</span>
+                <a href="/coach" class="card card--compact stack-4">
+                    <div style="font-weight:500;">Cố vấn học tập</div>
+                    <div class="muted" style="font-size:12px;">Theo dõi tiến độ &amp; tâm lý học sinh</div>
                 </a>
-                <a href="/coach/sessions" class="card card--compact row-between">
-                    <div>
-                        <div style="font-weight:500;">Thầy Đặng Quốc Việt · Gia sư Bộ môn</div>
-                        <div class="muted" style="font-size:12px;">Sổ đầu bài 60 giây, lọc SĐT/Zalo tự động &amp; cảnh báo M14</div>
-                    </div>
-                    <span class="tag">/coach/sessions</span>
+                <a href="/coach/sessions" class="card card--compact stack-4">
+                    <div style="font-weight:500;">Gia sư bộ môn</div>
+                    <div class="muted" style="font-size:12px;">Ghi sổ đầu bài sau buổi dạy</div>
                 </a>
-                <a href="/operations/sales" class="card card--compact row-between">
-                    <div>
-                        <div style="font-weight:500;">Phạm Hoàng Minh · Tuyển sinh &amp; CTV</div>
-                        <div class="muted" style="font-size:12px;">Phễu đăng ký tư vấn, đơn VietQR &amp; hoa hồng 2 cấp PAY_AS_COLLECTED</div>
-                    </div>
-                    <span class="tag">/operations/sales</span>
+                <a href="/operations/sales" class="card card--compact stack-4">
+                    <div style="font-weight:500;">Tuyển sinh</div>
+                    <div class="muted" style="font-size:12px;">Khách đăng ký &amp; hoa hồng CTV</div>
                 </a>
-                <a href="/operations/boarding" class="card card--compact row-between">
-                    <div>
-                        <div style="font-weight:500;">Thầy Vũ Hải Nam · Quản sinh Nội trú</div>
-                        <div class="muted" style="font-size:12px;">Điểm danh 4 mốc, tách dị ứng thực phẩm &amp; xác thực người đón bằng QR</div>
-                    </div>
-                    <span class="tag">/operations/boarding</span>
+                <a href="/operations/boarding" class="card card--compact stack-4">
+                    <div style="font-weight:500;">Quản sinh bán trú</div>
+                    <div class="muted" style="font-size:12px;">Điểm danh &amp; xác nhận người đón</div>
                 </a>
-                <a href="/studio" class="card card--compact row-between">
-                    <div>
-                        <div style="font-weight:500;">Cố vấn Tracie Anh · Hội đồng Chuyên môn</div>
-                        <div class="muted" style="font-size:12px;">Thẩm định ngân hàng câu hỏi B1–B4, cảnh báo IRT âm &amp; cờ M14</div>
-                    </div>
-                    <span class="tag">/studio</span>
+                <a href="/studio" class="card card--compact stack-4">
+                    <div style="font-weight:500;">Ngân hàng đề</div>
+                    <div class="muted" style="font-size:12px;">Soạn và duyệt câu hỏi kiểm tra</div>
                 </a>
-                <a href="/admin" class="card card--compact row-between">
-                    <div>
-                        <div style="font-weight:500;">Ban Điều hành · Ma trận giá B6 &amp; Ghép lớp</div>
-                        <div class="muted" style="font-size:12px;">4 chỉ số điều hành, cấu hình đơn giá B6 &amp; khai giảng lớp nhóm</div>
-                    </div>
-                    <span class="tag">/admin</span>
-                </a>
-                <a href="http://localhost:9090/oylg/dashboard" target="_blank" class="card card--compact row-between">
-                    <div>
-                        <div style="font-weight:500;">EzyAdmin Native Console (:9090)</div>
-                        <div class="muted" style="font-size:12px;">Cổng quản trị gốc EzyPlatform &amp; cài đặt Plugin trên Market</div>
-                    </div>
-                    <span class="tag tag--pos">:9090</span>
+                <a href="/admin" class="card card--compact stack-4">
+                    <div style="font-weight:500;">Quản lý trung tâm</div>
+                    <div class="muted" style="font-size:12px;">Doanh thu, bảng giá &amp; mở lớp</div>
                 </a>
             </div>
         </div>
@@ -87,8 +56,8 @@
         <div class="modal-panel stack-20">
             <div class="row-between">
                 <div>
-                    <div class="eyebrow" style="margin-bottom:4px;">Đăng ký gói đồng hành &amp; Thanh toán VietQR</div>
-                    <div id="checkoutPkgTitle" class="card-title">Gói Hướng Nghiệp + Tầm Soát 3 Mặt</div>
+                    <div class="eyebrow" style="margin-bottom:4px;">Đăng ký gói học</div>
+                    <div id="checkoutPkgTitle" class="card-title">Gói học đồng hành</div>
                 </div>
                 <button type="button" class="btn btn--sm btn--secondary" onclick="oylg.closeModal('oylgCheckoutModal')">Đóng</button>
             </div>
@@ -99,11 +68,11 @@
 
                     <div class="card card--compact row-between" style="background:var(--bg-page);">
                         <div>
-                            <div class="stat-label">Mức học phí niêm yết (SSOT)</div>
+                            <div class="stat-label">Học phí</div>
                             <div id="checkoutPkgPrice" class="stat-figure" style="font-size:22px;margin-top:4px;">4.500.000đ</div>
                         </div>
                         <div class="text-right">
-                            <div class="stat-label">Số buổi nạp vào Ví</div>
+                            <div class="stat-label">Số buổi học</div>
                             <div id="checkoutPkgSessions" class="mono" style="font-size:15px;font-weight:500;margin-top:4px;">12 buổi</div>
                         </div>
                     </div>
@@ -114,14 +83,14 @@
                             <input id="checkoutParentName" class="input" required="required" value="Chị Nguyễn Thị Lan" />
                         </div>
                         <div>
-                            <label class="field-label">Số điện thoại nhận xác nhận</label>
+                            <label class="field-label">Số điện thoại</label>
                             <input id="checkoutParentPhone" class="input" required="required" value="0905123489" />
                         </div>
                     </div>
 
                     <div class="grid-2" style="gap:12px;">
                         <div>
-                            <label class="field-label">Học sinh thụ hưởng Ví buổi học</label>
+                            <label class="field-label">Đăng ký cho con</label>
                             <select id="checkoutStudentId" class="select">
                                 <option value="1">Nguyễn Minh Khôi (Lớp 9)</option>
                                 <option value="2">Trần Bảo Ngọc (Lớp 11)</option>
@@ -130,29 +99,26 @@
                             <input type="hidden" id="checkoutStudentName" value="Nguyễn Minh Khôi" />
                         </div>
                         <div>
-                            <label class="field-label">Mã ưu đãi (Thử: OYLG2026)</label>
+                            <label class="field-label">Mã ưu đãi (nếu có)</label>
                             <input id="checkoutVoucher" class="input mono" placeholder="OYLG2026 (-200.000đ)" />
                         </div>
                     </div>
 
-                    <div>
-                        <label class="field-label">Mã CTV giới thiệu (nếu có, ghi nhận hoa hồng 2 cấp)</label>
-                        <input id="checkoutReferral" class="input mono" value="CTV-A102" />
-                    </div>
+                    <input type="hidden" id="checkoutReferral" value="CTV-A102" />
 
                     <div class="card card--compact row-between" style="align-items:center;">
                         <img id="checkoutVietQrImg"
                              src="https://img.vietqr.io/image/MB-0368889999-compact2.png?amount=4500000&amp;addInfo=OYLG"
-                             alt="Mã VietQR Công ty TNHH All Your Life"
-                             style="width:116px;height:116px;object-fit:contain;border-radius:8px;border:1px solid var(--border-hairline);background:#fff;" />
+                             alt="Mã chuyển khoản VietQR"
+                             style="width:108px;height:108px;object-fit:contain;border-radius:8px;border:1px solid var(--border-hairline);background:#fff;" />
                         <div class="stack-8" style="flex:1;min-width:200px;">
-                            <div style="font-size:13px;font-weight:500;">Tài khoản Công ty TNHH All Your Life</div>
-                            <div class="muted" style="font-size:12px;">MB Bank · 0368 889 999 · Tự động đối soát và bảo lãnh hoàn học phí 100% số buổi chưa học trong 14 ngày đầu.</div>
+                            <div style="font-size:13px;font-weight:500;">Công ty TNHH All Your Life</div>
+                            <div class="muted" style="font-size:12px;">MB Bank · 0368 889 999 · Hoàn lại 100% học phí các buổi chưa học trong 14 ngày đầu.</div>
                         </div>
                     </div>
 
                     <button type="submit" class="btn btn--accent btn--lg btn--full">
-                        Tạo đơn PENDING &amp; Lấy mã chuyển khoản VietQR
+                        Tạo đơn đăng ký &amp; Lấy mã chuyển khoản
                     </button>
                 </form>
             </div>
@@ -160,25 +126,25 @@
             <div id="checkoutPendingBox" style="display:none;" class="stack-16">
                 <div class="card card--compact stack-8" style="background:var(--bg-page);">
                     <div class="row-between">
-                        <span class="stat-label">Đã khởi tạo đơn hàng chờ đối soát ngân hàng</span>
-                        <span class="tag tag--accent mono">PENDING_PAYMENT</span>
+                        <span class="stat-label">Đơn đăng ký đang chờ chuyển khoản</span>
+                        <span class="tag tag--accent">Chờ thanh toán</span>
                     </div>
-                    <div style="font-size:13px;">Mã chuyển khoản: <strong id="pendingOrderCode" class="mono"></strong> · Số tiền: <strong id="pendingNetAmount" class="mono"></strong></div>
-                    <div class="muted" style="font-size:12px;">Hệ thống chỉ cộng buổi vào Ví sau khi nhận Webhook biến động số dư từ SePay / PayOS / EzyPayment.</div>
+                    <div style="font-size:13px;">Mã đơn: <strong id="pendingOrderCode" class="mono"></strong> · Cần chuyển: <strong id="pendingNetAmount" class="mono"></strong></div>
+                    <div class="muted" style="font-size:12px;">Hệ thống tự động cộng buổi ngay khi ngân hàng báo nhận được tiền.</div>
                 </div>
                 <button type="button" class="btn btn--primary btn--lg btn--full" onclick="oylg.simulateBankWebhook()">
-                    Giả lập Webhook Ngân hàng báo có (Test đối soát tự động)
+                    Xác nhận đã chuyển khoản (Kiểm thử nhanh)
                 </button>
             </div>
 
             <div id="checkoutSuccessBox" style="display:none;" class="stack-16">
                 <div class="card card--compact tag--pos" style="height:auto;white-space:normal;display:block;">
-                    <div style="font-weight:500;">Thanh toán thành công và đã cộng buổi học vào Ví</div>
-                    <div style="font-size:12px;margin-top:4px;">Mã đơn hàng: <strong id="resOrderCode" class="mono"></strong> · Thực thu: <strong id="resNetPaid" class="mono"></strong> · Số dư Ví mới: <strong id="resWalletAfter" class="mono"></strong></div>
+                    <div style="font-weight:500;">Đăng ký thành công, đã cộng buổi học cho con</div>
+                    <div style="font-size:12px;margin-top:4px;">Mã đơn: <strong id="resOrderCode" class="mono"></strong> · Đã thu: <strong id="resNetPaid" class="mono"></strong> · Tổng số buổi hiện có: <strong id="resWalletAfter" class="mono"></strong></div>
                 </div>
                 <div class="row-inline">
-                    <a href="/parent" class="btn btn--primary">Mở Cổng Phụ huynh kiểm tra Ví</a>
-                    <button type="button" class="btn btn--secondary" onclick="oylg.closeModal('oylgCheckoutModal')">Đóng cửa sổ</button>
+                    <a href="/parent" class="btn btn--primary">Vào Cổng Phụ huynh xem lịch</a>
+                    <button type="button" class="btn btn--secondary" onclick="oylg.closeModal('oylgCheckoutModal')">Đóng</button>
                 </div>
             </div>
         </div>

@@ -11,23 +11,23 @@
         <div class="row-between">
             <div>
                 <div class="eyebrow" style="margin-bottom:4px;"
-                     th:text="${primaryMode ? 'Chế độ Tiểu học (Lớp 1–5) · Hành trình Khám phá' : 'Chế độ THCS &amp; THPT (Lớp 6–12) · Tầm soát &amp; Lộ trình 60/40'}">
+                     th:text="${primaryMode ? 'Giao diện Tiểu học (Lớp 1–5)' : 'Giao diện THCS &amp; THPT (Lớp 6–12)'}">
                 </div>
-                <h1 class="page-title" th:text="${'Không gian học tập của ' + activeStudent.fullName + ' (Lớp ' + activeStudent.currentGrade + ')'}"></h1>
+                <h1 class="page-title" th:text="${'Chào ' + activeStudent.fullName + ' (Lớp ' + activeStudent.currentGrade + ')'}"></h1>
             </div>
 
             <div class="row-inline">
-                <span class="tag mono" th:text="${'Chuỗi ' + activeStudent.streakDays + ' ngày'}">14 ngày</span>
-                <span id="studentXpVal" class="tag tag--accent mono" th:text="${activeStudent.xpPoints + ' XP'}">620 XP</span>
+                <span class="tag mono" th:text="${'Học đều ' + activeStudent.streakDays + ' ngày'}">14 ngày</span>
+                <span id="studentXpVal" class="tag tag--accent mono" th:text="${activeStudent.xpPoints + ' điểm thưởng'}">620 điểm</span>
                 <a th:if="${!primaryMode}" th:href="${'/student?studentId=' + activeStudent.id + '&amp;mode=primary'}"
-                   class="btn btn--sm btn--secondary">Xem thử giao diện Tiểu học</a>
+                   class="btn btn--sm btn--secondary">Giao diện Tiểu học</a>
                 <a th:if="${primaryMode}" th:href="${'/student?studentId=' + activeStudent.id + '&amp;mode=teen'}"
-                   class="btn btn--sm btn--secondary">Về giao diện THCS / THPT</a>
+                   class="btn btn--sm btn--secondary">Giao diện Cấp 2 / Cấp 3</a>
             </div>
         </div>
 
         <div class="row-inline" style="padding-top:12px;border-top:1px solid var(--border-hairline);font-size:12px;">
-            <span class="muted">Tài khoản mẫu để kiểm thử:</span>
+            <span class="muted">Đổi thử hồ sơ học sinh:</span>
             <a th:each="st : ${students}"
                th:href="${'/student?studentId=' + st.id}"
                class="btn btn--sm"
@@ -40,8 +40,8 @@
     <div class="split-asym">
         <div class="card stack-16">
             <div class="row-between">
-                <span id="quizUnitCode" class="tag tag--accent mono">TOAN.09.CBH.01 · Lớp 9</span>
-                <button type="button" class="oylg-quiet-link" style="font-size:12px;" onclick="oylg.renderQuizGrade(9)">Làm lại từ Lớp 9</button>
+                <span id="quizUnitCode" class="tag tag--accent mono">Toán Lớp 9 · Căn bậc hai</span>
+                <button type="button" class="oylg-quiet-link" style="font-size:12px;" onclick="oylg.renderQuizGrade(9)">Làm lại từ đầu</button>
             </div>
 
             <h2 id="quizStem" class="card-title">Rút gọn biểu thức căn bậc hai với điều kiện x &lt; 3:</h2>
@@ -51,59 +51,59 @@
             </div>
 
             <div class="muted" style="font-size:12px;">
-                Hướng dẫn kiểm thử: Chọn phương án A (chưa đúng) để quan sát hệ thống tự động lùi câu hỏi từ Lớp 9 → Lớp 8 → Lớp 7 tìm điểm đứt gãy gốc.
+                Mẹo thử nghiệm: Chọn câu A để xem hệ thống tự động lùi câu hỏi về Lớp 8 và Lớp 7 giúp tìm ra đúng phần em đang quên.
             </div>
 
             <div id="quizOptions" class="stack-8"></div>
 
             <div class="row-inline">
-                <button type="button" class="btn btn--sm btn--secondary" onclick="oylg.toggleHint()">Gợi mở tư duy Socratic (Không giải hộ)</button>
+                <button type="button" class="btn btn--sm btn--secondary" onclick="oylg.toggleHint()">Xem gợi ý cách làm</button>
             </div>
             <div id="quizHintBox" class="card card--compact" style="display:none;background:var(--bg-page);font-size:13px;"></div>
         </div>
 
         <div class="stack-16">
             <div class="card stack-12">
-                <div class="card-title">Động cơ truy ngược Đồ thị Tiên quyết</div>
-                <div class="muted" style="font-size:12px;">Phản hồi tất định dưới 50ms · Không phụ thuộc LLM khi chấm</div>
+                <div class="card-title">Kết quả tìm lỗ hổng kiến thức</div>
+                <div class="muted" style="font-size:12px;">Hệ thống tự động kiểm tra bài cũ liên quan khi em làm nhầm</div>
                 <div id="quizTraceOutcome" class="card card--compact" style="background:var(--bg-page);font-size:13px;">
-                    Chọn một đáp án ở cột bên trái để kiểm tra thuật toán bỏ qua nhánh dưới hoặc lùi lớp tìm lỗ hổng gốc.
+                    Chọn một đáp án ở cột bên trái để bắt đầu kiểm tra nhanh.
                 </div>
             </div>
 
             <div class="card stack-8">
-                <div class="stat-label" th:text="${'Mục tiêu đầu ra · Mã RIASEC ' + activeStudent.riasecCode}"></div>
+                <div class="stat-label">Mục tiêu phấn đấu của em</div>
                 <div style="font-weight:500;" th:text="${activeStudent.targetMajor}"></div>
                 <div class="secondary" style="font-size:13px;" th:text="${activeStudent.targetSchool}"></div>
             </div>
         </div>
     </div>
 
-    <!-- 3. DAILY 60/40 TASKS & B3 MOOD CHECK-IN -->
+    <!-- 3. DAILY 60/40 TASKS & MOOD CHECK-IN -->
     <div class="grid-2">
         <div class="card stack-16">
             <div>
-                <h2 class="card-title">Nhiệm vụ học tập hôm nay (60% bù gốc / 40% bám lớp)</h2>
-                <div class="muted" style="font-size:12px;">Đánh dấu hoàn thành từng nhiệm vụ để cập nhật tiến độ cho Cố vấn và cộng điểm XP</div>
+                <h2 class="card-title">Bài tập ngắn hôm nay</h2>
+                <div class="muted" style="font-size:12px;">Bấm hoàn thành từng bài để nhận điểm thưởng và báo kết quả cho Thầy Cô</div>
             </div>
 
             <div class="stack-12">
                 <div class="card card--compact row-between" style="background:var(--bg-page);">
                     <div>
-                        <span class="tag tag--neg">Bù lỗ hổng 60% · 15 phút</span>
-                        <div style="font-weight:500;margin-top:6px;">Ôn tập 3 hằng đẳng thức đáng nhớ (TOAN.08.HDT.01)</div>
+                        <span class="tag tag--neg">Ôn lại gốc · 15 phút</span>
+                        <div style="font-weight:500;margin-top:6px;">Ôn tập 3 hằng đẳng thức đáng nhớ Lớp 8</div>
                     </div>
                     <button type="button" class="btn btn--sm btn--secondary"
-                            th:attr="onclick='oylg.completeStudentTask(' + ${activeStudent.id} + ', this, 50)'">Hoàn thành (+50 XP)</button>
+                            th:attr="onclick='oylg.completeStudentTask(' + ${activeStudent.id} + ', this, 50)'">Hoàn thành (+50 điểm)</button>
                 </div>
 
                 <div class="card card--compact row-between" style="background:var(--bg-page);">
                     <div>
-                        <span class="tag">Bám lớp 40% · 20 phút</span>
-                        <div style="font-weight:500;margin-top:6px;">Giải 4 bài rút gọn căn thức chứa biến trên lớp</div>
+                        <span class="tag">Bài trên lớp · 20 phút</span>
+                        <div style="font-weight:500;margin-top:6px;">Giải 4 bài rút gọn căn thức Lớp 9</div>
                     </div>
                     <button type="button" class="btn btn--sm btn--secondary"
-                            th:attr="onclick='oylg.completeStudentTask(' + ${activeStudent.id} + ', this, 80)'">Hoàn thành (+80 XP)</button>
+                            th:attr="onclick='oylg.completeStudentTask(' + ${activeStudent.id} + ', this, 80)'">Hoàn thành (+80 điểm)</button>
                 </div>
 
                 <div class="card card--compact row-between" style="background:var(--bg-page);">
@@ -112,15 +112,15 @@
                         <div style="font-weight:500;margin-top:6px;">Luyện nghe hội thoại Tiếng Anh chủ đề Khoa học</div>
                     </div>
                     <button type="button" class="btn btn--sm btn--secondary"
-                            th:attr="onclick='oylg.completeStudentTask(' + ${activeStudent.id} + ', this, 40)'">Hoàn thành (+40 XP)</button>
+                            th:attr="onclick='oylg.completeStudentTask(' + ${activeStudent.id} + ', this, 40)'">Hoàn thành (+40 điểm)</button>
                 </div>
             </div>
         </div>
 
         <div class="card stack-16">
             <div>
-                <h2 class="card-title">Check-in Năng lượng &amp; Nhịp học tập (Trụ cột Tinh thần B3)</h2>
-                <div class="muted" style="font-size:12px;">Giúp Cố vấn Cuộc sống điều chỉnh khối lượng bài tập phù hợp cho em</div>
+                <h2 class="card-title">Hôm nay em thấy thế nào?</h2>
+                <div class="muted" style="font-size:12px;">Thầy Cô sẽ dựa vào đây để điều chỉnh lượng bài tập vừa sức cho em</div>
             </div>
 
             <div class="stack-8">

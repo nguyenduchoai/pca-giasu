@@ -54,7 +54,7 @@ public class OylgAdminViewDecorator implements ViewDecorator {
                     () -> learningCaseRepository.countByCaseStatus("ACTIVE")
                 )
                 .register(
-                    "oylg.oylg.safety_alerts",
+                    "oylg.oylg.boarding",
                     () -> safetyFlagRepository.countBySeverityAndStatus(
                         "RED_URGENT",
                         "PENDING_EXPERT_VERIFY"

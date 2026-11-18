@@ -35,11 +35,11 @@ public class OylgWebViewDecorator extends WebViewDecorator {
 
     private List<Map<String, String>> buildDefaultMainMenu() {
         return Arrays.asList(
-            menuItem("Mô hình 3 Tầng", "/#mo-hinh-3-tang"),
-            menuItem("Gói học & Học phí", "/#bang-gia-goi-hoc"),
-            menuItem("Hội đồng Chuyên gia", "/#hoi-dong-chuyen-gia"),
-            menuItem("Nội trú & Bán trú", "/#noi-tru-an-toan"),
-            menuItem("Đặt lịch tư vấn", "/#dat-lich-tu-van")
+            menuItem("Phương pháp", "/#mo-hinh-3-tang"),
+            menuItem("Học phí", "/#bang-gia-goi-hoc"),
+            menuItem("Chuyên gia", "/#hoi-dong-chuyen-gia"),
+            menuItem("Bán trú", "/#noi-tru-an-toan"),
+            menuItem("Tư vấn", "/#dat-lich-tu-van")
         );
     }
 

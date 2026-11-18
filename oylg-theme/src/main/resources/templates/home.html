@@ -86,44 +86,44 @@
             <div class="grid-3">
                 <div class="card stack-12">
                     <div class="row-between">
-                        <span class="tag tag--accent">Tầng 1 · Hướng nghiệp</span>
-                        <span class="mono muted" style="font-size:12px;">B1 &amp; R1</span>
+                        <span class="tag tag--accent">Bước 1 · Hướng nghiệp</span>
+                        <span class="muted" style="font-size:12px;">Định hướng đích đến</span>
                     </div>
                     <h3 class="card-title">Biết rõ mình phù hợp với ngành nghề nào</h3>
-                    <p class="secondary" style="font-size:13px;">Giải mã thiên hướng nghề nghiệp RIASEC, đặc điểm tính cách Big Five và giá trị sống để thiết lập Bản đồ Thành công R1 (trường mục tiêu, khối thi, ngành đích).</p>
+                    <p class="secondary" style="font-size:13px;">Khám phá sở trường, tính cách và nguyện vọng của con để chọn đúng ngành nghề, trường mục tiêu và khối thi ngay từ sớm.</p>
                 </div>
 
                 <div class="card stack-12">
                     <div class="row-between">
-                        <span class="tag">Tầng 2 · Cố vấn Cuộc sống</span>
-                        <span class="mono muted" style="font-size:12px;">B2, B3 &amp; M14</span>
+                        <span class="tag">Bước 2 · Cố vấn đồng hành</span>
+                        <span class="muted" style="font-size:12px;">Theo sát 3 mặt</span>
                     </div>
                     <h3 class="card-title">Tầm soát 3 mặt &amp; Giữ cân bằng nhịp học</h3>
-                    <p class="secondary" style="font-size:13px;">Theo dõi đồng thời Kiến thức, Sức khỏe tinh thần và Giấc ngủ thể chất; tự động điều tiết khối lượng bài tập khi con quá tải và bảo vệ an toàn học đường.</p>
+                    <p class="secondary" style="font-size:13px;">Theo dõi đồng thời Kiến thức, Tinh thần và Giấc ngủ; tự động điều chỉnh khối lượng bài tập khi con mệt mỏi hoặc quá tải lịch thi.</p>
                 </div>
 
                 <div class="card stack-12">
                     <div class="row-between">
-                        <span class="tag">Tầng 3 · Gia sư Bộ môn</span>
-                        <span class="mono muted" style="font-size:12px;">Phác đồ 60/40</span>
+                        <span class="tag">Bước 3 · Gia sư bộ môn</span>
+                        <span class="muted" style="font-size:12px;">60% gốc · 40% lớp</span>
                     </div>
                     <h3 class="card-title">Lấp đúng lỗ hổng gốc &amp; Bứt phá điểm số</h3>
-                    <p class="secondary" style="font-size:13px;">Kèm sát theo tỷ lệ 60% thời lượng lấp các bài tiên quyết bị hổng ở lớp dưới, 40% bám sát bài giảng hiện tại trên trường. Đổi linh hoạt hình thức từng buổi.</p>
+                    <p class="secondary" style="font-size:13px;">Dành 60% thời lượng ôn lại các phần bị hổng ở lớp dưới, 40% bám sát bài đang học trên trường. Đổi linh hoạt hình thức từng buổi.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 3. UNIFIED SSOT PACKAGES & B6 DYNAMIC SIMULATOR -->
+    <!-- 3. UNIFIED PACKAGES & DYNAMIC FEE SIMULATOR -->
     <section id="bang-gia-goi-hoc" class="oylg-section">
         <div class="oylg-container stack-32">
             <div class="row-between">
                 <div class="stack-8">
-                    <div class="eyebrow">Cửa hàng gói học &amp; Biểu phí minh bạch</div>
+                    <div class="eyebrow">Gói học &amp; Học phí minh bạch</div>
                     <h2 class="section-title">Lựa chọn gói đồng hành phù hợp với giai đoạn của con</h2>
                 </div>
                 <div class="muted mono" style="font-size:12px;">
-                    Đơn giá cơ sở B6: <strong style="color:var(--text-primary);" th:text="${#numbers.formatInteger(baseSessionPrice, 3, 'POINT') + 'đ/buổi'}">200.000đ/buổi</strong>
+                    Học phí cơ sở: <strong style="color:var(--text-primary);" th:text="${#numbers.formatInteger(baseSessionPrice, 3, 'POINT') + 'đ/buổi'}">200.000đ/buổi</strong>
                 </div>
             </div>
 
@@ -174,12 +174,12 @@
                 </div>
             </div>
 
-            <!-- B6 DYNAMIC FEE CALCULATOR -->
+            <!-- DYNAMIC FEE CALCULATOR -->
             <div class="card stack-20">
                 <div class="row-between">
                     <div>
-                        <div class="card-title">Công cụ tự tính học phí theo Ma trận Hệ số B6</div>
-                        <div class="muted" style="font-size:12px;margin-top:2px;">Công thức: Đơn giá cơ sở × Cấp chuyên gia × Cấp học × Hình thức học × Quy mô lớp (ưu đãi kỳ đóng 3T -3%, 6T -7%, 12T -12%)</div>
+                        <div class="card-title">Công cụ tự tính học phí theo nhu cầu</div>
+                        <div class="muted" style="font-size:12px;margin-top:2px;">Tự động tính chi phí từng buổi tùy theo khối lớp, cấp độ giáo viên, hình thức học và kỳ đóng</div>
                     </div>
                     <input type="hidden" id="b6BasePrice" th:value="${baseSessionPrice.longValue()}" />
                 </div>
@@ -196,18 +196,18 @@
                             </select>
                         </div>
                         <div>
-                            <label class="field-label">Cấp bậc Chuyên gia Bộ môn</label>
+                            <label class="field-label">Cấp bậc Giáo viên</label>
                             <select id="b6ExpertTier" class="select" onchange="oylg.recalcB6()">
                                 <option value="STANDARD">Gia sư Chuẩn (1.0x)</option>
                                 <option value="SENIOR" selected="selected">Chuyên gia Cấp 2 (1.3x)</option>
-                                <option value="MASTER">Trưởng Bộ môn Cấp 3 (1.7x)</option>
+                                <option value="MASTER">Trưởng Bộ môn (1.7x)</option>
                             </select>
                         </div>
                         <div>
                             <label class="field-label">Hình thức học tập</label>
                             <select id="b6Mode" class="select" onchange="oylg.recalcB6()">
                                 <option value="ONLINE_ZOOM">Online qua Zoom (1.0x)</option>
-                                <option value="AT_CENTER" selected="selected">Tại Trung tâm OYLG (1.2x)</option>
+                                <option value="AT_CENTER" selected="selected">Tại Trung tâm (1.2x)</option>
                                 <option value="AT_HOME">Gia sư 1–1 tại nhà (1.5x)</option>
                             </select>
                         </div>
@@ -256,8 +256,8 @@
     <section id="hoi-dong-chuyen-gia" class="oylg-section">
         <div class="oylg-container stack-32">
             <div class="stack-8">
-                <div class="eyebrow">Hội đồng chuyên môn &amp; Cố vấn đồng hành</div>
-                <h2 class="section-title">Đội ngũ trực tiếp thẩm định học liệu và kèm sát từng học sinh</h2>
+                <div class="eyebrow">Đội ngũ chuyên gia &amp; Cố vấn đồng hành</div>
+                <h2 class="section-title">Đội ngũ trực tiếp biên soạn bài giảng và kèm sát từng học sinh</h2>
             </div>
 
             <div class="grid-4">
@@ -267,7 +267,8 @@
                     <img th:src="${ex.portraitUrl}" th:alt="${ex.displayName}" class="expert-photo" />
                     <div class="stack-4">
                         <div class="row-between">
-                            <span class="mono muted" style="font-size:11px;" th:text="${ex.tier}">MASTER</span>
+                            <span class="muted" style="font-size:11px;"
+                                  th:text="${ex.tier == 'MASTER' ? 'Trưởng bộ môn' : (ex.tier == 'SENIOR' ? 'Chuyên gia' : 'Gia sư chuẩn')}">Trưởng bộ môn</span>
                             <span class="mono" style="font-size:12px;font-weight:500;" th:text="${ex.ratingAvg + ' / 5.0'}">5.0</span>
                         </div>
                         <h3 class="card-title" th:text="${ex.displayName}">Chuyên gia</h3>
@@ -286,10 +287,10 @@
             <div class="card stack-24">
                 <div class="row-between">
                     <div class="stack-8">
-                        <div class="eyebrow">Dịch vụ Bán trú &amp; Nội trú tiêu chuẩn an toàn M21</div>
-                        <h2 class="section-title">Điểm danh 4 mốc trong ngày &amp; Xác thực người đón bằng mã QR</h2>
+                        <div class="eyebrow">Dịch vụ Bán trú &amp; Nội trú an toàn</div>
+                        <h2 class="section-title">Điểm danh 4 mốc trong ngày &amp; Xác thực người đón con</h2>
                     </div>
-                    <a href="/operations/boarding" class="btn btn--secondary">Mở Kiosk Quản sinh kiểm tra</a>
+                    <a href="/operations/boarding" class="btn btn--secondary">Xem trang Quản lý Bán trú</a>
                 </div>
 
                 <div class="grid-4">

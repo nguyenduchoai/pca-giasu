@@ -9,38 +9,38 @@
     <div class="split-asym" style="max-width:980px;margin:16px auto;">
         <div class="card stack-20">
             <div>
-                <div class="eyebrow" style="margin-bottom:6px;">Xác thực phân quyền theo vai trò (RBAC)</div>
-                <h1 class="page-title">Đăng nhập Hệ thống All Your Life</h1>
-                <p class="secondary" style="font-size:13px;margin-top:4px;">Mỗi tài khoản chỉ được phép truy cập đúng cổng vai trò và hồ sơ học sinh được phân quyền.</p>
+                <div class="eyebrow" style="margin-bottom:6px;">Cổng thành viên</div>
+                <h1 class="page-title">Đăng nhập All Your Life</h1>
+                <p class="secondary" style="font-size:13px;margin-top:4px;">Đăng nhập bằng số điện thoại để vào đúng cổng dành cho Phụ huynh, Học sinh hoặc Giáo viên.</p>
             </div>
 
             <div th:if="${accessDenied}" class="card card--compact tag--neg" style="height:auto;white-space:normal;display:block;">
-                Tài khoản hiện tại không có quyền truy cập đường dẫn vừa yêu cầu. Vui lòng đăng nhập đúng vai trò phụ trách.
+                Tài khoản hiện tại không có quyền xem trang này. Vui lòng chọn đúng tài khoản bên cạnh.
             </div>
 
             <form onsubmit="oylg.submitPortalLogin(event)" class="stack-16">
                 <input type="hidden" id="loginRedirectUri" th:value="${redirectUri}" />
                 <div>
-                    <label class="field-label">Số điện thoại tài khoản</label>
+                    <label class="field-label">Số điện thoại</label>
                     <input id="loginPhone" class="input mono" required="required" value="0905123489" />
                 </div>
                 <div>
-                    <label class="field-label">Mật khẩu (Mặc định kiểm thử: oylg2026)</label>
-                    <input id="loginPassword" type="password" class="input mono" required="required" value="oylg2026" />
+                    <label class="field-label">Mật khẩu</label>
+                    <input id="loginPassword" class="input mono" required="required" value="oylg2026" />
                 </div>
-                <button type="submit" class="btn btn--accent btn--lg btn--full">Đăng nhập vào cổng thành viên</button>
+                <button type="submit" class="btn btn--accent btn--lg btn--full">Đăng nhập</button>
             </form>
 
             <div class="row-between" style="padding-top:12px;border-top:1px solid var(--border-hairline);font-size:12px;">
-                <span class="muted">Đang có phiên đăng nhập khác?</span>
-                <button type="button" class="oylg-quiet-link" style="font-size:12px;" onclick="oylg.logoutPortal()">Đăng xuất phiên hiện tại</button>
+                <span class="muted">Muốn đổi người dùng khác?</span>
+                <button type="button" class="oylg-quiet-link" style="font-size:12px;" onclick="oylg.logoutPortal()">Đăng xuất</button>
             </div>
         </div>
 
         <div class="card stack-12">
             <div>
-                <div class="card-title">Chọn nhanh tài khoản mẫu (1 chạm)</div>
-                <div class="muted" style="font-size:12px;">Tự động điền SĐT &amp; đăng nhập đúng vai trò RBAC</div>
+                <div class="card-title">Tài khoản dùng thử nhanh</div>
+                <div class="muted" style="font-size:12px;">Bấm 1 lần để vào thử từng vai trò</div>
             </div>
 
             <div class="stack-8">
@@ -52,9 +52,9 @@
                         onclick="oylg.quickLoginPhone(this.getAttribute('data-phone'))">
                     <div>
                         <div style="font-weight:500;" th:text="${acc.fullName}"></div>
-                        <div class="muted mono" style="font-size:11px;" th:text="${acc.phone + ' · ' + acc.roleLabel}"></div>
+                        <div class="muted mono" style="font-size:11px;" th:text="${acc.phone}"></div>
                     </div>
-                    <span class="tag mono" th:text="${acc.roleCode}"></span>
+                    <span class="tag" th:text="${acc.roleLabel}"></span>
                 </button>
             </div>
         </div>

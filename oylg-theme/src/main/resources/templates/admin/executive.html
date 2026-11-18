@@ -8,36 +8,36 @@
 
     <div class="row-between">
         <div>
-            <h1 class="page-title">Trung tâm Điều hành OYLG · Số liệu Thời gian thực &amp; Bảng giá B6</h1>
-            <div class="muted" style="font-size:13px;">Đồng bộ trực tiếp với MySQL (ezy_settings, oylg_wallet_transactions) và Cổng quản trị gốc EzyAdmin (:9090)</div>
+            <h1 class="page-title">Tổng quan trung tâm</h1>
+            <div class="muted" style="font-size:13px;">Theo dõi doanh thu, tiến độ học sinh, đơn hàng và các lớp nhóm đang mở</div>
         </div>
         <div class="row-inline">
-            <a href="/login" class="btn btn--sm btn--secondary">Đổi tài khoản RBAC</a>
-            <a href="http://localhost:9090/oylg/dashboard" target="_blank" class="btn btn--sm btn--primary">Mở EzyAdmin (:9090) ↗</a>
+            <a href="/login" class="btn btn--sm btn--secondary">Đổi tài khoản</a>
+            <a href="http://localhost:9090/oylg/dashboard" target="_blank" class="btn btn--sm btn--primary">Mở Trang Quản trị ↗</a>
         </div>
     </div>
 
     <!-- 1. FOUR COMPACT STUDIO STAT CARDS -->
     <div class="grid-4">
         <div class="card card--compact">
-            <div class="stat-label">Doanh thu VietQR đã đối soát</div>
+            <div class="stat-label">Doanh thu đã thu</div>
             <div class="stat-figure">18.480.000đ</div>
-            <div class="stat-delta" th:text="${orders.size() + ' đơn hàng · +24% so với tháng trước'}"></div>
+            <div class="stat-delta" th:text="${orders.size() + ' đơn hàng · +24% tháng này'}"></div>
         </div>
         <div class="card card--compact">
-            <div class="stat-label">Hồ sơ đồng hành đang chạy</div>
+            <div class="stat-label">Học sinh đang học</div>
             <div class="stat-figure" th:text="${cases.size() + ' học sinh'}">3 học sinh</div>
-            <div class="stat-delta">1 hồ sơ cần giảm tải giờ ngủ</div>
+            <div class="stat-delta">1 học sinh cần giảm bài tập</div>
         </div>
         <div class="card card--compact">
-            <div class="stat-label">Đánh giá hài lòng sau buổi học</div>
+            <div class="stat-label">Đánh giá buổi học</div>
             <div class="stat-figure">4.92 / 5.0</div>
-            <div class="stat-delta">100% biên bản nộp đúng hạn 24 giờ</div>
+            <div class="stat-delta">100% giáo viên nộp sổ đúng hạn</div>
         </div>
         <div class="card card--compact">
-            <div class="stat-label">Đơn giá cơ sở B6 (SSOT)</div>
+            <div class="stat-label">Học phí chuẩn 1 buổi</div>
             <div class="stat-figure" th:text="${#numbers.formatInteger(baseSessionPrice, 3, 'POINT') + 'đ'}">200.000đ</div>
-            <div class="stat-delta">Cho 1 buổi tiêu chuẩn 90 phút</div>
+            <div class="stat-delta">Buổi tiêu chuẩn 90 phút</div>
         </div>
     </div>
 
@@ -46,8 +46,8 @@
         <div class="card stack-16">
             <div class="row-between">
                 <div>
-                    <h2 class="card-title">Xu hướng Thực thu &amp; Tốc độ Bù lỗ hổng gốc (6 tháng gần nhất)</h2>
-                    <div class="muted" style="font-size:12px;">Cột màu nhấn là kỳ hiện tại · Đường đen thể hiện tỷ lệ hoàn thành phác đồ 60/40</div>
+                    <h2 class="card-title">Doanh thu 6 tháng gần nhất</h2>
+                    <div class="muted" style="font-size:12px;">Cột màu cam là tháng hiện tại · Đường đen là tỷ lệ học sinh tiến bộ</div>
                 </div>
                 <span class="tag tag--accent mono">Tháng 11/2026</span>
             </div>
@@ -82,22 +82,22 @@
         <div class="stack-16">
             <div class="card stack-12">
                 <div>
-                    <h2 class="card-title">Đơn giá Cơ sở B6 (ezy_settings)</h2>
-                    <div class="muted" style="font-size:12px;">Cập nhật tức thì toàn bộ biểu phí trên Website</div>
+                    <h2 class="card-title">Học phí chuẩn 1 buổi</h2>
+                    <div class="muted" style="font-size:12px;">Tự động cập nhật bảng giá trên trang chủ</div>
                 </div>
                 <div class="row-inline">
                     <input id="execBasePrice" type="number" class="input mono" style="flex:1;" th:value="${baseSessionPrice.longValue()}" />
-                    <button type="button" class="btn btn--primary" style="height:40px;" onclick="oylg.saveWebBasePrice()">Lưu SSOT</button>
+                    <button type="button" class="btn btn--primary" style="height:40px;" onclick="oylg.saveWebBasePrice()">Lưu giá</button>
                 </div>
             </div>
 
             <div class="card stack-12">
                 <div>
-                    <h2 class="card-title">Bản tin Phụ huynh 20:30 (Zalo ZNS)</h2>
-                    <div class="muted" style="font-size:12px;">Gộp toàn bộ kết quả trong ngày thành 1 tin duy nhất</div>
+                    <h2 class="card-title">Gửi tin nhắn cuối ngày</h2>
+                    <div class="muted" style="font-size:12px;">Gộp kết quả học tập hôm nay gửi cho Phụ huynh</div>
                 </div>
                 <button type="button" class="btn btn--accent btn--full" onclick="oylg.dispatchEveningDigest(1)">
-                    Phát bản tin tối nay · Nguyễn Minh Khôi
+                    Gửi báo cáo ngày · Nguyễn Minh Khôi
                 </button>
             </div>
         </div>
@@ -107,8 +107,8 @@
     <div class="card stack-16">
         <div class="row-between">
             <div>
-                <h2 class="card-title">Đơn hàng VietQR &amp; Sổ cái Giao dịch Ví Buổi Học (Double-Entry Ledger)</h2>
-                <div class="muted" style="font-size:12px;">Đơn mới ở trạng thái PENDING_PAYMENT cho đến khi nhận Webhook xác nhận từ ngân hàng</div>
+                <h2 class="card-title">Đơn hàng gói học</h2>
+                <div class="muted" style="font-size:12px;">Xác nhận khi tiền chuyển khoản đã vào tài khoản ngân hàng để cộng buổi học cho học sinh</div>
             </div>
         </div>
 
@@ -121,7 +121,7 @@
                     <th>Gói đăng ký</th>
                     <th class="text-right">Số tiền</th>
                     <th>Trạng thái</th>
-                    <th class="text-right">Webhook Ngân hàng</th>
+                    <th class="text-right">Thao tác</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -133,16 +133,16 @@
                     <td>
                         <span class="tag"
                               th:classappend="${ord.paymentStatus == 'PAID' ? 'tag--pos' : (ord.paymentStatus == 'PENDING_PAYMENT' ? 'tag--accent' : 'tag--neg')}"
-                              th:text="${ord.paymentStatus}"></span>
+                              th:text="${ord.paymentStatus == 'PAID' ? 'Đã thanh toán' : (ord.paymentStatus == 'PENDING_PAYMENT' ? 'Chờ chuyển khoản' : 'Đã hoàn phí')}"></span>
                     </td>
                     <td class="text-right">
                         <button th:if="${ord.paymentStatus == 'PENDING_PAYMENT'}"
                                 type="button" class="btn btn--sm btn--accent"
                                 th:data-order="${ord.orderCode}"
                                 onclick="oylg.confirmWebhookOrder(this.getAttribute('data-order'))">
-                            Xác nhận tiền về
+                            Xác nhận đã thu
                         </button>
-                        <span th:if="${ord.paymentStatus != 'PENDING_PAYMENT'}" class="muted mono" style="font-size:12px;">Đã đối soát</span>
+                        <span th:if="${ord.paymentStatus != 'PENDING_PAYMENT'}" class="muted" style="font-size:12px;">Hoàn tất</span>
                     </td>
                 </tr>
                 </tbody>
@@ -150,11 +150,11 @@
         </div>
     </div>
 
-    <!-- 4. GROUP CLASS COORDINATION (M09.2) -->
+    <!-- 4. GROUP CLASS COORDINATION -->
     <div class="card stack-16">
         <div>
-            <h2 class="card-title">Điều phối Lớp Nhóm Nhỏ Ghép Theo Lỗ Hổng YCCĐ Tương Đồng (M09.2)</h2>
-            <div class="muted" style="font-size:12px;">Quy tắc mở lớp: Đủ sĩ số tối thiểu 3 học sinh cùng lỗ hổng gốc mới khai giảng</div>
+            <h2 class="card-title">Lớp học nhóm nhỏ (3–5 học sinh)</h2>
+            <div class="muted" style="font-size:12px;">Ghép các bạn có cùng phần kiến thức cần ôn tập · Đủ 3 học sinh sẽ mở lớp</div>
         </div>
 
         <div class="grid-2">

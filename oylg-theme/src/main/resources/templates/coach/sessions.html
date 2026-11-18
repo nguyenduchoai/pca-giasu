@@ -8,18 +8,18 @@
 
     <div class="row-between">
         <div>
-            <h1 class="page-title">Sổ biên bản buổi học 60 giây &amp; Rào chắn Bảo mật DLP / M14</h1>
-            <div class="muted" style="font-size:13px;">Gia sư hoàn thành biên bản trong 24 giờ sau buổi học để cập nhật Bản đồ nhiệt và ghi nhận thù lao</div>
+            <h1 class="page-title">Sổ đầu bài sau buổi học</h1>
+            <div class="muted" style="font-size:13px;">Ghi nhanh nhận xét sau mỗi buổi học để gửi về Cổng Phụ huynh và cập nhật tiến độ học sinh</div>
         </div>
     </div>
 
     <!-- 1. STRUCTURED 60S LESSON LOG FORM WITH LIVE GUARDRAIL -->
     <div class="card stack-20">
         <div class="row-between">
-            <h2 class="card-title">Nhập biên bản buổi học cấu trúc</h2>
+            <h2 class="card-title">Ghi nhận buổi học mới</h2>
             <div class="row-inline">
-                <button type="button" class="btn btn--sm btn--secondary" onclick="oylg.fillSampleNote('dlp')">Thử tình huống kèm SĐT viết chữ &amp; Zalo</button>
-                <button type="button" class="btn btn--sm btn--outline" style="color:var(--neg);" onclick="oylg.fillSampleNote('m14')">Thử tình huống Cờ đỏ Tâm lý M14</button>
+                <button type="button" class="btn btn--sm btn--secondary" onclick="oylg.fillSampleNote('dlp')">Thử lọc SĐT / Zalo</button>
+                <button type="button" class="btn btn--sm btn--outline" style="color:var(--neg);" onclick="oylg.fillSampleNote('m14')">Thử cảnh báo tâm lý</button>
             </div>
         </div>
 
@@ -33,7 +33,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="field-label">Mã đơn vị kiến thức (YCCĐ)</label>
+                        <label class="field-label">Mã chuyên đề bài học</label>
                         <input id="logUnitCode" class="input mono" value="TOAN.08.HDT.01" />
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="field-label">Tâm trạng quan sát</label>
+                        <label class="field-label">Tâm trạng trên lớp</label>
                         <select id="logMood" class="select">
                             <option value="Tập trung cao" selected="selected">Tập trung cao</option>
                             <option value="Bình thường">Bình thường</option>
@@ -63,13 +63,13 @@
                 </div>
 
                 <div>
-                    <label class="field-label">Nhận xét gửi Phụ huynh &amp; Bài tập về nhà (Tự động lọc SĐT/Zalo)</label>
+                    <label class="field-label">Nhận xét gửi Phụ huynh &amp; Bài về nhà</label>
                     <textarea id="lessonRawNotes" class="textarea" oninput="oylg.previewLessonDlp()">Hôm nay con đã nắm vững cách khai triển hằng đẳng thức và làm đúng 5/5 câu kiểm tra nhanh cuối buổi. Phụ huynh nhắc con hoàn thành bài tự luyện trang 24.</textarea>
                 </div>
 
                 <div>
-                    <label class="field-label">Ghi chú chuyên môn nội bộ gửi Cố vấn (Phụ huynh không thấy)</label>
-                    <input id="logInternalNotes" class="input" value="Con đã lấp xong TOAN.08.HDT.01, tuần tới tăng tốc phần Căn bậc hai Lớp 9." />
+                    <label class="field-label">Ghi chú riêng gửi Cố vấn (Phụ huynh không thấy)</label>
+                    <input id="logInternalNotes" class="input" value="Con đã nắm chắc phần Lớp 8, tuần tới chuyển sang Căn bậc hai Lớp 9." />
                 </div>
             </div>
 
@@ -77,26 +77,26 @@
                 <div class="stack-12">
                     <div class="card card--compact stack-8" style="background:var(--bg-page);">
                         <div class="row-between">
-                            <span class="stat-label">Bản hiển thị thực tế trên Cổng Phụ huynh</span>
-                            <span id="lessonDlpMeta" class="tag tag--pos">Nội dung hợp lệ</span>
+                            <span class="stat-label">Nội dung Phụ huynh sẽ đọc được</span>
+                            <span id="lessonDlpMeta" class="tag tag--pos">Hợp lệ</span>
                         </div>
                         <p id="lessonSanitizedPreview" style="font-size:13px;line-height:21px;"></p>
                     </div>
 
                     <div id="lessonM14Alert" class="card card--compact tag--neg" style="display:none;height:auto;white-space:normal;">
-                        <div style="font-weight:600;">CẢNH BÁO KHẨN CẤP AN TOÀN TÂM LÝ (M14)</div>
-                        <div style="font-size:12px;margin-top:4px;">Hệ thống phát hiện tín hiệu nguy cơ nghiêm trọng. Tự động chuyển thẳng tới Hội đồng Tâm lý OYLG và hiển thị Đường dây Quốc gia Bảo vệ Trẻ em: <strong>111</strong> · Cấp cứu Y tế: <strong>115</strong>.</div>
+                        <div style="font-weight:600;">CẢNH BÁO AN TOÀN TÂM LÝ KHẨN CẤP</div>
+                        <div style="font-size:12px;margin-top:4px;">Phát hiện dấu hiệu tâm lý nguy cấp. Hệ thống tự động báo ngay cho Cố vấn Tâm lý và hiển thị tổng đài Bảo vệ Trẻ em: <strong>111</strong> · Cấp cứu Y tế: <strong>115</strong>.</div>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn--accent btn--lg btn--full">Lưu biên bản 60s &amp; Đồng bộ sang Cổng Phụ huynh</button>
+                <button type="submit" class="btn btn--accent btn--lg btn--full">Lưu sổ đầu bài &amp; Gửi Phụ huynh</button>
             </div>
         </form>
     </div>
 
     <!-- 2. COMPLETED LESSON LOG LEDGER -->
     <div class="card stack-16">
-        <h2 class="card-title" th:text="${'Nhật ký biên bản buổi học đã ghi nhận (' + completedLogs.size() + ')'}"></h2>
+        <h2 class="card-title" th:text="${'Các buổi học đã ghi nhận (' + completedLogs.size() + ')'}"></h2>
 
         <div class="stack-12">
             <div th:each="log : ${completedLogs}" class="card card--compact stack-8" style="background:var(--bg-page);">
@@ -105,7 +105,9 @@
                         <strong th:text="${log.studentName + ' — ' + log.subjectLabel}"></strong>
                         <span class="mono muted" style="font-size:12px;margin-left:8px;" th:text="${log.unitCode + ' · ' + log.scheduleLabel}"></span>
                     </div>
-                    <span class="tag tag--pos" th:text="${log.understandingLevel}">MASTERED</span>
+                    <span class="tag"
+                          th:classappend="${log.understandingLevel == 'MASTERED' ? 'tag--pos' : (log.understandingLevel == 'PARTIAL' ? 'tag--warn' : 'tag--neg')}"
+                          th:text="${log.understandingLevel == 'MASTERED' ? 'Nắm vững' : (log.understandingLevel == 'PARTIAL' ? 'Hiểu một phần' : 'Cần kèm lại')}">Nắm vững</span>
                 </div>
                 <div style="font-size:13px;"><strong>Gửi Phụ huynh:</strong> <span th:text="${log.sanitizedParentSummary}"></span></div>
                 <div th:if="${log.structuredNotes != null and !log.structuredNotes.isEmpty()}"

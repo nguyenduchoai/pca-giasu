@@ -8,14 +8,14 @@
 
     <div class="row-between">
         <div>
-            <h1 class="page-title">Studio Thẩm định Học liệu &amp; Ngân hàng Đề B1–B4 (M04)</h1>
-            <div class="muted" style="font-size:13px;">Chỉ các câu hỏi đã được Hội đồng Chuyên môn phê duyệt mới được đưa vào phiên tầm soát của học sinh</div>
+            <h1 class="page-title">Ngân hàng câu hỏi</h1>
+            <div class="muted" style="font-size:13px;">Soạn và duyệt câu hỏi kiểm tra năng lực đầu vào cho học sinh</div>
         </div>
     </div>
 
     <!-- 1. DRAFT GENERATOR -->
     <div class="card stack-16">
-        <h2 class="card-title">Tạo bản nháp câu hỏi chẩn đoán theo mã YCCĐ (GDPT 2018)</h2>
+        <h2 class="card-title">Thêm câu hỏi mới</h2>
         <form onsubmit="oylg.generateQuestionWeb(event)" class="grid-4" style="align-items:end;">
             <div>
                 <label class="field-label">Môn &amp; Khối lớp</label>
@@ -26,14 +26,14 @@
                 </select>
             </div>
             <div>
-                <label class="field-label">Mã YCCĐ mục tiêu</label>
+                <label class="field-label">Mã chuyên đề</label>
                 <input id="genUnitCode" class="input mono" value="TOAN.09.CBH.02" />
             </div>
             <div>
-                <label class="field-label">Mục tiêu chẩn đoán lỗ hổng</label>
+                <label class="field-label">Nội dung muốn kiểm tra</label>
                 <input id="genGoal" class="input" placeholder="Tìm điều kiện xác định và trục căn thức..." />
             </div>
-            <button type="submit" class="btn btn--accent" style="height:40px;">Tạo bản nháp đưa vào hàng đợi</button>
+            <button type="submit" class="btn btn--accent" style="height:40px;">Tạo câu hỏi nháp</button>
         </form>
     </div>
 
@@ -47,12 +47,11 @@
                     <span class="mono muted" style="font-size:12px;" th:text="${q.unitCode}"></span>
                 </div>
                 <div class="row-inline">
-                    <span th:if="${q.triggersSafetyFlag}" class="tag tag--neg">Câu kích hoạt Cờ an toàn M14</span>
-                    <span th:if="${q.irtDiscrimination.doubleValue() < 0}" class="tag tag--warn mono"
-                          th:text="${'Cảnh báo IRT âm (' + q.irtDiscrimination + ')'}"></span>
+                    <span th:if="${q.triggersSafetyFlag}" class="tag tag--neg">Câu hỏi tâm lý nhạy cảm</span>
+                    <span th:if="${q.irtDiscrimination.doubleValue() < 0}" class="tag tag--warn">Đề dễ gây nhầm lẫn</span>
                     <span class="tag"
                           th:classappend="${q.approvalStatus == 'APPROVED' ? 'tag--pos' : (q.approvalStatus == 'REVISION_REQUESTED' ? 'tag--neg' : '')}"
-                          th:text="${q.approvalStatus}"></span>
+                          th:text="${q.approvalStatus == 'APPROVED' ? 'Đã duyệt' : (q.approvalStatus == 'REVISION_REQUESTED' ? 'Cần sửa lại' : 'Chờ duyệt')}"></span>
                 </div>
             </div>
 
