@@ -43,9 +43,9 @@ pca-giasu/
 ## 3. Hướng Dẫn Cài Đặt & Chạy Trên Máy Local
 
 ### Yêu cầu hệ thống
-- **Java 1.8** (chạy runtime EzyPlatform) + **OpenJDK** & **Maven 3.8+** (biên dịch)
-- **MySQL / MariaDB** (tạo database `ezyplatform` chuẩn `utf8mb4_unicode_520_ci`)
-- **EzyPlatform `1.5.6`** & **EzyPlatform SDK `0.2.4`**
+- **Java 1.8** (Azul Zulu 8 cho Apple Silicon / x64) + **Maven 3.9+**
+- **MySQL / MariaDB** (database `ezyplatform` chuẩn `utf8mb4_unicode_520_ci`)
+- **EzyPlatform `1.5.6`**, **EzyPlatform SDK `0.2.7`** & các Plugin miễn phí từ Market (`ezyarticle`, `ezylogin`, `ezysupport`, `ezymail`)
 
 ### Bước 1: Cấu hình kết nối Database trong `$EZYPLATFORM_HOME/settings/setup.properties`
 ```properties
@@ -56,23 +56,29 @@ datasource.password=12345678
 tables.create_manually=false
 ```
 
-### Bước 2: Biên dịch & Xuất 4 Module vào EzyPlatform
+### Bước 2: Biên dịch, Đóng gói (`.zip`) & Xuất 4 Module vào EzyPlatform
 ```bash
 bash export.sh
+# Tạo gói cài đặt chuẩn Production tại: target/project/oylg-1.0.0.zip
 ```
 
 ### Bước 3: Khởi chạy EzyAdmin (`:9090`) & EzyPlatform Web (`:18080`)
 ```bash
-export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+export JAVA_HOME="$HOME/ezyplatform-dev/jdk/Contents/Home"
 export PATH="$JAVA_HOME/bin:$PATH"
 cd $EZYPLATFORM_HOME
 
-# Cổng Quản trị EzyAdmin (:9090) — Đăng nhập Market để cài thêm các Plugin Free (ezyarticle, ecommerce, ezypayment, ezylogin, ezysupport)
-sh admin/console.sh "admin/plugins/oylg/lib/*:admin/plugins/oylg/resources:"
+# Cổng Quản trị EzyAdmin (:9090) — Tự nạp đầy đủ classpath tất cả Plugin & EzySupport UI
+sh cli.sh "console admin"
 
-# Cổng Website & 6 Không gian Vai trò (:18080)
-sh web/console.sh "web/themes/oylg/resources:web/plugins/oylg/lib/*:web/themes/oylg/lib/*:"
+# Cổng Website & 8 Không gian Vai trò (:18080)
+sh cli.sh "console web"
 ```
+
+### Bước 4: Triển khai lên Máy chủ EzyPlatform (Production)
+1. Tải gói cài đặt **`oylg-1.0.0.zip`** (từ `target/project/oylg-1.0.0.zip` hoặc mục **GitHub Releases**).
+2. Trên EzyAdmin Production (`:9090`), cài trước 4 Plugin miễn phí từ Market: **`ezyarticle`**, **`ezylogin`**, **`ezysupport`**, **`ezymail`**.
+3. Vào **Modules → Add New → From File**, tải lên `oylg-1.0.0.zip`, bật kích hoạt (`Activate`) `oylg-admin-plugin`, `oylg-web-plugin`, `oylg-theme` và khởi động lại Admin + Web.
 
 ---
 

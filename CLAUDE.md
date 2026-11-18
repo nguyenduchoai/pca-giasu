@@ -15,7 +15,7 @@ This repository is a **100% pure EzyPlatform** multi-module project (`oylg-sdk`,
    - **Direction**: Calm, scholarly, quietly warm.
    - **Color**: Warm paper ramp (`#F7F4EE` / `#FDFBF7` / `#EFE9DF` / `#1F1B16`) for Public, Parent, and Student views; Graphite ramp (`#FAFAFA` / `#FFFFFF` / `#171717`, sidebar `#121213`) for Coach, Operations, Studio, and Executive workspaces; **one accent** `#C84B31` (terracotta).
    - **Strict bans**: Zero hue gradients, zero gradient text, zero colored shadows/blobs, zero decorative emojis, zero ALL-CAPS tracked labels, zero font weights above `600`.
-   - **Typography**: `'Be Vietnam Pro'` (`400`, `500`, `600`) + `'JetBrains Mono'` (`tabular-nums` on all prices, counts, codes, and metrics).
+   - **Typography**: Rounded `'Quicksand'` (`600`–`700` headings & key figures) + `'Nunito'` (`400`–`800` body, UI, and `tabular-nums` prices/codes/metrics).
 
 ---
 
