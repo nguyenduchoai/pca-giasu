@@ -46,7 +46,7 @@
                      th:style="${pk.authorized ? 'background:var(--bg-page);' : 'background:var(--neg-soft);'}">
                     <div>
                         <div style="font-weight:500;" th:text="${pk.guardianFullName + ' · ' + pk.relationship}"></div>
-                        <div class="muted mono" style="font-size:11px;" th:text="${'SĐT: ' + pk.phoneNumber + ' · CCCD: ' + pk.nationalIdMasked}"></div>
+                        <div class="muted mono" style="font-size:11px;" th:text="${'SĐT: ' + pk.phoneNumber + ' · CCCD: ' + pk.nationalIdMasked + ' · TOTP 60s: ' + liveTotpMap.get(pk.id)}"></div>
                         <div style="font-size:12px;margin-top:4px;"
                              th:style="${pk.authorized ? 'color:var(--pos);' : 'color:var(--neg);font-weight:500;'}"
                              th:text="${pk.verificationNote}"></div>

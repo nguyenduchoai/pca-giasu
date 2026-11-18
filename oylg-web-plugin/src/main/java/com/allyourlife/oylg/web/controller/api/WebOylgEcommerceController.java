@@ -1,15 +1,18 @@
 package com.allyourlife.oylg.web.controller.api;
 
 import com.allyourlife.oylg.entity.OylgConsultationLead;
+import com.allyourlife.oylg.entity.OylgDigestDispatch;
 import com.allyourlife.oylg.entity.OylgEcommerceOrderWallet;
 import com.allyourlife.oylg.entity.OylgGroupClass;
 import com.allyourlife.oylg.entity.OylgLessonRecord;
+import com.allyourlife.oylg.entity.OylgPortalAccount;
 import com.allyourlife.oylg.entity.OylgQuestionItem;
 import com.allyourlife.oylg.entity.OylgStudentProfile;
 import com.allyourlife.oylg.service.OylgCommissionService;
 import com.allyourlife.oylg.service.OylgGuardrailService;
 import com.allyourlife.oylg.service.OylgPlatformService;
 import com.allyourlife.oylg.service.OylgPricingService;
+import com.allyourlife.oylg.service.OylgSecurityAndLedgerService;
 import com.tvd12.ezyhttp.core.response.ResponseEntity;
 import com.tvd12.ezyhttp.server.core.annotation.Api;
 import com.tvd12.ezyhttp.server.core.annotation.Controller;
@@ -19,6 +22,9 @@ import com.tvd12.ezyhttp.server.core.annotation.PathVariable;
 import com.tvd12.ezyhttp.server.core.annotation.RequestBody;
 import com.tvd12.ezyhttp.server.core.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
@@ -32,18 +38,73 @@ public class WebOylgEcommerceController {
     private final OylgCommissionService commissionService;
     private final OylgGuardrailService guardrailService;
     private final OylgPlatformService platformService;
+    private final OylgSecurityAndLedgerService securityAndLedgerService;
 
     public WebOylgEcommerceController(
         OylgPricingService pricingService,
         OylgCommissionService commissionService,
         OylgGuardrailService guardrailService,
-        OylgPlatformService platformService
+        OylgPlatformService platformService,
+        OylgSecurityAndLedgerService securityAndLedgerService
     ) {
         this.pricingService = pricingService;
         this.commissionService = commissionService;
         this.guardrailService = guardrailService;
         this.platformService = platformService;
+        this.securityAndLedgerService = securityAndLedgerService;
     }
+
+    // ==================== P0.1: REAL SESSION AUTH & RBAC ====================
+
+    @DoPost("/auth/login")
+    public ResponseEntity loginPortal(
+        HttpServletResponse response,
+        @RequestBody Map<String, Object> req
+    ) {
+        String phone = str(req, "phone", "");
+        String password = str(req, "password", "");
+        OylgPortalAccount acc = securityAndLedgerService.authenticate(phone, password);
+        Map<String, Object> res = new HashMap<>();
+        if (acc == null) {
+            res.put("ok", false);
+            res.put("message", "Số điện thoại hoặc mật khẩu chưa chính xác");
+            return ResponseEntity.badRequest(res);
+        }
+        Cookie cookie = new Cookie(OylgSecurityAndLedgerService.SESSION_COOKIE_NAME, acc.getSessionToken());
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(86400 * 7);
+        response.addCookie(cookie);
+
+        res.put("ok", true);
+        res.put("fullName", acc.getFullName());
+        res.put("roleCode", acc.getRoleCode());
+        res.put("defaultRoute", acc.getDefaultRoute());
+        return ResponseEntity.ok(res);
+    }
+
+    @DoPost("/auth/logout")
+    public ResponseEntity logoutPortal(
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) {
+        if (request.getCookies() != null) {
+            for (Cookie c : request.getCookies()) {
+                if (OylgSecurityAndLedgerService.SESSION_COOKIE_NAME.equals(c.getName())) {
+                    securityAndLedgerService.logoutToken(c.getValue());
+                }
+            }
+        }
+        Cookie clear = new Cookie(OylgSecurityAndLedgerService.SESSION_COOKIE_NAME, "");
+        clear.setPath("/");
+        clear.setMaxAge(0);
+        response.addCookie(clear);
+        Map<String, Object> res = new HashMap<>();
+        res.put("ok", true);
+        return ResponseEntity.ok(res);
+    }
+
+    // ==================== P0.2 & P0.3: VIETQR PENDING -> WEBHOOK PAID + LEDGER ====================
 
     @DoGet("/ecommerce/quote")
     public ResponseEntity calculateDynamicPackageQuote(
@@ -88,42 +149,53 @@ public class WebOylgEcommerceController {
 
     @DoPost("/ecommerce/checkout-vietqr")
     public ResponseEntity createVietQrEcommerceOrder(@RequestBody Map<String, Object> req) {
-        String packageCode = str(req, "packageCode", "PKG-T12-COACH");
-        long studentId = num(req, "studentId", 1L);
-        String parentName = str(req, "parentName", "");
-        String parentPhone = str(req, "parentPhone", "");
-        String studentName = str(req, "studentName", "");
-        String voucherCode = str(req, "voucherCode", "");
-        String referralCode = str(req, "referralCode", "");
-
-        OylgEcommerceOrderWallet order = platformService.createVietQrOrder(
-            packageCode, studentId, parentName, parentPhone, studentName, voucherCode, referralCode
+        OylgEcommerceOrderWallet order = securityAndLedgerService.createPendingVietQrOrder(
+            str(req, "packageCode", "PKG-T12-COACH"),
+            num(req, "studentId", 1L),
+            str(req, "parentName", ""),
+            str(req, "parentPhone", ""),
+            str(req, "studentName", ""),
+            str(req, "voucherCode", ""),
+            str(req, "referralCode", "")
         );
-        OylgStudentProfile student = platformService.getStudentOrDefault(order.getStudentId());
-
         Map<String, Object> response = new HashMap<>();
         response.put("orderId", order.getId());
         response.put("orderCode", order.getOrderCode());
         response.put("packageTitle", order.getPackageTitle());
-        response.put("paymentMethod", order.getPaymentChannel());
         response.put("paymentStatus", order.getPaymentStatus());
-        response.put("netPaidAmountVnd", order.getNetPaidAmountVnd());
+        response.put("netPayableVnd", order.getNetPaidAmountVnd());
         response.put("sessionsGranted", order.getTotalSessionsGranted());
-        response.put("walletBalance", student != null ? student.getSessionCreditsRemaining() : 0);
-        response.put("dthhCommissionBaseVnd", order.getDthhBaseVnd());
-        response.put("unlockedTier1RepCommissionVnd", order.getRepCommissionVnd());
-        response.put("unlockedTier2LeaderCommissionVnd", order.getLeaderCommissionVnd());
         return ResponseEntity.ok(response);
+    }
+
+    @DoPost("/webhooks/payment")
+    public ResponseEntity confirmVietQrWebhook(@RequestBody Map<String, Object> req) {
+        String orderCode = str(req, "orderCode", "");
+        BigDecimal paid = new BigDecimal(str(req, "paidAmountVnd", "0"));
+        return ResponseEntity.ok(
+            securityAndLedgerService.processBankPaymentWebhook(orderCode, paid)
+        );
     }
 
     @DoPost("/orders/{orderId}/refund-14d")
     public ResponseEntity refundOrder14d(@PathVariable("orderId") long orderId) {
+        OylgEcommerceOrderWallet before = null;
+        for (OylgEcommerceOrderWallet o : platformService.getOrders(null)) {
+            if (o.getId() == orderId) {
+                before = o;
+                break;
+            }
+        }
+        int unused = before != null
+            ? Math.max(0, before.getTotalSessionsGranted() - before.getConsumedSessionsCount())
+            : 0;
         OylgEcommerceOrderWallet order = platformService.refundOrderWithin14Days(orderId);
         Map<String, Object> res = new HashMap<>();
         if (order == null) {
             res.put("ok", false);
             return ResponseEntity.badRequest(res);
         }
+        securityAndLedgerService.appendRefundLedger(order, unused);
         OylgStudentProfile st = platformService.getStudentOrDefault(order.getStudentId());
         res.put("ok", true);
         res.put("orderCode", order.getOrderCode());
@@ -243,8 +315,8 @@ public class WebOylgEcommerceController {
 
     @DoPost("/commission/simulate")
     public ResponseEntity simulateCommission(@RequestBody Map<String, Object> req) {
-        BigDecimal firstPayment = new BigDecimal(str(req, "firstPaymentVnd", "4000000"));
-        BigDecimal sixMonthVal = new BigDecimal(str(req, "sixMonthValueVnd", "24000000"));
+        BigDecimal firstPayment = new BigDecimal(str(req, "firstPaymentVnd", "4500000"));
+        BigDecimal sixMonthVal = new BigDecimal(str(req, "sixMonthValueVnd", "13980000"));
         int collectedPeriods = (int) num(req, "collectedPeriods", 6L);
         int totalPeriods = Math.max(1, (int) num(req, "totalPeriods", 6L));
         boolean isLeaderDirect = Boolean.parseBoolean(str(req, "isDirectByLeader", "false"));
@@ -280,6 +352,16 @@ public class WebOylgEcommerceController {
     public ResponseEntity verifyPickup(@RequestBody Map<String, Object> req) {
         long pickupId = num(req, "pickupId", 1L);
         return ResponseEntity.ok(platformService.verifyBoardingPickupQr(pickupId));
+    }
+
+    @DoPost("/digests/dispatch")
+    public ResponseEntity dispatchDigest(@RequestBody Map<String, Object> req) {
+        long studentId = num(req, "studentId", 1L);
+        OylgDigestDispatch d = securityAndLedgerService.dispatchEveningDigest(studentId);
+        Map<String, Object> res = new HashMap<>();
+        res.put("ok", true);
+        res.put("summary", d.getSummaryContent());
+        return ResponseEntity.ok(res);
     }
 
     @DoPost("/settings/base-price")

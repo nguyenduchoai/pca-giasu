@@ -2,6 +2,7 @@ package com.allyourlife.oylg.admin.controller.view;
 
 import com.allyourlife.oylg.service.OylgPlatformService;
 import com.allyourlife.oylg.service.OylgPricingService;
+import com.allyourlife.oylg.service.OylgSecurityAndLedgerService;
 import com.tvd12.ezyhttp.server.core.annotation.Authenticated;
 import com.tvd12.ezyhttp.server.core.annotation.Controller;
 import com.tvd12.ezyhttp.server.core.annotation.DoGet;
@@ -13,28 +14,31 @@ public class AdminOylgViewController {
 
     private final OylgPricingService pricingService;
     private final OylgPlatformService platformService;
+    private final OylgSecurityAndLedgerService securityAndLedgerService;
 
     public AdminOylgViewController(
         OylgPricingService pricingService,
-        OylgPlatformService platformService
+        OylgPlatformService platformService,
+        OylgSecurityAndLedgerService securityAndLedgerService
     ) {
         this.pricingService = pricingService;
         this.platformService = platformService;
+        this.securityAndLedgerService = securityAndLedgerService;
     }
 
     @DoGet("")
     public View indexGet() {
-        return buildAdminView("dashboard", "Tổng quan Ban Điều Hành OYLG");
+        return buildAdminView("dashboard", "Trung tâm Điều hành OYLG");
     }
 
     @DoGet("/")
     public View rootGet() {
-        return buildAdminView("dashboard", "Tổng quan Ban Điều Hành OYLG");
+        return buildAdminView("dashboard", "Trung tâm Điều hành OYLG");
     }
 
     @DoGet("/dashboard")
     public View dashboardGet() {
-        return buildAdminView("dashboard", "Tổng quan Ban Điều Hành OYLG");
+        return buildAdminView("dashboard", "Trung tâm Điều hành OYLG");
     }
 
     @DoGet("/cases")
@@ -64,22 +68,22 @@ public class AdminOylgViewController {
 
     @DoGet("/commissions")
     public View commissionsGet() {
-        return buildAdminView("commissions", "Đơn hàng VietQR & Hoa hồng 2 Cấp");
+        return buildAdminView("commissions", "Đơn hàng VietQR, Sổ cái Ví & Hoa hồng 2 Cấp");
     }
 
     @DoGet("/boarding")
     public View boardingGet() {
-        return buildAdminView("boarding", "Nội trú, Bán trú & Đón trả QR (M21)");
+        return buildAdminView("boarding", "Nội trú, Bán trú & Mã TOTP 60s (M21)");
     }
 
     @DoGet("/boarding-care")
     public View boardingCareGet() {
-        return buildAdminView("boarding", "Nội trú, Bán trú & Đón trả QR (M21)");
+        return buildAdminView("boarding", "Nội trú, Bán trú & Mã TOTP 60s (M21)");
     }
 
     @DoGet("/settings")
     public View settingsGet() {
-        return buildAdminView("settings", "Cấu hình Hệ thống OYLG (SSOT)");
+        return buildAdminView("settings", "Cấu hình Hệ thống & Phân quyền Tài khoản");
     }
 
     private View buildAdminView(String menuKey, String sectionTitle) {
@@ -93,6 +97,10 @@ public class AdminOylgViewController {
             .addVariable("cases", platformService.getAllCases())
             .addVariable("packages", platformService.getActivePackages())
             .addVariable("orders", platformService.getOrders(null))
+            .addVariable("walletLedger", securityAndLedgerService.getWalletLedger(null))
+            .addVariable("portalAccounts", securityAndLedgerService.getAllPortalAccounts())
+            .addVariable("digestLogs", securityAndLedgerService.getDigestDispatches())
+            .addVariable("liveTotpMap", securityAndLedgerService.getLivePickupTotpMap(1L))
             .addVariable("leads", platformService.getAllLeads())
             .addVariable("questions", platformService.getAllQuestions())
             .addVariable("groupClasses", platformService.getAllGroupClasses())

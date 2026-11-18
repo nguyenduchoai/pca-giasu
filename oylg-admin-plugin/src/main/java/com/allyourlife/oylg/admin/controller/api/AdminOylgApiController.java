@@ -1,10 +1,12 @@
 package com.allyourlife.oylg.admin.controller.api;
 
+import com.allyourlife.oylg.entity.OylgDigestDispatch;
 import com.allyourlife.oylg.entity.OylgGroupClass;
 import com.allyourlife.oylg.entity.OylgQuestionItem;
 import com.allyourlife.oylg.entity.OylgSafetyFlag;
 import com.allyourlife.oylg.service.OylgPlatformService;
 import com.allyourlife.oylg.service.OylgPricingService;
+import com.allyourlife.oylg.service.OylgSecurityAndLedgerService;
 import com.tvd12.ezyhttp.core.response.ResponseEntity;
 import com.tvd12.ezyhttp.server.core.annotation.Api;
 import com.tvd12.ezyhttp.server.core.annotation.Authenticated;
@@ -13,6 +15,7 @@ import com.tvd12.ezyhttp.server.core.annotation.DoPost;
 import com.tvd12.ezyhttp.server.core.annotation.PathVariable;
 import com.tvd12.ezyhttp.server.core.annotation.RequestBody;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,13 +26,16 @@ public class AdminOylgApiController {
 
     private final OylgPlatformService platformService;
     private final OylgPricingService pricingService;
+    private final OylgSecurityAndLedgerService securityAndLedgerService;
 
     public AdminOylgApiController(
         OylgPlatformService platformService,
-        OylgPricingService pricingService
+        OylgPricingService pricingService,
+        OylgSecurityAndLedgerService securityAndLedgerService
     ) {
         this.platformService = platformService;
         this.pricingService = pricingService;
+        this.securityAndLedgerService = securityAndLedgerService;
     }
 
     @DoPost("/settings/base-price")
@@ -42,6 +48,29 @@ public class AdminOylgApiController {
         Map<String, Object> res = new HashMap<>();
         res.put("ok", true);
         res.put("basePriceVnd", pricingService.getBaseSessionPrice());
+        return ResponseEntity.ok(res);
+    }
+
+    @DoPost("/webhooks/payment")
+    public ResponseEntity confirmWebhook(@RequestBody Map<String, Object> req) {
+        String orderCode = req != null && req.get("orderCode") != null
+            ? String.valueOf(req.get("orderCode"))
+            : "";
+        return ResponseEntity.ok(
+            securityAndLedgerService.processBankPaymentWebhook(orderCode, BigDecimal.ZERO)
+        );
+    }
+
+    @DoPost("/digests/dispatch")
+    public ResponseEntity sendDigest(@RequestBody Map<String, Object> req) {
+        long studentId = 1L;
+        if (req != null && req.get("studentId") != null) {
+            studentId = Long.parseLong(String.valueOf(req.get("studentId")).replaceAll("[^0-9]", ""));
+        }
+        OylgDigestDispatch d = securityAndLedgerService.dispatchEveningDigest(studentId);
+        Map<String, Object> res = new HashMap<>();
+        res.put("ok", true);
+        res.put("summary", d.getSummaryContent());
         return ResponseEntity.ok(res);
     }
 

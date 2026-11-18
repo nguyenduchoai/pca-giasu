@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{ezytheme}">
+<body>
+<div layout:fragment="content" class="oylg-container oylg-section--tight">
+
+    <div class="split-asym" style="max-width:980px;margin:16px auto;">
+        <div class="card stack-20">
+            <div>
+                <div class="eyebrow" style="margin-bottom:6px;">Xác thực phân quyền theo vai trò (RBAC)</div>
+                <h1 class="page-title">Đăng nhập Hệ thống All Your Life</h1>
+                <p class="secondary" style="font-size:13px;margin-top:4px;">Mỗi tài khoản chỉ được phép truy cập đúng cổng vai trò và hồ sơ học sinh được phân quyền.</p>
+            </div>
+
+            <div th:if="${accessDenied}" class="card card--compact tag--neg" style="height:auto;white-space:normal;display:block;">
+                Tài khoản hiện tại không có quyền truy cập đường dẫn vừa yêu cầu. Vui lòng đăng nhập đúng vai trò phụ trách.
+            </div>
+
+            <form onsubmit="oylg.submitPortalLogin(event)" class="stack-16">
+                <input type="hidden" id="loginRedirectUri" th:value="${redirectUri}" />
+                <div>
+                    <label class="field-label">Số điện thoại tài khoản</label>
+                    <input id="loginPhone" class="input mono" required="required" value="0905123489" />
+                </div>
+                <div>
+                    <label class="field-label">Mật khẩu (Mặc định kiểm thử: oylg2026)</label>
+                    <input id="loginPassword" type="password" class="input mono" required="required" value="oylg2026" />
+                </div>
+                <button type="submit" class="btn btn--accent btn--lg btn--full">Đăng nhập vào cổng thành viên</button>
+            </form>
+
+            <div class="row-between" style="padding-top:12px;border-top:1px solid var(--border-hairline);font-size:12px;">
+                <span class="muted">Đang có phiên đăng nhập khác?</span>
+                <button type="button" class="oylg-quiet-link" style="font-size:12px;" onclick="oylg.logoutPortal()">Đăng xuất phiên hiện tại</button>
+            </div>
+        </div>
+
+        <div class="card stack-12">
+            <div>
+                <div class="card-title">Chọn nhanh tài khoản mẫu (1 chạm)</div>
+                <div class="muted" style="font-size:12px;">Tự động điền SĐT &amp; đăng nhập đúng vai trò RBAC</div>
+            </div>
+
+            <div class="stack-8">
+                <button th:each="acc : ${portalAccounts}"
+                        type="button"
+                        class="card card--compact row-between btn--full"
+                        style="text-align:left;cursor:pointer;background:var(--bg-page);"
+                        th:data-phone="${acc.phone}"
+                        onclick="oylg.quickLoginPhone(this.getAttribute('data-phone'))">
+                    <div>
+                        <div style="font-weight:500;" th:text="${acc.fullName}"></div>
+                        <div class="muted mono" style="font-size:11px;" th:text="${acc.phone + ' · ' + acc.roleLabel}"></div>
+                    </div>
+                    <span class="tag mono" th:text="${acc.roleCode}"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

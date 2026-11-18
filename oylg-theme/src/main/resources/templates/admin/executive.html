@@ -8,23 +8,26 @@
 
     <div class="row-between">
         <div>
-            <h1 class="page-title">Ban Điều hành · 4 Chỉ số Buổi sáng &amp; Cấu hình Bảng giá B6</h1>
-            <div class="muted" style="font-size:13px;">Đồng bộ trực tiếp với cơ sở dữ liệu EzyPlatform (ezy_settings) và Cổng quản trị EzyAdmin (:9090)</div>
+            <h1 class="page-title">Trung tâm Điều hành OYLG · Số liệu Thời gian thực &amp; Bảng giá B6</h1>
+            <div class="muted" style="font-size:13px;">Đồng bộ trực tiếp với MySQL (ezy_settings, oylg_wallet_transactions) và Cổng quản trị gốc EzyAdmin (:9090)</div>
         </div>
-        <a href="http://localhost:9090/oylg/dashboard" target="_blank" class="btn btn--sm btn--primary">Mở EzyAdmin (:9090)</a>
+        <div class="row-inline">
+            <a href="/login" class="btn btn--sm btn--secondary">Đổi tài khoản RBAC</a>
+            <a href="http://localhost:9090/oylg/dashboard" target="_blank" class="btn btn--sm btn--primary">Mở EzyAdmin (:9090) ↗</a>
+        </div>
     </div>
 
-    <!-- 1. FOUR MORNING METRICS (NUMBERS ONLY — UNSLOP STAT RULE) -->
+    <!-- 1. FOUR COMPACT STUDIO STAT CARDS -->
     <div class="grid-4">
         <div class="card card--compact">
-            <div class="stat-label">Doanh thu gói học thực thu</div>
+            <div class="stat-label">Doanh thu VietQR đã đối soát</div>
             <div class="stat-figure">18.480.000đ</div>
-            <div class="stat-delta" th:text="${orders.size() + ' đơn VietQR đã đối soát'}"></div>
+            <div class="stat-delta" th:text="${orders.size() + ' đơn hàng · +24% so với tháng trước'}"></div>
         </div>
         <div class="card card--compact">
-            <div class="stat-label">Học sinh cần Cố vấn can thiệp</div>
-            <div class="stat-figure">1 học sinh</div>
-            <div class="stat-delta">HS-2026-0104 thiếu ngủ (5.6h/đêm)</div>
+            <div class="stat-label">Hồ sơ đồng hành đang chạy</div>
+            <div class="stat-figure" th:text="${cases.size() + ' học sinh'}">3 học sinh</div>
+            <div class="stat-delta">1 hồ sơ cần giảm tải giờ ngủ</div>
         </div>
         <div class="card card--compact">
             <div class="stat-label">Đánh giá hài lòng sau buổi học</div>
@@ -32,37 +35,126 @@
             <div class="stat-delta">100% biên bản nộp đúng hạn 24 giờ</div>
         </div>
         <div class="card card--compact">
-            <div class="stat-label">Tốc độ lấp lỗ hổng trung bình</div>
-            <div class="stat-figure">+3.4 YCCĐ/tuần</div>
-            <div class="stat-delta">89% bám kịp mục tiêu trường đích</div>
+            <div class="stat-label">Đơn giá cơ sở B6 (SSOT)</div>
+            <div class="stat-figure" th:text="${#numbers.formatInteger(baseSessionPrice, 3, 'POINT') + 'đ'}">200.000đ</div>
+            <div class="stat-delta">Cho 1 buổi tiêu chuẩn 90 phút</div>
         </div>
     </div>
 
-    <!-- 2. LIVE B6 BASE PRICE SETTING + SIMULATOR -->
-    <div class="card stack-20">
+    <!-- 2. ASYMMETRIC 2/3 CHART + 1/3 SYSTEM CONTROLS -->
+    <div class="split-asym">
+        <div class="card stack-16">
+            <div class="row-between">
+                <div>
+                    <h2 class="card-title">Xu hướng Thực thu &amp; Tốc độ Bù lỗ hổng gốc (6 tháng gần nhất)</h2>
+                    <div class="muted" style="font-size:12px;">Cột màu nhấn là kỳ hiện tại · Đường đen thể hiện tỷ lệ hoàn thành phác đồ 60/40</div>
+                </div>
+                <span class="tag tag--accent mono">Tháng 11/2026</span>
+            </div>
+
+            <svg viewBox="0 0 640 220" style="width:100%;height:220px;display:block;">
+                <line x1="42" y1="24" x2="620" y2="24" stroke="rgba(23,23,23,0.06)" />
+                <line x1="42" y1="76" x2="620" y2="76" stroke="rgba(23,23,23,0.06)" />
+                <line x1="42" y1="128" x2="620" y2="128" stroke="rgba(23,23,23,0.06)" />
+                <line x1="42" y1="180" x2="620" y2="180" stroke="rgba(23,23,23,0.10)" />
+                <text x="6" y="28" fill="#737373" font-size="10" font-family="JetBrains Mono">24tr</text>
+                <text x="6" y="80" fill="#737373" font-size="10" font-family="JetBrains Mono">16tr</text>
+                <text x="6" y="132" fill="#737373" font-size="10" font-family="JetBrains Mono">8tr</text>
+                <text x="16" y="184" fill="#737373" font-size="10" font-family="JetBrains Mono">0</text>
+                <rect x="74" y="136" width="38" height="44" rx="4" fill="#e4e4e7" />
+                <rect x="174" y="118" width="38" height="62" rx="4" fill="#e4e4e7" />
+                <rect x="274" y="98" width="38" height="82" rx="4" fill="#e4e4e7" />
+                <rect x="374" y="84" width="38" height="96" rx="4" fill="#e4e4e7" />
+                <rect x="474" y="68" width="38" height="112" rx="4" fill="#d4d4d8" />
+                <rect x="566" y="42" width="38" height="138" rx="4" fill="#c84b31" />
+                <polyline fill="none" stroke="#171717" stroke-width="2"
+                          points="93,130 193,110 293,92 393,76 493,60 585,36" />
+                <circle cx="585" cy="36" r="4" fill="#c84b31" />
+                <text x="81" y="202" fill="#737373" font-size="11" font-family="JetBrains Mono">T06</text>
+                <text x="181" y="202" fill="#737373" font-size="11" font-family="JetBrains Mono">T07</text>
+                <text x="281" y="202" fill="#737373" font-size="11" font-family="JetBrains Mono">T08</text>
+                <text x="381" y="202" fill="#737373" font-size="11" font-family="JetBrains Mono">T09</text>
+                <text x="481" y="202" fill="#737373" font-size="11" font-family="JetBrains Mono">T10</text>
+                <text x="573" y="202" fill="#171717" font-weight="500" font-size="11" font-family="JetBrains Mono">T11</text>
+            </svg>
+        </div>
+
+        <div class="stack-16">
+            <div class="card stack-12">
+                <div>
+                    <h2 class="card-title">Đơn giá Cơ sở B6 (ezy_settings)</h2>
+                    <div class="muted" style="font-size:12px;">Cập nhật tức thì toàn bộ biểu phí trên Website</div>
+                </div>
+                <div class="row-inline">
+                    <input id="execBasePrice" type="number" class="input mono" style="flex:1;" th:value="${baseSessionPrice.longValue()}" />
+                    <button type="button" class="btn btn--primary" style="height:40px;" onclick="oylg.saveWebBasePrice()">Lưu SSOT</button>
+                </div>
+            </div>
+
+            <div class="card stack-12">
+                <div>
+                    <h2 class="card-title">Bản tin Phụ huynh 20:30 (Zalo ZNS)</h2>
+                    <div class="muted" style="font-size:12px;">Gộp toàn bộ kết quả trong ngày thành 1 tin duy nhất</div>
+                </div>
+                <button type="button" class="btn btn--accent btn--full" onclick="oylg.dispatchEveningDigest(1)">
+                    Phát bản tin tối nay · Nguyễn Minh Khôi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. WEBHOOK ORDERS & DOUBLE-ENTRY WALLET LEDGER -->
+    <div class="card stack-16">
         <div class="row-between">
             <div>
-                <h2 class="card-title">Cấu hình Đơn giá Cơ sở B6 toàn hệ thống (SSOT trong ezy_settings)</h2>
-                <div class="muted" style="font-size:12px;">Thay đổi tại đây sẽ cập nhật tức thì công cụ tính học phí ngoài Trang chủ và Cổng Phụ huynh</div>
+                <h2 class="card-title">Đơn hàng VietQR &amp; Sổ cái Giao dịch Ví Buổi Học (Double-Entry Ledger)</h2>
+                <div class="muted" style="font-size:12px;">Đơn mới ở trạng thái PENDING_PAYMENT cho đến khi nhận Webhook xác nhận từ ngân hàng</div>
             </div>
         </div>
 
-        <div class="row-inline" style="gap:12px;">
-            <div style="width:240px;">
-                <label class="field-label">Đơn giá cơ sở 1 buổi 90p (VNĐ)</label>
-                <input id="execBasePrice" type="number" class="input mono" th:value="${baseSessionPrice.longValue()}" />
-            </div>
-            <div style="padding-top:22px;">
-                <button type="button" class="btn btn--accent" style="height:40px;" onclick="oylg.saveWebBasePrice()">Lưu cấu hình đơn giá gốc</button>
-            </div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Mã đơn</th>
+                    <th>Gia đình</th>
+                    <th>Gói đăng ký</th>
+                    <th class="text-right">Số tiền</th>
+                    <th>Trạng thái</th>
+                    <th class="text-right">Webhook Ngân hàng</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="ord : ${orders}">
+                    <td class="mono" th:text="${ord.orderCode}"></td>
+                    <td th:text="${ord.parentName + ' · ' + ord.studentName}"></td>
+                    <td th:text="${ord.packageTitle}"></td>
+                    <td class="text-right mono" th:text="${#numbers.formatInteger(ord.netPaidAmountVnd, 3, 'POINT') + 'đ'}"></td>
+                    <td>
+                        <span class="tag"
+                              th:classappend="${ord.paymentStatus == 'PAID' ? 'tag--pos' : (ord.paymentStatus == 'PENDING_PAYMENT' ? 'tag--accent' : 'tag--neg')}"
+                              th:text="${ord.paymentStatus}"></span>
+                    </td>
+                    <td class="text-right">
+                        <button th:if="${ord.paymentStatus == 'PENDING_PAYMENT'}"
+                                type="button" class="btn btn--sm btn--accent"
+                                th:data-order="${ord.orderCode}"
+                                onclick="oylg.confirmWebhookOrder(this.getAttribute('data-order'))">
+                            Xác nhận tiền về
+                        </button>
+                        <span th:if="${ord.paymentStatus != 'PENDING_PAYMENT'}" class="muted mono" style="font-size:12px;">Đã đối soát</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- 3. GROUP CLASS COORDINATION (M09.2) -->
+    <!-- 4. GROUP CLASS COORDINATION (M09.2) -->
     <div class="card stack-16">
         <div>
             <h2 class="card-title">Điều phối Lớp Nhóm Nhỏ Ghép Theo Lỗ Hổng YCCĐ Tương Đồng (M09.2)</h2>
-            <div class="muted" style="font-size:12px;">Quy tắc mở lớp: Đủ sĩ số tối thiểu (3 học sinh cùng mã lỗ hổng gốc) mới khai giảng</div>
+            <div class="muted" style="font-size:12px;">Quy tắc mở lớp: Đủ sĩ số tối thiểu 3 học sinh cùng lỗ hổng gốc mới khai giảng</div>
         </div>
 
         <div class="grid-2">
@@ -75,11 +167,8 @@
                 </div>
                 <div style="font-weight:500;" th:text="${gc.title}"></div>
                 <div class="secondary" style="font-size:12px;" th:text="${gc.expertName + ' · ' + gc.scheduleInfo}"></div>
-                <div class="mono muted" style="font-size:11px;" th:text="${'Lỗ hổng chung: ' + gc.sharedGapsCsv}"></div>
-
                 <div class="row-between" style="padding-top:10px;border-top:1px solid var(--border-hairline);">
-                    <span class="mono" style="font-size:12px;"
-                          th:text="${'Sĩ số: ' + gc.enrolledCount + '/' + gc.maxCapacity + ' (Tối thiểu ' + gc.minRequired + ')'}"></span>
+                    <span class="mono" style="font-size:12px;" th:text="${'Sĩ số: ' + gc.enrolledCount + '/' + gc.maxCapacity}"></span>
                     <div class="row-inline">
                         <button type="button" class="btn btn--sm btn--secondary"
                                 th:attr="onclick='oylg.groupAction(' + ${gc.id} + ', \'ADD_STUDENT\')'">+ Ghép thêm 1 HS</button>

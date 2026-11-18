@@ -321,3 +321,53 @@ CREATE TABLE IF NOT EXISTS `oylg_boarding_checkins` (
     PRIMARY KEY (`id`),
     INDEX `index_student_checked_at` (`student_id`, `checked_at`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
+CREATE TABLE IF NOT EXISTS `oylg_portal_accounts` (
+    `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+    `phone` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `password_hash` varchar(128) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `full_name` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `role_code` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `role_label` varchar(120) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `default_route` varchar(120) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `linked_student_id` bigint unsigned NOT NULL DEFAULT 0,
+    `session_token` varchar(128) COLLATE utf8mb4_unicode_520_ci,
+    `status` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'ACTIVE',
+    `created_at` datetime NOT NULL,
+    `updated_at` datetime NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `key_phone` (`phone`),
+    INDEX `index_session_token` (`session_token`),
+    INDEX `index_role_code` (`role_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
+CREATE TABLE IF NOT EXISTS `oylg_wallet_transactions` (
+    `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+    `student_id` bigint unsigned NOT NULL,
+    `student_name` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `tx_code` varchar(64) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `tx_type` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL COMMENT 'CREDIT_ORDER, DEBIT_LESSON, ADJUST_MODALITY, REFUND_14D',
+    `delta_sessions` int NOT NULL DEFAULT 0,
+    `delta_amount_vnd` decimal(18,2) NOT NULL DEFAULT 0.00,
+    `balance_after` int NOT NULL DEFAULT 0,
+    `reference_code` varchar(64) COLLATE utf8mb4_unicode_520_ci,
+    `description` varchar(300) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `created_at` datetime NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `key_tx_code` (`tx_code`),
+    INDEX `index_student_created` (`student_id`, `created_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
+CREATE TABLE IF NOT EXISTS `oylg_digest_dispatches` (
+    `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+    `student_id` bigint unsigned NOT NULL,
+    `student_name` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `parent_phone` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `channel` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'ZALO_ZNS',
+    `digest_date` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `summary_content` mediumtext COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `dispatch_status` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'SENT',
+    `sent_at` datetime NOT NULL,
+    PRIMARY KEY (`id`),
+    INDEX `index_student_date` (`student_id`, `digest_date`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;

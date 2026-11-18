@@ -180,25 +180,37 @@
             </div>
         </div>
 
-        <!-- RIGHT SIDEBAR: GROUNDED PARENT SUPPORT -->
-        <div class="card stack-16" style="position:sticky;top:84px;">
-            <div>
-                <div class="eyebrow" style="margin-bottom:4px;">Trợ lý CSKH 24/7</div>
-                <h3 class="card-title">Hỗ trợ nhanh từ Kho tri thức chuẩn</h3>
-                <p class="muted" style="font-size:12px;margin-top:4px;">Chỉ trả lời dựa trên quy chế chính thức của Hội đồng OYLG, không suy diễn ngoài phạm vi.</p>
+        <!-- RIGHT SIDEBAR: 60S TOTP PICKUP PASS + GROUNDED PARENT SUPPORT -->
+        <div class="stack-16" style="position:sticky;top:84px;">
+            <div class="card stack-12">
+                <div class="row-between">
+                    <span class="eyebrow" style="margin-bottom:0;">Thẻ đón con TOTP 60 giây</span>
+                    <span class="tag tag--pos mono">Đổi mỗi phút</span>
+                </div>
+                <div th:each="pk : ${pickups}" th:if="${pk.authorized}" class="card card--compact row-between" style="background:var(--bg-page);">
+                    <div>
+                        <div style="font-size:13px;font-weight:500;" th:text="${pk.guardianFullName}"></div>
+                        <div class="muted" style="font-size:11px;" th:text="${pk.relationship}"></div>
+                    </div>
+                    <span class="mono" style="font-size:16px;font-weight:600;color:var(--accent);" th:text="${liveTotpMap.get(pk.id)}">482910</span>
+                </div>
             </div>
 
-            <div class="card card--compact stack-8" style="background:var(--bg-page);font-size:13px;">
-                <div style="font-weight:500;" th:text="${'Xin chào ' + activeStudent.parentName}"></div>
-                <p class="secondary">Ví của <strong th:text="${activeStudent.fullName}"></strong> hiện còn <strong class="mono" th:text="${activeStudent.sessionCreditsRemaining + ' buổi'}"></strong>. Gia đình có thể bấm trực tiếp vào từng lịch học bên trái để đổi sang học Zoom hoặc Gia sư tại nhà khi bận đưa đón.</p>
-            </div>
-
-            <div class="stack-8">
-                <button type="button" class="btn btn--secondary btn--full"
-                        onclick="oylg.openCheckout('PKG-ADDON-12S', 'Gói Nạp Thêm 12 Buổi Gia Sư Bộ Môn 1-1', 3600000, 12)">
-                    Nạp nhanh +12 buổi (VietQR)
-                </button>
-                <a href="/#dat-lich-tu-van" class="btn btn--outline btn--full">Yêu cầu Cố vấn gọi lại</a>
+            <div class="card stack-12">
+                <div>
+                    <h3 class="card-title">Sổ cái Giao dịch Ví buổi học</h3>
+                    <div class="muted" style="font-size:12px;">Lưu vết bất biến mọi giao dịch cộng/trừ buổi</div>
+                </div>
+                <div class="stack-8">
+                    <div th:each="tx : ${walletLedger}" class="card card--compact stack-4" style="background:var(--bg-page);font-size:12px;">
+                        <div class="row-between mono">
+                            <span class="muted" th:text="${tx.txCode}"></span>
+                            <strong th:style="${tx.deltaSessions >= 0 ? 'color:var(--pos);' : 'color:var(--neg);'}"
+                                    th:text="${(tx.deltaSessions >= 0 ? '+' : '') + tx.deltaSessions + ' buổi (Dư ' + tx.balanceAfter + ')'}"></strong>
+                        </div>
+                        <div class="secondary" th:text="${tx.description}"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

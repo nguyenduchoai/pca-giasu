@@ -63,6 +63,7 @@
         var sessEl = document.getElementById("checkoutPkgSessions");
         var qrImg = document.getElementById("checkoutVietQrImg");
         var resultBox = document.getElementById("checkoutSuccessBox");
+        var pendingBox = document.getElementById("checkoutPendingBox");
         var formBox = document.getElementById("checkoutFormBox");
 
         if (codeEl) codeEl.value = pkgCode;
@@ -74,6 +75,7 @@
             qrImg.src = "https://img.vietqr.io/image/MB-0368889999-compact2.png?amount=" + priceVnd + "&addInfo=" + info;
         }
         if (resultBox) resultBox.style.display = "none";
+        if (pendingBox) pendingBox.style.display = "none";
         if (formBox) formBox.style.display = "block";
         window.oylg.openModal("oylgCheckoutModal");
     };
@@ -94,13 +96,72 @@
                 window.oylg.toast("Không thể tạo đơn hàng lúc này, vui lòng thử lại");
                 return;
             }
+            window.oylg._pendingOrderCode = data.orderCode;
             document.getElementById("checkoutFormBox").style.display = "none";
+            var pbox = document.getElementById("checkoutPendingBox");
+            pbox.style.display = "block";
+            document.getElementById("pendingOrderCode").textContent = data.orderCode;
+            document.getElementById("pendingNetAmount").textContent = fmtVnd(data.netPayableVnd);
+            window.oylg.toast("Đã tạo đơn " + data.orderCode + " (PENDING_PAYMENT)");
+        });
+    };
+
+    window.oylg.simulateBankWebhook = function () {
+        var code = window.oylg._pendingOrderCode;
+        if (!code) return;
+        postJson("/api/v1/oylg/webhooks/payment", { orderCode: code }, function (err, data) {
+            if (err || !data || !data.ok) return;
+            document.getElementById("checkoutPendingBox").style.display = "none";
             var box = document.getElementById("checkoutSuccessBox");
             box.style.display = "block";
             document.getElementById("resOrderCode").textContent = data.orderCode;
             document.getElementById("resNetPaid").textContent = fmtVnd(data.netPaidAmountVnd);
             document.getElementById("resWalletAfter").textContent = data.walletBalance + " buổi";
-            window.oylg.toast("Đã xác nhận thanh toán " + data.orderCode + " và cộng buổi vào ví");
+            window.oylg.toast("Webhook xác nhận thành công · Cộng +" + data.sessionsGranted + " buổi vào Sổ cái");
+        });
+    };
+
+    window.oylg.confirmWebhookOrder = function (orderCode) {
+        postJson("/api/v1/oylg/webhooks/payment", { orderCode: orderCode }, function (err, d) {
+            if (!err && d && d.ok) {
+                window.oylg.toast("Đã đối soát Webhook đơn " + orderCode);
+                setTimeout(function () { location.reload(); }, 500);
+            }
+        });
+    };
+
+    window.oylg.submitPortalLogin = function (e) {
+        if (e) e.preventDefault();
+        var phone = document.getElementById("loginPhone").value;
+        var password = document.getElementById("loginPassword").value;
+        var redirect = document.getElementById("loginRedirectUri") ? document.getElementById("loginRedirectUri").value : "/parent";
+        postJson("/api/v1/oylg/auth/login", { phone: phone, password: password }, function (err, d) {
+            if (err || !d || !d.ok) {
+                window.oylg.toast((d && d.message) || "Sai số điện thoại hoặc mật khẩu");
+                return;
+            }
+            location.href = d.defaultRoute || redirect;
+        });
+    };
+
+    window.oylg.quickLoginPhone = function (phone) {
+        document.getElementById("loginPhone").value = phone;
+        document.getElementById("loginPassword").value = "oylg2026";
+        window.oylg.submitPortalLogin(null);
+    };
+
+    window.oylg.logoutPortal = function () {
+        postJson("/api/v1/oylg/auth/logout", {}, function () {
+            window.oylg.toast("Đã đăng xuất phiên hiện tại");
+            setTimeout(function () { location.href = "/login"; }, 400);
+        });
+    };
+
+    window.oylg.dispatchEveningDigest = function (studentId) {
+        postJson("/api/v1/oylg/digests/dispatch", { studentId: studentId }, function (err, d) {
+            if (!err && d && d.ok) {
+                window.oylg.toast("Đã phát bản tin 20:30: " + d.summary);
+            }
         });
     };
 
