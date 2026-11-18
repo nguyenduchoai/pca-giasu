@@ -111,6 +111,7 @@ public class OylgWebViewController {
             .addVariable("walletLedger", securityAndLedgerService.getWalletLedger(sid))
             .addVariable("liveTotpMap", securityAndLedgerService.getLivePickupTotpMap(sid))
             .addVariable("pickups", platformService.getPickupsForStudent(sid))
+            .addVariable("heatmapUnits", platformService.getStudentHeatmapView(sid))
             .addVariable("allPackages", platformService.getActivePackages())
             .build();
     }

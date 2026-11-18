@@ -4,55 +4,61 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{ezytheme}">
 <body>
-<div layout:fragment="content" class="oylg-container oylg-section--tight stack-24">
+<div layout:fragment="content" class="oylg-container oylg-section--tight stack-20">
 
-    <!-- 1. STUDENT WALLET & PROFILE HEADER -->
+    <!-- 1. COMPACT FAMILY OVERVIEW + INSTANT PICKUP CODE -->
     <div class="card stack-16">
         <div class="row-between">
             <div class="row-inline">
-                <span class="muted" style="font-size:12px;">Chọn hồ sơ con:</span>
                 <a th:each="st : ${students}"
                    th:href="${'/parent?studentId=' + st.id}"
                    class="btn btn--sm"
                    th:classappend="${st.id == activeStudent.id ? 'btn--primary' : 'btn--secondary'}"
-                   th:text="${st.fullName + ' (Lớp ' + st.currentGrade + ')'}">Học sinh</a>
+                   th:text="${st.fullName + ' · Lớp ' + st.currentGrade}">Học sinh</a>
             </div>
-            <span class="mono muted" style="font-size:12px;" th:text="${'Mã hồ sơ: ' + activeStudent.studentCode}">HS-2026-0089</span>
+            <button type="button" class="btn btn--sm btn--accent"
+                    onclick="oylg.openCheckout('PKG-T3-TUTOR-6M', 'Gói Đồng Hành Chuyên Gia Bộ Môn (6 tháng · 48 buổi)', 13980000, 48)">
+                + Nạp thêm buổi học
+            </button>
         </div>
 
-        <div class="grid-4" style="padding-top:12px;border-top:1px solid var(--border-hairline);">
-            <div>
-                <div class="stat-label">Học sinh &amp; Trường</div>
-                <div style="font-size:16px;font-weight:500;margin-top:6px;" th:text="${activeStudent.fullName}"></div>
-                <div class="muted" style="font-size:12px;margin-top:2px;" th:text="${activeStudent.schoolName}"></div>
+        <div class="kpi-strip">
+            <div class="kpi-pill">
+                <span class="muted">Ví buổi còn lại:</span>
+                <strong style="font-size:16px;color:var(--accent);" th:text="${activeStudent.sessionCreditsRemaining + ' buổi'}">20 buổi</strong>
             </div>
-            <div>
-                <div class="stat-label">Ngành &amp; Trường mục tiêu</div>
-                <div style="font-size:14px;font-weight:500;margin-top:6px;" th:text="${activeStudent.targetMajor}"></div>
-                <div class="muted" style="font-size:12px;margin-top:2px;" th:text="${activeStudent.targetSchool}"></div>
+            <div class="kpi-pill">
+                <span class="muted">Chuyên cần:</span>
+                <strong th:text="${(activeCase != null ? activeCase.attendanceRate : 96) + '%'}">96%</strong>
             </div>
-            <div>
-                <div class="stat-label">Số buổi học còn lại</div>
-                <div class="stat-figure" style="color:var(--accent);" th:text="${activeStudent.sessionCreditsRemaining + ' buổi'}">18 buổi</div>
-                <div class="stat-delta">Đổi linh hoạt Online / Trung tâm / Tại nhà</div>
+            <div class="kpi-pill">
+                <span class="muted">Mục tiêu:</span>
+                <strong th:text="${activeStudent.targetMajor}">Kỹ sư AI</strong>
             </div>
-            <div>
-                <div class="stat-label">Chuyên cần &amp; Lộ trình</div>
-                <div class="stat-figure" th:text="${(activeCase != null ? activeCase.attendanceRate : 96) + '%'}">96%</div>
-                <div class="stat-delta" th:text="${(activeCase != null ? activeCase.remedialRatioPercent : 60) + '% ôn gốc / ' + (activeCase != null ? activeCase.currentGradeRatioPercent : 40) + '% bài trên lớp'}"></div>
+            <div th:each="pk, iter : ${pickups}" th:if="${pk.authorized and iter.index == 0}" class="kpi-pill" style="margin-left:auto;background:var(--pos-soft);border-color:rgba(21,128,61,.2);">
+                <span style="color:var(--pos);font-weight:600;">Mã đón con hôm nay:</span>
+                <strong style="font-size:17px;color:var(--pos);letter-spacing:.04em;" th:text="${liveTotpMap.get(pk.id)}">893212</strong>
             </div>
         </div>
     </div>
 
-    <div class="split-asym">
-        <div class="stack-24">
-            <!-- 2. UPCOMING SCHEDULE + 1-CLICK RESCHEDULE & MODALITY SWITCH -->
+    <!-- 2. CLEAN 3-TAB NAVIGATION (NO SCROLLING WALL!) -->
+    <div class="row-between">
+        <div class="seg-tabs" role="tablist">
+            <button type="button" class="seg-tab is-active" onclick="oylg.switchTab('parent', 'pTabToday', this)">Hôm nay &amp; Lịch học</button>
+            <button type="button" class="seg-tab" onclick="oylg.switchTab('parent', 'pTabProgress', this)">Tiến độ các môn</button>
+            <button type="button" class="seg-tab" onclick="oylg.switchTab('parent', 'pTabWallet', this)">Gói học &amp; Ví buổi</button>
+        </div>
+    </div>
+
+    <!-- TAB 1: TODAY & UPCOMING SCHEDULE (FITS 1 SCREEN) -->
+    <div id="pTabToday" data-tab-group="parent" class="tab-panel is-active">
+        <div class="grid-2">
+            <!-- Left: Upcoming Classes -->
             <div class="card stack-16">
                 <div class="row-between">
-                    <div>
-                        <h2 class="card-title">Lịch học sắp tới</h2>
-                        <div class="muted" style="font-size:12px;">Đổi lịch miễn phí trước 24 giờ · Bấm chọn hình thức học phù hợp cho từng buổi</div>
-                    </div>
+                    <h2 class="card-title">Lịch học sắp tới</h2>
+                    <span class="muted" style="font-size:12px;">Đổi hình thức / dời lịch trước 24h</span>
                 </div>
 
                 <div class="stack-12">
@@ -60,20 +66,17 @@
                         <div class="row-between">
                             <div>
                                 <div class="row-inline">
-                                    <span class="tag mono" th:text="${les.subjectLabel}">Toán Lớp 9</span>
-                                    <span class="mono muted" style="font-size:12px;" th:id="${'lessonSlot-' + les.id}" th:text="${les.scheduleLabel}"></span>
+                                    <span class="tag tag--accent" th:text="${les.subjectLabel}">Toán Lớp 9</span>
+                                    <span class="muted" style="font-size:12.5px;" th:id="${'lessonSlot-' + les.id}" th:text="${les.scheduleLabel}"></span>
                                 </div>
-                                <div style="font-weight:500;margin-top:6px;" th:text="${les.topicTitle}"></div>
-                                <div class="muted" style="font-size:12px;margin-top:2px;" th:text="${'Giáo viên: ' + les.expertName + ' · ' + les.roomOrLink}"></div>
+                                <div style="font-weight:700;margin-top:6px;" th:text="${les.topicTitle}"></div>
+                                <div class="muted" style="font-size:12.5px;margin-top:2px;" th:text="${les.expertName + ' · ' + les.roomOrLink}"></div>
                             </div>
-                            <div class="text-right">
-                                <span class="tag tag--pos mono" th:text="${#numbers.formatInteger(les.sessionPrice, 3, 'POINT') + 'đ/buổi'}"></span>
-                            </div>
+                            <span class="tag tag--pos" th:text="${#numbers.formatInteger(les.sessionPrice, 3, 'POINT') + 'đ'}"></span>
                         </div>
 
-                        <div class="row-between" style="padding-top:10px;border-top:1px solid var(--border-hairline);">
+                        <div class="row-between" style="padding-top:8px;border-top:1px solid var(--border-hairline);">
                             <div class="row-inline">
-                                <span class="muted" style="font-size:12px;">Hình thức:</span>
                                 <button type="button" class="btn btn--sm"
                                         th:classappend="${les.deliveryMode == 'ONLINE_ZOOM' ? 'btn--primary' : 'btn--outline'}"
                                         th:attr="onclick='oylg.switchModality(' + ${les.id} + ', \'ONLINE_ZOOM\')'">Online</button>
@@ -84,136 +87,119 @@
                                         th:classappend="${les.deliveryMode == 'AT_HOME' ? 'btn--primary' : 'btn--outline'}"
                                         th:attr="onclick='oylg.switchModality(' + ${les.id} + ', \'AT_HOME\')'">Tại nhà</button>
                             </div>
-                            <div class="row-inline">
-                                <button type="button" class="btn btn--sm btn--secondary"
-                                        th:attr="onclick='oylg.rescheduleLesson(' + ${les.id} + ', \'Thứ Bảy, 14:00 – 15:30\')'">Dời sang T7 14:00</button>
-                                <button type="button" class="btn btn--sm btn--secondary"
-                                        th:attr="onclick='oylg.rescheduleLesson(' + ${les.id} + ', \'Chủ Nhật, 09:00 – 10:30\')'">Dời sang CN 09:00</button>
-                            </div>
+                            <button type="button" class="btn btn--sm btn--secondary"
+                                    th:attr="onclick='oylg.rescheduleLesson(' + ${les.id} + ', \'Thứ Bảy, 14:00 – 15:30\')'">Dời sang T7</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 3. DAILY CONSOLIDATED DIGEST -->
+            <!-- Right: Today's Digest & Boarding Timeline -->
             <div class="card stack-16">
-                <div>
-                    <h2 class="card-title">Nhận xét buổi học &amp; Điểm danh bán trú</h2>
-                    <div class="muted" style="font-size:12px;">Tổng hợp gọn kết quả trong ngày của con</div>
+                <div class="row-between">
+                    <h2 class="card-title">Cập nhật trong ngày của con</h2>
+                    <span class="tag tag--pos">Đã đồng bộ</span>
                 </div>
 
-                <div th:if="${activeCase != null and activeCase.parentB3Summary != null}" class="card card--compact stack-4" style="background:var(--bg-page);">
-                    <div class="stat-label">Lời khuyên từ Cố vấn đồng hành</div>
-                    <div style="font-size:13px;" th:text="${activeCase.parentB3Summary}"></div>
+                <div th:if="${activeCase != null and activeCase.parentB3Summary != null}"
+                     class="card card--compact stack-4" style="background:var(--accent-soft);">
+                    <div style="font-size:12px;font-weight:700;color:var(--accent);">Lời nhắn từ Cố vấn đồng hành</div>
+                    <div style="font-size:13.5px;" th:text="${activeCase.parentB3Summary}"></div>
                 </div>
 
                 <div class="stack-8">
-                    <div th:each="log : ${completedLogs}" class="card card--compact stack-8">
+                    <div th:each="log : ${completedLogs}" class="card card--compact stack-4" style="background:var(--bg-page);">
                         <div class="row-between">
-                            <span style="font-weight:500;" th:text="${log.subjectLabel + ' · ' + log.unitCode}"></span>
+                            <strong th:text="${log.subjectLabel}">Toán Lớp 9</strong>
                             <span class="tag tag--pos"
                                   th:text="${log.understandingLevel == 'MASTERED' ? 'Nắm vững' : (log.understandingLevel == 'PARTIAL' ? 'Hiểu một phần' : 'Cần kèm lại')}">Nắm vững</span>
                         </div>
                         <p class="secondary" style="font-size:13px;" th:text="${log.sanitizedParentSummary}"></p>
-                        <div class="muted mono" style="font-size:11px;" th:text="${'Buổi học: ' + log.scheduleLabel + ' · Tinh thần: ' + log.moodObserved}"></div>
                     </div>
 
                     <div th:each="ci : ${boardingCheckins}" class="card card--compact row-between" style="background:var(--bg-page);">
-                        <div style="font-size:13px;">
-                            <strong class="mono" th:text="${'[' + ci.timeLabel + '] '}"></strong>
+                        <div style="font-size:13px;flex:1;">
+                            <strong th:text="${ci.timeLabel + ' · '}"></strong>
                             <span th:text="${ci.notes}"></span>
                         </div>
                         <span class="tag"
                               th:classappend="${ci.verificationStatus == 'VERIFIED_SAFE' ? 'tag--pos' : 'tag--neg'}"
-                              th:text="${ci.checkpointType == 'ARRIVE' ? 'Đến lớp' : (ci.checkpointType == 'MEAL' ? 'Ăn trưa' : (ci.checkpointType == 'PICKUP' ? 'Đón về' : (ci.checkpointType == 'NIGHT_ROLLCALL' ? 'Điểm danh tối' : 'Chặn người lạ')))}">Đến lớp</span>
+                              th:text="${ci.checkpointType == 'ARRIVE' ? 'Đến lớp' : (ci.checkpointType == 'MEAL' ? 'Ăn trưa' : (ci.checkpointType == 'PICKUP' ? 'Đón về' : (ci.checkpointType == 'NIGHT_ROLLCALL' ? 'Nghỉ tối' : 'Chặn người lạ')))}">Đến lớp</span>
                     </div>
-                </div>
-            </div>
-
-            <!-- 4. E-COMMERCE ORDERS & 14-DAY REFUND -->
-            <div class="card stack-16">
-                <div class="row-between">
-                    <div>
-                        <h2 class="card-title">Lịch sử đăng ký gói học</h2>
-                        <div class="muted" style="font-size:12px;">Hoàn lại 100% số buổi chưa học trong 14 ngày đầu nếu gia đình chưa hài lòng</div>
-                    </div>
-                </div>
-
-                <div class="table-wrap">
-                    <table class="data-table">
-                        <thead>
-                        <tr>
-                            <th>Mã đơn</th>
-                            <th>Gói học</th>
-                            <th>Số buổi</th>
-                            <th class="text-right">Đã đóng</th>
-                            <th>Trạng thái</th>
-                            <th class="text-right">Thao tác</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="ord : ${orders}">
-                            <td class="mono" th:text="${ord.orderCode}"></td>
-                            <td>
-                                <div style="font-weight:500;" th:text="${ord.packageTitle}"></div>
-                                <div class="muted" style="font-size:12px;" th:text="${ord.studentName}"></div>
-                            </td>
-                            <td class="mono" th:text="${'+' + ord.totalSessionsGranted + ' buổi'}"></td>
-                            <td class="text-right mono" th:text="${#numbers.formatInteger(ord.netPaidAmountVnd, 3, 'POINT') + 'đ'}"></td>
-                            <td>
-                                <span class="tag"
-                                      th:classappend="${ord.paymentStatus == 'PAID' ? 'tag--pos' : (ord.paymentStatus == 'PENDING_PAYMENT' ? 'tag--accent' : 'tag--neg')}"
-                                      th:text="${ord.paymentStatus == 'PAID' ? 'Đã thanh toán' : (ord.paymentStatus == 'PENDING_PAYMENT' ? 'Chờ chuyển khoản' : 'Đã hoàn phí')}"></span>
-                            </td>
-                            <td class="text-right">
-                                <button th:if="${ord.paymentStatus == 'PAID'}"
-                                        type="button"
-                                        class="btn btn--sm btn--outline"
-                                        th:attr="onclick='oylg.refundOrder14d(' + ${ord.id} + ')'">
-                                    Yêu cầu hoàn phí
-                                </button>
-                                <span th:if="${ord.paymentStatus == 'REFUNDED_14D'}"
-                                      class="mono muted" style="font-size:12px;"
-                                      th:text="${'Đã hoàn ' + #numbers.formatInteger(ord.refundedAmountVnd, 3, 'POINT') + 'đ'}"></span>
-                                <span th:if="${ord.paymentStatus == 'PENDING_PAYMENT'}"
-                                      class="muted" style="font-size:12px;">Đang đối soát</span>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- RIGHT SIDEBAR: PICKUP PASS + WALLET HISTORY -->
-        <div class="stack-16" style="position:sticky;top:84px;">
-            <div class="card stack-12">
-                <div class="row-between">
-                    <span class="eyebrow" style="margin-bottom:0;">Mã đón con an toàn</span>
-                    <span class="tag tag--pos">Đổi số mỗi phút</span>
+    <!-- TAB 2: VISUAL TOPIC MASTERY PROGRESS -->
+    <div id="pTabProgress" data-tab-group="parent" class="tab-panel">
+        <div class="card stack-16">
+            <div class="row-between">
+                <div>
+                    <h2 class="card-title" th:text="${'Bản đồ tiến độ của ' + activeStudent.fullName}">Tiến độ</h2>
+                    <div class="muted" style="font-size:12.5px;">60% thời lượng đang ưu tiên bù các bài màu cam dưới 50%</div>
                 </div>
-                <div th:each="pk : ${pickups}" th:if="${pk.authorized}" class="card card--compact row-between" style="background:var(--bg-page);">
-                    <div>
-                        <div style="font-size:13px;font-weight:500;" th:text="${pk.guardianFullName}"></div>
-                        <div class="muted" style="font-size:11px;" th:text="${pk.relationship}"></div>
+                <span class="tag tag--pos">Cập nhật sau mỗi buổi học</span>
+            </div>
+
+            <div class="grid-2">
+                <div th:each="u : ${heatmapUnits}" class="card card--compact stack-8" style="background:var(--bg-page);">
+                    <div class="row-between">
+                        <span class="muted" style="font-size:12px;" th:text="${'Chương trình Lớp ' + u.get('grade')}">Lớp 8</span>
+                        <span class="tag"
+                              th:classappend="${u.get('rootCauseGap') ? 'tag--neg' : (u.get('masteryScore') >= 70 ? 'tag--pos' : 'tag--warn')}"
+                              th:text="${u.get('masteryScore') + '% · ' + (u.get('rootCauseGap') ? 'Đang bù gốc' : (u.get('masteryScore') >= 70 ? 'Đã vững' : 'Đang luyện'))}"></span>
                     </div>
-                    <span class="mono" style="font-size:16px;font-weight:600;color:var(--accent);" th:text="${liveTotpMap.get(pk.id)}">482910</span>
+                    <div style="font-weight:700;" th:text="${u.get('topicName')}">Chuyên đề</div>
+                    <div class="pbar">
+                        <div class="pbar__fill"
+                             th:classappend="${u.get('masteryScore') >= 70 ? '' : (u.get('masteryScore') >= 40 ? 'is-warn' : 'is-neg')}"
+                             th:style="${'width:' + u.get('masteryScore') + '%'}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: PACKAGES, REFUND GUARANTEE & SESSION LEDGER -->
+    <div id="pTabWallet" data-tab-group="parent" class="tab-panel">
+        <div class="grid-2">
+            <div class="card stack-16">
+                <div class="row-between">
+                    <h2 class="card-title">Gói học đã đăng ký</h2>
+                    <span class="muted" style="font-size:12px;">Bảo lãnh hoàn phí 14 ngày đầu</span>
+                </div>
+                <div class="stack-12">
+                    <div th:each="ord : ${orders}" class="card card--compact stack-8" style="background:var(--bg-page);">
+                        <div class="row-between">
+                            <strong th:text="${ord.packageTitle}">Gói học</strong>
+                            <span class="tag"
+                                  th:classappend="${ord.paymentStatus == 'PAID' ? 'tag--pos' : (ord.paymentStatus == 'PENDING_PAYMENT' ? 'tag--accent' : 'tag--neg')}"
+                                  th:text="${ord.paymentStatus == 'PAID' ? 'Đã thanh toán' : (ord.paymentStatus == 'PENDING_PAYMENT' ? 'Chờ chuyển khoản' : 'Đã hoàn phí')}"></span>
+                        </div>
+                        <div class="row-between" style="font-size:13px;">
+                            <span class="muted" th:text="${ord.studentName + ' · +' + ord.totalSessionsGranted + ' buổi'}"></span>
+                            <strong th:text="${#numbers.formatInteger(ord.netPaidAmountVnd, 3, 'POINT') + 'đ'}"></strong>
+                        </div>
+                        <div th:if="${ord.paymentStatus == 'PAID'}" class="row-between" style="padding-top:6px;border-top:1px solid var(--border-hairline);">
+                            <span class="muted" style="font-size:12px;" th:text="${ord.orderCode}"></span>
+                            <button type="button" class="btn btn--sm btn--outline"
+                                    th:attr="onclick='oylg.refundOrder14d(' + ${ord.id} + ')'">Yêu cầu hoàn phí 14 ngày</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="card stack-12">
-                <div>
-                    <h3 class="card-title">Lịch sử cộng / trừ buổi học</h3>
-                    <div class="muted" style="font-size:12px;">Minh bạch từng buổi học đã sử dụng</div>
-                </div>
+            <div class="card stack-16">
+                <h2 class="card-title">Lịch sử cộng / trừ buổi học</h2>
                 <div class="stack-8">
-                    <div th:each="tx : ${walletLedger}" class="card card--compact stack-4" style="background:var(--bg-page);font-size:12px;">
-                        <div class="row-between mono">
+                    <div th:each="tx : ${walletLedger}" class="card card--compact stack-4" style="background:var(--bg-page);">
+                        <div class="row-between" style="font-size:13px;">
                             <span class="muted" th:text="${tx.txCode}"></span>
                             <strong th:style="${tx.deltaSessions >= 0 ? 'color:var(--pos);' : 'color:var(--neg);'}"
-                                    th:text="${(tx.deltaSessions >= 0 ? '+' : '') + tx.deltaSessions + ' buổi (Dư ' + tx.balanceAfter + ')'}"></strong>
+                                    th:text="${(tx.deltaSessions >= 0 ? '+' : '') + tx.deltaSessions + ' buổi (Còn ' + tx.balanceAfter + ')'}"></strong>
                         </div>
-                        <div class="secondary" th:text="${tx.description}"></div>
+                        <div class="secondary" style="font-size:13px;" th:text="${tx.description}"></div>
                     </div>
                 </div>
             </div>

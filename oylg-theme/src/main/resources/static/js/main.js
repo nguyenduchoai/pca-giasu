@@ -35,6 +35,25 @@
         if (m) m.classList.remove("is-open");
     };
 
+    window.oylg.switchTab = function (group, panelId, btnEl) {
+        var panels = document.querySelectorAll('[data-tab-group="' + group + '"]');
+        for (var i = 0; i < panels.length; i++) {
+            panels[i].classList.toggle("is-active", panels[i].id === panelId);
+        }
+        if (btnEl && btnEl.parentElement) {
+            var btns = btnEl.parentElement.querySelectorAll(".seg-tab");
+            for (var j = 0; j < btns.length; j++) {
+                btns[j].classList.toggle("is-active", btns[j] === btnEl);
+            }
+        }
+    };
+
+    window.oylg.switchRoleAndGo = function (phone, targetUrl) {
+        postJson("/api/v1/oylg/auth/login", { phone: phone, password: "oylg2026" }, function () {
+            location.href = targetUrl;
+        });
+    };
+
     document.addEventListener("keydown", function (e) {
         if (e.key === "Escape") {
             var modals = document.querySelectorAll(".modal-backdrop.is-open");
@@ -195,25 +214,25 @@
             });
     };
 
-    // 3. Consultation Lead Submission
+    // 3. Consultation Lead Submission (Supports fast 3-field form)
     window.oylg.submitLeadForm = function (e, formEl) {
         if (e) e.preventDefault();
         var fd = new FormData(formEl);
         var payload = {
             parentName: fd.get("parentName"),
             phone: fd.get("phone"),
-            studentName: fd.get("studentName"),
+            studentName: fd.get("studentName") || "Học sinh cần tư vấn",
             grade: fd.get("grade") || 9,
-            serviceInterest: fd.get("serviceInterest") || "Tư vấn lộ trình 3 tầng 1-1",
+            serviceInterest: fd.get("serviceInterest") || "Tư vấn lộ trình học 1-1",
             assignedExpert: fd.get("assignedExpert") || "ThS. Lê Minh Tâm"
         };
         postJson("/api/v1/oylg/leads", payload, function (err, data) {
             if (err || !data || !data.ok) {
-                window.oylg.toast("Gửi đăng ký thất bại, vui lòng kiểm tra lại");
+                window.oylg.toast("Gửi đăng ký thất bại, vui lòng thử lại");
                 return;
             }
             formEl.reset();
-            window.oylg.toast("Đã ghi nhận lịch hẹn cùng " + data.assignedExpert + " (Mã phiếu #" + data.leadId + ")");
+            window.oylg.toast("Đã nhận yêu cầu! Cố vấn " + data.assignedExpert + " sẽ gọi lại trong ít phút.");
         });
     };
 
@@ -249,36 +268,36 @@
     // 5. Student Adaptive Quiz & Daily Tasks
     var quizSteps = {
         9: {
-            code: "TOAN.09.CBH.01 · Lớp 9",
-            title: "Rút gọn biểu thức căn bậc hai với điều kiện x < 3:",
+            code: "Toán Lớp 9 · Căn bậc hai",
+            title: "Rút gọn biểu thức sau với điều kiện x < 3:",
             formula: "P = căn((x - 3)^2) + x - 1",
-            hint: "Hãy xét dấu của (x - 3) khi x < 3 trước khi bỏ dấu giá trị tuyệt đối |x - 3|.",
+            hint: "Gợi ý: Vì x < 3 nên (x - 3) mang dấu âm, khi bỏ trị tuyệt đối cần đổi dấu thành (3 - x).",
             options: [
-                { key: "A", label: "A. P = 2x - 4", correct: false, nextGrade: 8, reason: "Sai dấu giá trị tuyệt đối |x - 3| → Hệ thống lùi về kiểm tra Hằng đẳng thức Lớp 8 (TOAN.08.HDT.01)" },
-                { key: "B", label: "B. P = 2", correct: true, nextGrade: 9, reason: "Chính xác: vì x < 3 nên |x - 3| = 3 - x, suy ra P = 3 - x + x - 1 = 2 → Tự động suy luận ĐẠT nhánh tiên quyết dưới" },
-                { key: "C", label: "C. P = 4 - 2x", correct: false, nextGrade: 8, reason: "Nhầm dấu khi thu gọn đa thức → Lùi về kiểm tra TOAN.08.HDT.01" }
+                { key: "A", label: "A. P = 2x - 4", correct: false, nextGrade: 8, reason: "Chưa đúng rồi! Em đang nhầm dấu trị tuyệt đối. Cùng kiểm tra nhanh lại bài Hằng đẳng thức Lớp 8 nhé!" },
+                { key: "B", label: "B. P = 2", correct: true, nextGrade: 9, reason: "Chính xác! Em nắm rất chắc phần trị tuyệt đối và căn thức Lớp 9." },
+                { key: "C", label: "C. P = 4 - 2x", correct: false, nextGrade: 8, reason: "Hơi nhầm dấu khi thu gọn rồi. Mình thử lùi về 1 câu Lớp 8 để kiểm tra gốc nhé!" }
             ]
         },
         8: {
-            code: "TOAN.08.HDT.01 · Lớp 8 (Truy ngược bậc 1)",
-            title: "Khai triển hằng đẳng thức bình phương của một hiệu (x - 3)^2:",
+            code: "Toán Lớp 8 · Hằng đẳng thức",
+            title: "Khai triển hằng đẳng thức (x - 3)^2 bằng gì?",
             formula: "(x - 3)^2 = ?",
             hint: "Áp dụng (A - B)^2 = A^2 - 2AB + B^2 với A = x và B = 3.",
             options: [
-                { key: "A", label: "A. x^2 - 9", correct: false, nextGrade: 7, reason: "Nhầm sang hiệu hai bình phương → Lùi tiếp về Lũy thừa số hữu tỉ Lớp 7 (TOAN.07.SHT.02)" },
-                { key: "B", label: "B. x^2 - 6x + 9", correct: true, nextGrade: 8, reason: "Nắm vững khai triển Lớp 8 → Khoanh vùng lỗ hổng nằm ở bước phá trị tuyệt đối Lớp 9" },
-                { key: "C", label: "C. x^2 - 3x + 9", correct: false, nextGrade: 7, reason: "Thiếu hệ số 2AB → Lùi tiếp về Lớp 7 để kiểm tra phép nhân đơn thức" }
+                { key: "A", label: "A. x^2 - 9", correct: false, nextGrade: 7, reason: "Em đang nhầm sang hiệu hai bình phương. Mình kiểm tra thêm 1 câu lũy thừa Lớp 7 nhé!" },
+                { key: "B", label: "B. x^2 - 6x + 9", correct: true, nextGrade: 8, reason: "Tốt lắm! Phần Lớp 8 em vẫn nhớ, vậy mình chỉ cần ôn lại bước xét dấu ở Lớp 9 thôi." },
+                { key: "C", label: "C. x^2 - 3x + 9", correct: false, nextGrade: 7, reason: "Thiếu hệ số nhân đôi ở giữa rồi. Cùng kiểm tra nhẹ lại câu Lớp 7 nhé!" }
             ]
         },
         7: {
-            code: "TOAN.07.SHT.02 · Lớp 7 (Điểm gốc tiên quyết)",
-            title: "Tính giá trị lũy thừa của số âm: (-3)^2 bằng bao nhiêu?",
+            code: "Toán Lớp 7 · Lũy thừa",
+            title: "Giá trị của (-3)^2 bằng bao nhiêu?",
             formula: "(-3)^2 = (-3) × (-3)",
-            hint: "Tích của hai số âm là một số dương.",
+            hint: "Hai số âm nhân với nhau cho kết quả dương.",
             options: [
-                { key: "A", label: "A. -9", correct: false, nextGrade: 7, reason: "Khoanh vùng xong: Lỗ hổng gốc nằm ở quy tắc dấu lũy thừa Lớp 7 (TOAN.07.SHT.02)" },
-                { key: "B", label: "B. 9", correct: true, nextGrade: 8, reason: "Nền Lớp 7 đã vững → Xác nhận lỗ hổng gốc chính xác tại TOAN.08.HDT.01 (Lớp 8), xếp 60% thời lượng bù gốc" },
-                { key: "C", label: "C. -6", correct: false, nextGrade: 7, reason: "Nhầm lũy thừa với phép nhân 2 → Khoanh vùng gốc tại TOAN.07.SHT.02" }
+                { key: "A", label: "A. -9", correct: false, nextGrade: 7, reason: "Đã tìm ra điểm cần ôn: Thầy Cô sẽ giúp em ôn lại quy tắc dấu Lớp 7 trong 15 phút đầu buổi học!" },
+                { key: "B", label: "B. 9", correct: true, nextGrade: 8, reason: "Chính xác! Nền Lớp 7 của em rất vững, lộ trình sẽ tập trung ôn Hằng đẳng thức Lớp 8." },
+                { key: "C", label: "C. -6", correct: false, nextGrade: 7, reason: "Đã tìm ra điểm cần ôn: Em đang nhầm bình phương với nhân 2. Thầy Cô sẽ kèm lại phần này cho em!" }
             ]
         }
     };
@@ -357,14 +376,19 @@
             var next = Math.min(98, base + boost);
             var scoreSpan = cards[j].querySelector(".hm-score");
             var badgeSpan = cards[j].querySelector(".hm-badge");
+            var barFill = cards[j].querySelector(".pbar__fill");
             if (scoreSpan) scoreSpan.textContent = next + "%";
+            if (barFill) {
+                barFill.style.width = next + "%";
+                barFill.className = "pbar__fill " + (next >= 70 ? "" : (next >= 40 ? "is-warn" : "is-neg"));
+            }
             if (badgeSpan) {
                 if (next >= 70) {
                     badgeSpan.className = "tag tag--pos hm-badge";
-                    badgeSpan.textContent = "Đã nắm vững";
+                    badgeSpan.textContent = "Đã vững";
                 } else {
                     badgeSpan.className = "tag tag--neg hm-badge";
-                    badgeSpan.textContent = "Cần bù gốc";
+                    badgeSpan.textContent = "Đang ôn";
                 }
             }
         }

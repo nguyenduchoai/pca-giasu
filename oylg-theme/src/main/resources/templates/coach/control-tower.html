@@ -4,109 +4,88 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{ezytheme}">
 <body>
-<div layout:fragment="content" class="stack-24">
+<div layout:fragment="content" class="stack-20">
 
-    <!-- 1. ASSIGNED CASES -->
-    <div class="stack-12">
-        <div class="row-between">
-            <div>
-                <h1 class="page-title">Hồ sơ học sinh phụ trách</h1>
-                <div class="muted" style="font-size:13px;">Chọn một học sinh bên dưới để xem tiến độ từng chuyên đề và ghi chú đồng hành</div>
-            </div>
-        </div>
-
-        <div class="grid-3">
-            <a th:each="st, iter : ${students}"
-               th:href="${'/coach?studentId=' + st.id}"
-               class="card card--compact stack-8"
-               th:classappend="${st.id == activeStudent.id ? 'card--featured' : ''}">
-                <div class="row-between">
-                    <span class="mono muted" style="font-size:11px;" th:text="${st.studentCode + ' · Lớp ' + st.currentGrade}"></span>
-                    <span class="tag"
-                          th:classappend="${st.currentGrade == 11 ? 'tag--neg' : (st.currentGrade == 9 ? 'tag--warn' : 'tag--pos')}"
-                          th:text="${st.currentGrade == 11 ? 'Cần giảm tải' : (st.currentGrade == 9 ? 'Đang bù gốc' : 'Ổn định')}"></span>
-                </div>
-                <div style="font-size:16px;font-weight:500;" th:text="${st.fullName}"></div>
-                <div class="secondary" style="font-size:12px;" th:text="${'Mục tiêu: ' + st.targetMajor}"></div>
-                <div class="muted mono" style="font-size:11px;" th:text="${'Còn ' + st.sessionCreditsRemaining + ' buổi học'}"></div>
-            </a>
-        </div>
+    <!-- 1. COMPACT STUDENT CARDS -->
+    <div class="row-between">
+        <h1 class="page-title">Hồ sơ học sinh phụ trách</h1>
+        <a href="/coach/sessions" class="btn btn--accent">+ Ghi sổ đầu bài hôm nay</a>
     </div>
 
-    <!-- 2. KNOWLEDGE HEATMAP -->
-    <div class="card stack-16">
-        <div class="row-between">
-            <div>
-                <h2 class="card-title" th:text="${'Tiến độ nắm bài theo chuyên đề — ' + activeStudent.fullName}"></h2>
-                <div class="muted" style="font-size:12px;">Bấm chọn từng tuần để xem sự tiến bộ của học sinh qua thời gian</div>
+    <div class="grid-3">
+        <a th:each="st : ${students}"
+           th:href="${'/coach?studentId=' + st.id}"
+           class="card card--compact stack-8"
+           th:classappend="${st.id == activeStudent.id ? 'card--featured' : ''}">
+            <div class="row-between">
+                <span class="muted" style="font-size:12px;" th:text="${'Lớp ' + st.currentGrade + ' · Còn ' + st.sessionCreditsRemaining + ' buổi'}"></span>
+                <span class="tag"
+                      th:classappend="${st.currentGrade == 11 ? 'tag--neg' : (st.currentGrade == 9 ? 'tag--warn' : 'tag--pos')}"
+                      th:text="${st.currentGrade == 11 ? 'Cần giảm tải' : (st.currentGrade == 9 ? 'Đang bù gốc' : 'Ổn định')}"></span>
             </div>
-            <div class="row-inline">
-                <button type="button" data-hm-week="1" class="btn btn--sm btn--primary" onclick="oylg.setHeatmapWeek(1, this)">Tuần 1</button>
-                <button type="button" data-hm-week="4" class="btn btn--sm btn--secondary" onclick="oylg.setHeatmapWeek(4, this)">Tuần 4</button>
-                <button type="button" data-hm-week="8" class="btn btn--sm btn--secondary" onclick="oylg.setHeatmapWeek(8, this)">Tuần 8</button>
-                <button type="button" data-hm-week="12" class="btn btn--sm btn--secondary" onclick="oylg.setHeatmapWeek(12, this)">Tuần 12</button>
-            </div>
-        </div>
-
-        <div class="grid-3">
-            <div th:each="u : ${heatmapUnits}"
-                 class="card card--compact stack-8"
-                 th:attr="data-base-score=${u.get('masteryScore')}"
-                 style="background:var(--bg-page);">
-                <div class="row-between">
-                    <span class="mono muted" style="font-size:11px;" th:text="${'Lớp ' + u.get('grade') + ' · ' + u.get('unitCode')}"></span>
-                    <span class="tag hm-badge"
-                          th:classappend="${u.get('rootCauseGap') ? 'tag--neg' : (u.get('masteryScore') >= 70 ? 'tag--pos' : 'tag--warn')}"
-                          th:text="${u.get('rootCauseGap') ? 'Mất gốc' : (u.get('masteryScore') >= 70 ? 'Đã nắm vững' : 'Cần ôn thêm')}"></span>
-                </div>
-                <div style="font-weight:500;" th:text="${u.get('topicName')}"></div>
-                <p class="secondary" style="font-size:12px;" th:text="${u.get('yccdDescription')}"></p>
-                <div class="row-between mono muted" style="font-size:11px;padding-top:6px;border-top:1px solid var(--border-hairline);">
-                    <span th:text="${'Bài nền tảng: ' + (u.get('prerequisiteCode') != '' ? u.get('prerequisiteCode') : 'Tiểu học')}"></span>
-                    <strong class="hm-score" style="color:var(--text-primary);" th:text="${u.get('masteryScore') + '%'}"></strong>
-                </div>
-            </div>
-        </div>
+            <div style="font-size:16.5px;font-weight:700;" th:text="${st.fullName}"></div>
+            <div class="muted" style="font-size:12.5px;" th:text="${st.targetMajor}"></div>
+        </a>
     </div>
 
-    <!-- 3. CURRICULUM REFERENCE & COUNSELING NOTES -->
-    <div class="grid-2">
+    <!-- 2. VISUAL TOPIC PROGRESS + COUNSELING NOTES SIDE BY SIDE -->
+    <div class="split-asym">
         <div class="card stack-16">
-            <div>
-                <h2 class="card-title">Căn cứ chương trình học &amp; Bảo mật thông tin</h2>
-                <div class="muted" style="font-size:12px;">Họ tên, số điện thoại và tên trường luôn được ẩn danh khi phân tích lộ trình học</div>
+            <div class="row-between">
+                <h2 class="card-title" th:text="${'Tiến độ từng chuyên đề — ' + activeStudent.fullName}"></h2>
+                <div class="row-inline">
+                    <button type="button" data-hm-week="1" class="btn btn--sm btn--primary" onclick="oylg.setHeatmapWeek(1, this)">Tuần 1</button>
+                    <button type="button" data-hm-week="4" class="btn btn--sm btn--secondary" onclick="oylg.setHeatmapWeek(4, this)">Tuần 4</button>
+                    <button type="button" data-hm-week="8" class="btn btn--sm btn--secondary" onclick="oylg.setHeatmapWeek(8, this)">Tuần 8</button>
+                    <button type="button" data-hm-week="12" class="btn btn--sm btn--secondary" onclick="oylg.setHeatmapWeek(12, this)">Tuần 12</button>
+                </div>
             </div>
 
-            <div class="card card--compact stack-4" style="background:var(--bg-page);">
-                <div class="muted" style="font-size:11px;">Chương trình Giáo dục Phổ thông 2018 · Môn Toán</div>
-                <div style="font-weight:500;">Mối liên hệ kiến thức giữa Lớp 8 và Lớp 9</div>
-                <div class="secondary" style="font-size:12px;">Phần Hằng đẳng thức &amp; Phân tích đa thức Lớp 8 là nền tảng bắt buộc trước khi học Căn bậc hai Lớp 9.</div>
-            </div>
-
-            <div class="card card--compact stack-4" style="background:var(--bg-page);">
-                <div class="muted" style="font-size:11px;">Phác đồ đề xuất hiện tại</div>
-                <div style="font-weight:500;">60% thời lượng bù kiến thức cũ · 40% bám sát bài trên lớp</div>
-                <div class="secondary" style="font-size:12px;" th:text="${'Mã hồ sơ ẩn danh: ' + activeStudent.studentCode + ' · Khối lớp ' + activeStudent.currentGrade}"></div>
+            <div class="stack-12">
+                <div th:each="u : ${heatmapUnits}"
+                     class="card card--compact stack-4"
+                     th:attr="data-base-score=${u.get('masteryScore')}"
+                     style="background:var(--bg-page);">
+                    <div class="row-between">
+                        <div>
+                            <strong th:text="${u.get('topicName')}"></strong>
+                            <span class="muted" style="font-size:12px;margin-left:6px;" th:text="${'Lớp ' + u.get('grade')}"></span>
+                        </div>
+                        <div class="row-inline">
+                            <strong class="hm-score" th:text="${u.get('masteryScore') + '%'}"></strong>
+                            <span class="tag hm-badge"
+                                  th:classappend="${u.get('rootCauseGap') ? 'tag--neg' : (u.get('masteryScore') >= 70 ? 'tag--pos' : 'tag--warn')}"
+                                  th:text="${u.get('rootCauseGap') ? 'Mất gốc' : (u.get('masteryScore') >= 70 ? 'Đã vững' : 'Đang ôn')}"></span>
+                        </div>
+                    </div>
+                    <div class="pbar">
+                        <div class="pbar__fill"
+                             th:classappend="${u.get('masteryScore') >= 70 ? '' : (u.get('masteryScore') >= 40 ? 'is-warn' : 'is-neg')}"
+                             th:style="${'width:' + u.get('masteryScore') + '%'}"></div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="card stack-16">
-            <div>
-                <h2 class="card-title">Ghi chú tâm lý &amp; Trao đổi với Phụ huynh</h2>
-                <div class="muted" style="font-size:12px;">Tách riêng phần tâm sự riêng tư của học sinh và lời khuyên dành cho gia đình</div>
+            <h2 class="card-title">Ghi chú đồng hành</h2>
+
+            <div class="card card--compact stack-4" style="background:var(--warn-soft);">
+                <div style="font-size:12px;font-weight:700;color:var(--warn);">Nội bộ Giáo viên &amp; Cố vấn</div>
+                <p style="font-size:13.5px;" th:text="${activeCase != null ? activeCase.internalB3Note : ''}"></p>
             </div>
 
-            <div class="card card--compact stack-8" style="background:var(--warn-soft);">
-                <div style="font-size:11px;font-weight:500;color:var(--warn);">Ghi chú riêng cho Giáo viên &amp; Cố vấn (Phụ huynh không thấy)</div>
-                <p style="font-size:13px;" th:text="${activeCase != null ? activeCase.internalB3Note : ''}"></p>
+            <div class="card card--compact stack-4" style="background:var(--pos-soft);">
+                <div style="font-size:12px;font-weight:700;color:var(--pos);">Hiển thị trên Cổng Phụ huynh</div>
+                <p style="font-size:13.5px;" th:text="${activeCase != null ? activeCase.parentB3Summary : ''}"></p>
             </div>
 
-            <div class="card card--compact stack-8" style="background:var(--pos-soft);">
-                <div style="font-size:11px;font-weight:500;color:var(--pos);">Lời khuyên hiển thị trên Cổng Phụ huynh</div>
-                <p style="font-size:13px;" th:text="${activeCase != null ? activeCase.parentB3Summary : ''}"></p>
+            <div class="card card--compact stack-4" style="background:var(--bg-page);">
+                <div class="stat-label">Phân bổ lộ trình hiện tại</div>
+                <div style="font-weight:700;">60% bù bài Lớp 8 · 40% bám bài Lớp 9</div>
             </div>
 
-            <a href="/coach/sessions" class="btn btn--accent btn--full">Mở Sổ đầu bài &amp; Ghi nhận buổi học →</a>
+            <a href="/coach/sessions" class="btn btn--accent btn--full">Ghi sổ đầu bài sau buổi dạy →</a>
         </div>
     </div>
 

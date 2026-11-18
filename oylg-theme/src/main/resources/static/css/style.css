@@ -816,6 +816,140 @@ body[data-shell="member"] .oylg-topbar {
     flex-wrap: wrap;
 }
 
+/* ==================== SEGMENTED TABS, PROGRESS BARS & DRAWERS ==================== */
+.seg-tabs {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 12px;
+    background: var(--bg-raised);
+    border: 1px solid var(--border-hairline);
+    flex-wrap: wrap;
+}
+
+.seg-tab {
+    height: 36px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 140ms var(--ease), color 140ms var(--ease);
+}
+
+.seg-tab:hover {
+    color: var(--text-primary);
+}
+
+.seg-tab.is-active {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.is-active {
+    display: block;
+}
+
+.pbar {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--bg-raised);
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.pbar__fill {
+    height: 100%;
+    border-radius: 999px;
+    background: var(--pos);
+    transition: width 260ms var(--ease);
+}
+
+.pbar__fill--warn,
+.pbar__fill.is-warn {
+    background: var(--warn);
+}
+
+.pbar__fill--neg,
+.pbar__fill.is-neg {
+    background: var(--accent);
+}
+
+details.oylg-drawer {
+    background: var(--bg-card);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+details.oylg-drawer > summary {
+    list-style: none;
+    padding: 16px 22px;
+    font-family: var(--font-display);
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+details.oylg-drawer > summary::-webkit-details-marker {
+    display: none;
+}
+
+details.oylg-drawer > summary::after {
+    content: "Mở rộng ▾";
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+details.oylg-drawer[open] > summary {
+    border-bottom: 1px solid var(--border-hairline);
+}
+
+details.oylg-drawer[open] > summary::after {
+    content: "Thu gọn ▴";
+}
+
+.oylg-drawer__body {
+    padding: 20px 22px;
+}
+
+.kpi-strip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.kpi-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    background: var(--bg-page);
+    border: 1px solid var(--border-hairline);
+    font-size: 13px;
+}
+
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 960px) {
     .oylg-nav { display: none; }

@@ -4,26 +4,22 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{ezytheme}">
 <body>
-<div layout:fragment="content" class="stack-24">
+<div layout:fragment="content" class="stack-20">
 
     <div class="row-between">
-        <div>
-            <h1 class="page-title">Tuyển sinh &amp; Hoa hồng</h1>
-            <div class="muted" style="font-size:13px;">Theo dõi phụ huynh đăng ký tư vấn, xác nhận thu học phí và tính hoa hồng cho Cộng tác viên</div>
-        </div>
+        <h1 class="page-title">Phụ huynh đăng ký tư vấn</h1>
+        <span class="tag tag--accent" th:text="${leads.size() + ' hồ sơ'}">3 hồ sơ</span>
     </div>
 
-    <!-- 1. LEAD PIPELINE -->
-    <div class="card stack-16">
-        <h2 class="card-title">Danh sách Phụ huynh đăng ký tư vấn</h2>
+    <div class="card stack-12">
         <div class="table-wrap">
             <table class="data-table">
                 <thead>
                 <tr>
                     <th>Phụ huynh &amp; Học sinh</th>
-                    <th>Nhu cầu đăng ký</th>
-                    <th>Người giới thiệu</th>
-                    <th class="text-right">Học phí dự kiến</th>
+                    <th>Nhu cầu</th>
+                    <th>Giới thiệu</th>
+                    <th class="text-right">Dự kiến</th>
                     <th>Trạng thái</th>
                     <th class="text-right">Thao tác</th>
                 </tr>
@@ -31,23 +27,23 @@
                 <tbody>
                 <tr th:each="ld : ${leads}">
                     <td>
-                        <div style="font-weight:500;" th:text="${ld.parentName + ' (' + ld.phone + ')'}"></div>
-                        <div class="muted" style="font-size:12px;" th:text="${'HS: ' + ld.studentName + ' · Lớp ' + ld.grade + ' · ' + ld.province}"></div>
+                        <div style="font-weight:700;" th:text="${ld.parentName + ' · ' + ld.phone}"></div>
+                        <div class="muted" style="font-size:12px;" th:text="${ld.studentName + ' (Lớp ' + ld.grade + ') · ' + ld.province}"></div>
                     </td>
                     <td th:text="${ld.serviceInterest}"></td>
-                    <td class="mono" th:text="${(ld.referralCode != null and !ld.referralCode.isEmpty()) ? ld.referralCode : 'Tự đăng ký'}"></td>
-                    <td class="text-right mono" th:text="${#numbers.formatInteger(ld.quotedAmountVnd, 3, 'POINT') + 'đ'}"></td>
+                    <td th:text="${(ld.referralCode != null and !ld.referralCode.isEmpty()) ? ld.referralCode : 'Tự đăng ký'}"></td>
+                    <td class="text-right" style="font-weight:700;" th:text="${#numbers.formatInteger(ld.quotedAmountVnd, 3, 'POINT') + 'đ'}"></td>
                     <td>
                         <span class="tag"
                               th:classappend="${ld.stage == 'PAID' ? 'tag--pos' : (ld.stage == 'SCHEDULED' ? 'tag--warn' : '')}"
-                              th:text="${ld.stage == 'PAID' ? 'Đã đóng học phí' : (ld.stage == 'SCHEDULED' ? 'Đã hẹn tư vấn' : 'Mới đăng ký')}"></span>
+                              th:text="${ld.stage == 'PAID' ? 'Đã đóng phí' : (ld.stage == 'SCHEDULED' ? 'Đã hẹn lịch' : 'Mới đăng ký')}"></span>
                     </td>
                     <td class="text-right">
                         <button th:if="${ld.stage != 'PAID'}"
                                 type="button"
                                 class="btn btn--sm btn--accent"
                                 th:attr="onclick='oylg.advanceLead(' + ${ld.id} + ')'"
-                                th:text="${ld.stage == 'NEW' ? 'Xác nhận lịch hẹn' : 'Xác nhận thu học phí'}">
+                                th:text="${ld.stage == 'NEW' ? 'Hẹn lịch' : 'Thu học phí'}">
                         </button>
                         <span th:if="${ld.stage == 'PAID'}" class="muted" style="font-size:12px;">Hoàn tất</span>
                     </td>
@@ -57,57 +53,54 @@
         </div>
     </div>
 
-    <!-- 2. 2-TIER LEGAL COMMISSION ENGINE -->
-    <div class="card stack-20">
-        <div>
-            <h2 class="card-title">Công cụ tính hoa hồng tư vấn</h2>
-            <div class="muted" style="font-size:12px;">Hoa hồng tối đa 15% (CTV 10% + Trưởng nhóm 5%), chỉ chi trả theo số kỳ phụ huynh thực đóng sau 14 ngày</div>
-        </div>
+    <details class="oylg-drawer">
+        <summary>Công cụ tính hoa hồng Cộng tác viên &amp; Trưởng nhóm</summary>
+        <div class="oylg-drawer__body">
+            <div class="split-asym">
+                <div class="grid-2" style="gap:12px;">
+                    <div>
+                        <label class="field-label">Người tư vấn</label>
+                        <select id="commRole" class="select" onchange="oylg.recalcCommission()">
+                            <option value="REP_AND_LEADER" selected="selected">CTV (10% + Trưởng nhóm 5%)</option>
+                            <option value="LEADER_DIRECT">Trưởng nhóm tự bán (15%)</option>
+                            <option value="CARE_UPSELL">Đơn gia hạn (0%)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="field-label">Đợt đầu thu (VNĐ)</label>
+                        <input id="commFirstPay" type="number" class="input" value="4500000" oninput="oylg.recalcCommission()" />
+                    </div>
+                    <div>
+                        <label class="field-label">Giá trị 6 tháng (VNĐ)</label>
+                        <input id="commSixMonth" type="number" class="input" value="13980000" oninput="oylg.recalcCommission()" />
+                    </div>
+                    <div>
+                        <label class="field-label">Số kỳ đã thu: <strong id="commPeriodsLabel">6 / 6 kỳ</strong></label>
+                        <input id="commPeriods" type="range" min="1" max="6" value="6" style="width:100%;margin-top:10px;" oninput="oylg.recalcCommission()" />
+                    </div>
+                </div>
 
-        <div class="split-asym">
-            <div class="grid-2" style="gap:12px;">
-                <div>
-                    <label class="field-label">Người chốt đơn</label>
-                    <select id="commRole" class="select" onchange="oylg.recalcCommission()">
-                        <option value="REP_AND_LEADER" selected="selected">CTV giới thiệu (10% + Trưởng nhóm 5%)</option>
-                        <option value="LEADER_DIRECT">Trưởng nhóm trực tiếp tư vấn (15%)</option>
-                        <option value="CARE_UPSELL">Đơn học tiếp / Gia hạn (0%)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="field-label">Tiền thu đợt đầu (VNĐ)</label>
-                    <input id="commFirstPay" type="number" class="input mono" value="4500000" oninput="oylg.recalcCommission()" />
-                </div>
-                <div>
-                    <label class="field-label">Giá trị gói 6 tháng (VNĐ)</label>
-                    <input id="commSixMonth" type="number" class="input mono" value="13980000" oninput="oylg.recalcCommission()" />
-                </div>
-                <div>
-                    <label class="field-label">Số kỳ phụ huynh đã đóng: <strong id="commPeriodsLabel" class="mono">6 / 6 kỳ</strong></label>
-                    <input id="commPeriods" type="range" min="1" max="6" value="6" style="width:100%;margin-top:10px;" oninput="oylg.recalcCommission()" />
-                </div>
-            </div>
-
-            <div class="grid-2" style="gap:12px;">
-                <div class="card card--compact" style="background:var(--bg-page);">
-                    <div class="stat-label">Doanh thu tính thưởng</div>
-                    <div id="commOutDthh" class="stat-figure" style="font-size:20px;">13.980.000đ</div>
-                </div>
-                <div class="card card--compact" style="background:var(--bg-page);">
-                    <div class="stat-label">Mức hoa hồng tối đa (15%)</div>
-                    <div id="commOutEntitled" class="stat-figure" style="font-size:20px;">2.097.000đ</div>
-                </div>
-                <div class="card card--compact" style="background:var(--pos-soft);">
-                    <div class="stat-label">Số tiền được nhận</div>
-                    <div id="commOutUnlocked" class="stat-figure" style="font-size:20px;color:var(--pos);">2.097.000đ</div>
-                </div>
-                <div class="card card--compact" style="background:var(--neg-soft);">
-                    <div class="stat-label">Phần chưa đủ kỳ thu</div>
-                    <div id="commOutClawback" class="stat-figure" style="font-size:20px;color:var(--neg);">0đ</div>
+                <div class="grid-2" style="gap:10px;">
+                    <div class="card card--compact" style="background:var(--bg-page);">
+                        <div class="stat-label">Doanh thu tính thưởng</div>
+                        <div id="commOutDthh" class="stat-figure" style="font-size:19px;">13.980.000đ</div>
+                    </div>
+                    <div class="card card--compact" style="background:var(--bg-page);">
+                        <div class="stat-label">Tối đa (15%)</div>
+                        <div id="commOutEntitled" class="stat-figure" style="font-size:19px;">2.097.000đ</div>
+                    </div>
+                    <div class="card card--compact" style="background:var(--pos-soft);">
+                        <div class="stat-label">Được nhận</div>
+                        <div id="commOutUnlocked" class="stat-figure" style="font-size:19px;color:var(--pos);">2.097.000đ</div>
+                    </div>
+                    <div class="card card--compact" style="background:var(--neg-soft);">
+                        <div class="stat-label">Chưa đủ kỳ</div>
+                        <div id="commOutClawback" class="stat-figure" style="font-size:19px;color:var(--neg);">0đ</div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </details>
 
 </div>
 </body>
