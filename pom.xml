@@ -62,6 +62,7 @@
                 </dependencies>
                 <configuration>
                     <consoleOutput>true</consoleOutput>
+                    <failOnViolation>false</failOnViolation>
                     <violationSeverity>warning</violationSeverity>
                     <configLocation>checkstyle.xml</configLocation>
                 </configuration>

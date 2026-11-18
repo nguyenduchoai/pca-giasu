@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{ezytheme}">
+<body>
+<div layout:fragment="content" class="stack-24">
+
+    <div class="row-between">
+        <div>
+            <h1 class="page-title">Studio Thẩm định Học liệu &amp; Ngân hàng Đề B1–B4 (M04)</h1>
+            <div class="muted" style="font-size:13px;">Chỉ các câu hỏi đã được Hội đồng Chuyên môn phê duyệt mới được đưa vào phiên tầm soát của học sinh</div>
+        </div>
+    </div>
+
+    <!-- 1. DRAFT GENERATOR -->
+    <div class="card stack-16">
+        <h2 class="card-title">Tạo bản nháp câu hỏi chẩn đoán theo mã YCCĐ (GDPT 2018)</h2>
+        <form onsubmit="oylg.generateQuestionWeb(event)" class="grid-4" style="align-items:end;">
+            <div>
+                <label class="field-label">Môn &amp; Khối lớp</label>
+                <select id="genSubject" class="select">
+                    <option value="Toán Lớp 9">Toán Lớp 9</option>
+                    <option value="Toán Lớp 8">Toán Lớp 8</option>
+                    <option value="Tiếng Anh Lớp 10">Tiếng Anh Lớp 10</option>
+                </select>
+            </div>
+            <div>
+                <label class="field-label">Mã YCCĐ mục tiêu</label>
+                <input id="genUnitCode" class="input mono" value="TOAN.09.CBH.02" />
+            </div>
+            <div>
+                <label class="field-label">Mục tiêu chẩn đoán lỗ hổng</label>
+                <input id="genGoal" class="input" placeholder="Tìm điều kiện xác định và trục căn thức..." />
+            </div>
+            <button type="submit" class="btn btn--accent" style="height:40px;">Tạo bản nháp đưa vào hàng đợi</button>
+        </form>
+    </div>
+
+    <!-- 2. APPROVAL QUEUE -->
+    <div class="stack-16">
+        <div th:each="q : ${questions}" class="card stack-12">
+            <div class="row-between">
+                <div class="row-inline">
+                    <span class="tag mono" th:text="${q.questionCode}"></span>
+                    <span class="tag" th:text="${q.subjectLabel}"></span>
+                    <span class="mono muted" style="font-size:12px;" th:text="${q.unitCode}"></span>
+                </div>
+                <div class="row-inline">
+                    <span th:if="${q.triggersSafetyFlag}" class="tag tag--neg">Câu kích hoạt Cờ an toàn M14</span>
+                    <span th:if="${q.irtDiscrimination.doubleValue() < 0}" class="tag tag--warn mono"
+                          th:text="${'Cảnh báo IRT âm (' + q.irtDiscrimination + ')'}"></span>
+                    <span class="tag"
+                          th:classappend="${q.approvalStatus == 'APPROVED' ? 'tag--pos' : (q.approvalStatus == 'REVISION_REQUESTED' ? 'tag--neg' : '')}"
+                          th:text="${q.approvalStatus}"></span>
+                </div>
+            </div>
+
+            <div style="font-size:15px;font-weight:500;" th:text="${q.stemText}"></div>
+
+            <div th:if="${q.formulaLatex != null and !q.formulaLatex.isEmpty()}"
+                 class="card card--compact mono" style="background:#171717;color:#ededed;font-size:13px;"
+                 th:text="${q.formulaLatex}"></div>
+
+            <div class="grid-2" style="gap:8px;">
+                <div th:each="opt : ${#strings.arraySplit(q.optionsJson, '|')}"
+                     class="card card--compact" style="background:var(--bg-page);font-size:13px;"
+                     th:text="${opt}"></div>
+            </div>
+
+            <div class="row-between" style="padding-top:10px;border-top:1px solid var(--border-hairline);">
+                <span class="muted" style="font-size:12px;" th:text="${'Biên soạn: ' + q.authorName}"></span>
+                <div class="row-inline">
+                    <button type="button" class="btn btn--sm btn--secondary"
+                            th:attr="onclick='oylg.reviewQuestionWeb(' + ${q.id} + ', \'REVISION_REQUESTED\')'">Yêu cầu chỉnh sửa</button>
+                    <button type="button" class="btn btn--sm btn--accent"
+                            th:attr="onclick='oylg.reviewQuestionWeb(' + ${q.id} + ', \'APPROVED\')'">Phê duyệt đưa vào ngân hàng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

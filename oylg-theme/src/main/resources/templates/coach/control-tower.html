@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{ezytheme}">
+<body>
+<div layout:fragment="content" class="stack-24">
+
+    <!-- 1. ASSIGNED CASES -->
+    <div class="stack-12">
+        <div class="row-between">
+            <div>
+                <h1 class="page-title">Tháp điều khiển Hồ sơ Đồng hành (Tối đa 20 học sinh / Cố vấn)</h1>
+                <div class="muted" style="font-size:13px;">Phân quyền nghiêm ngặt theo danh sách hồ sơ được giao phụ trách</div>
+            </div>
+        </div>
+
+        <div class="grid-3">
+            <a th:each="st, iter : ${students}"
+               th:href="${'/coach?studentId=' + st.id}"
+               class="card card--compact stack-8"
+               th:classappend="${st.id == activeStudent.id ? 'card--featured' : ''}">
+                <div class="row-between">
+                    <span class="mono muted" style="font-size:11px;" th:text="${st.studentCode + ' · Lớp ' + st.currentGrade}"></span>
+                    <span class="tag"
+                          th:classappend="${st.currentGrade == 11 ? 'tag--neg' : (st.currentGrade == 9 ? 'tag--warn' : 'tag--pos')}"
+                          th:text="${st.currentGrade == 11 ? 'Cần giảm tải' : (st.currentGrade == 9 ? 'Đang bù gốc' : 'Ổn định')}"></span>
+                </div>
+                <div style="font-size:16px;font-weight:500;" th:text="${st.fullName}"></div>
+                <div class="secondary" style="font-size:12px;" th:text="${'Mục tiêu: ' + st.targetMajor}"></div>
+                <div class="muted mono" style="font-size:11px;" th:text="${'Ví buổi còn lại: ' + st.sessionCreditsRemaining + ' buổi · ' + st.xpPoints + ' XP'}"></div>
+            </a>
+        </div>
+    </div>
+
+    <!-- 2. 4D KNOWLEDGE HEATMAP -->
+    <div class="card stack-16">
+        <div class="row-between">
+            <div>
+                <h2 class="card-title" th:text="${'Bản đồ nhiệt Đồ thị YCCĐ (GDPT 2018) — ' + activeStudent.fullName}"></h2>
+                <div class="muted" style="font-size:12px;">Chọn mốc thời gian để đối chiếu tiến độ chuyển hóa lỗ hổng gốc sang trạng thái nắm vững</div>
+            </div>
+            <div class="row-inline">
+                <button type="button" data-hm-week="1" class="btn btn--sm btn--primary" onclick="oylg.setHeatmapWeek(1, this)">Tuần 1 (Đầu vào)</button>
+                <button type="button" data-hm-week="4" class="btn btn--sm btn--secondary" onclick="oylg.setHeatmapWeek(4, this)">Tuần 4</button>
+                <button type="button" data-hm-week="8" class="btn btn--sm btn--secondary" onclick="oylg.setHeatmapWeek(8, this)">Tuần 8</button>
+                <button type="button" data-hm-week="12" class="btn btn--sm btn--secondary" onclick="oylg.setHeatmapWeek(12, this)">Tuần 12</button>
+            </div>
+        </div>
+
+        <div class="grid-3">
+            <div th:each="u : ${heatmapUnits}"
+                 class="card card--compact stack-8"
+                 th:attr="data-base-score=${u.get('masteryScore')}"
+                 style="background:var(--bg-page);">
+                <div class="row-between">
+                    <span class="mono muted" style="font-size:11px;" th:text="${u.get('unitCode') + ' · Lớp ' + u.get('grade')}"></span>
+                    <span class="tag hm-badge"
+                          th:classappend="${u.get('rootCauseGap') ? 'tag--neg' : (u.get('masteryScore') >= 70 ? 'tag--pos' : 'tag--warn')}"
+                          th:text="${u.get('rootCauseGap') ? 'Lỗ hổng gốc' : (u.get('masteryScore') >= 70 ? 'Đã nắm vững' : 'Hệ quả chưa đạt')}"></span>
+                </div>
+                <div style="font-weight:500;" th:text="${u.get('topicName')}"></div>
+                <p class="secondary" style="font-size:12px;" th:text="${u.get('yccdDescription')}"></p>
+                <div class="row-between mono muted" style="font-size:11px;padding-top:6px;border-top:1px solid var(--border-hairline);">
+                    <span th:text="${'Tiên quyết: ' + (u.get('prerequisiteCode') != '' ? u.get('prerequisiteCode') : 'Gốc Tiểu học')}"></span>
+                    <strong class="hm-score" style="color:var(--text-primary);" th:text="${u.get('masteryScore') + '%'}"></strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. HUMAN-IN-THE-LOOP COPILOT & DUAL-LAYER B3 -->
+    <div class="grid-2">
+        <div class="card stack-16">
+            <div>
+                <h2 class="card-title">Nguồn dữ liệu định lượng &amp; Ẩn danh PII trước khi gọi LLM</h2>
+                <div class="muted" style="font-size:12px;">Cắt bỏ toàn bộ họ tên, số điện thoại, trường học thật trước khi gửi ra cổng AI bên ngoài</div>
+            </div>
+
+            <div class="card card--compact mono stack-4" style="background:#171717;color:#ededed;font-size:12px;">
+                <div style="color:#85858b;">// Payload đã ẩn danh hóa PII (Mục 10.1 Đặc tả OYLG)</div>
+                <div th:text="${'subject_token: [' + activeStudent.studentCode + '], grade: ' + activeStudent.currentGrade}"></div>
+                <div>root_gap_detected: "TOAN.08.HDT.01", remedial_split: "60/40"</div>
+                <div>stripped_fields: ["fullName", "parentPhone", "schoolName"]</div>
+            </div>
+
+            <div class="card card--compact stack-4" style="background:var(--bg-page);">
+                <div class="mono muted" style="font-size:11px;">MOET-GDPT2018-TOAN · Nguồn chính thống đã duyệt</div>
+                <div style="font-weight:500;">Chương trình Giáo dục Phổ thông Môn Toán (Thông tư 32/2018/TT-BGDĐT)</div>
+                <div class="secondary" style="font-size:12px;">Mạch Đại số THCS: Biểu thức đại số Lớp 8 là tiên quyết trực tiếp của Căn thức bậc hai Lớp 9.</div>
+            </div>
+        </div>
+
+        <div class="card stack-16">
+            <div>
+                <h2 class="card-title">Phân tách 2 lớp hiển thị Tâm lý Học đường (B3)</h2>
+                <div class="muted" style="font-size:12px;">Bảo vệ tâm sự riêng tư của học sinh, đồng thời giúp phụ huynh phối hợp đúng cách</div>
+            </div>
+
+            <div class="card card--compact stack-8" style="background:var(--warn-soft);">
+                <div class="mono" style="font-size:11px;color:var(--warn);">Lớp 1 · Chỉ Cố vấn Chuyên môn xem (Nội bộ B3)</div>
+                <p style="font-size:13px;" th:text="${activeCase != null ? activeCase.internalB3Note : ''}"></p>
+            </div>
+
+            <div class="card card--compact stack-8" style="background:var(--pos-soft);">
+                <div class="mono" style="font-size:11px;color:var(--pos);">Lớp 2 · Bản khuyến nghị gửi sang Cổng Phụ huynh</div>
+                <p style="font-size:13px;" th:text="${activeCase != null ? activeCase.parentB3Summary : ''}"></p>
+            </div>
+
+            <a href="/coach/sessions" class="btn btn--accent btn--full">Mở Sổ đầu bài 60 giây &amp; Nhập biên bản buổi học →</a>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

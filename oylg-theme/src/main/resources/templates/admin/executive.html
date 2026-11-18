@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{ezytheme}">
+<body>
+<div layout:fragment="content" class="stack-24">
+
+    <div class="row-between">
+        <div>
+            <h1 class="page-title">Ban Điều hành · 4 Chỉ số Buổi sáng &amp; Cấu hình Bảng giá B6</h1>
+            <div class="muted" style="font-size:13px;">Đồng bộ trực tiếp với cơ sở dữ liệu EzyPlatform (ezy_settings) và Cổng quản trị EzyAdmin (:9090)</div>
+        </div>
+        <a href="http://localhost:9090/oylg/dashboard" target="_blank" class="btn btn--sm btn--primary">Mở EzyAdmin (:9090)</a>
+    </div>
+
+    <!-- 1. FOUR MORNING METRICS (NUMBERS ONLY — UNSLOP STAT RULE) -->
+    <div class="grid-4">
+        <div class="card card--compact">
+            <div class="stat-label">Doanh thu gói học thực thu</div>
+            <div class="stat-figure">18.480.000đ</div>
+            <div class="stat-delta" th:text="${orders.size() + ' đơn VietQR đã đối soát'}"></div>
+        </div>
+        <div class="card card--compact">
+            <div class="stat-label">Học sinh cần Cố vấn can thiệp</div>
+            <div class="stat-figure">1 học sinh</div>
+            <div class="stat-delta">HS-2026-0104 thiếu ngủ (5.6h/đêm)</div>
+        </div>
+        <div class="card card--compact">
+            <div class="stat-label">Đánh giá hài lòng sau buổi học</div>
+            <div class="stat-figure">4.92 / 5.0</div>
+            <div class="stat-delta">100% biên bản nộp đúng hạn 24 giờ</div>
+        </div>
+        <div class="card card--compact">
+            <div class="stat-label">Tốc độ lấp lỗ hổng trung bình</div>
+            <div class="stat-figure">+3.4 YCCĐ/tuần</div>
+            <div class="stat-delta">89% bám kịp mục tiêu trường đích</div>
+        </div>
+    </div>
+
+    <!-- 2. LIVE B6 BASE PRICE SETTING + SIMULATOR -->
+    <div class="card stack-20">
+        <div class="row-between">
+            <div>
+                <h2 class="card-title">Cấu hình Đơn giá Cơ sở B6 toàn hệ thống (SSOT trong ezy_settings)</h2>
+                <div class="muted" style="font-size:12px;">Thay đổi tại đây sẽ cập nhật tức thì công cụ tính học phí ngoài Trang chủ và Cổng Phụ huynh</div>
+            </div>
+        </div>
+
+        <div class="row-inline" style="gap:12px;">
+            <div style="width:240px;">
+                <label class="field-label">Đơn giá cơ sở 1 buổi 90p (VNĐ)</label>
+                <input id="execBasePrice" type="number" class="input mono" th:value="${baseSessionPrice.longValue()}" />
+            </div>
+            <div style="padding-top:22px;">
+                <button type="button" class="btn btn--accent" style="height:40px;" onclick="oylg.saveWebBasePrice()">Lưu cấu hình đơn giá gốc</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. GROUP CLASS COORDINATION (M09.2) -->
+    <div class="card stack-16">
+        <div>
+            <h2 class="card-title">Điều phối Lớp Nhóm Nhỏ Ghép Theo Lỗ Hổng YCCĐ Tương Đồng (M09.2)</h2>
+            <div class="muted" style="font-size:12px;">Quy tắc mở lớp: Đủ sĩ số tối thiểu (3 học sinh cùng mã lỗ hổng gốc) mới khai giảng</div>
+        </div>
+
+        <div class="grid-2">
+            <div th:each="gc : ${groupClasses}" class="card card--compact stack-12" style="background:var(--bg-page);">
+                <div class="row-between">
+                    <span class="mono muted" style="font-size:12px;" th:text="${gc.groupCode}"></span>
+                    <span class="tag"
+                          th:classappend="${gc.status == 'ACTIVE_RUNNING' ? 'tag--pos' : (gc.status == 'READY' ? 'tag--accent' : '')}"
+                          th:text="${gc.status == 'ACTIVE_RUNNING' ? 'Đã khai giảng' : (gc.status == 'READY' ? 'Đủ sĩ số · Sẵn sàng' : 'Chờ đủ sĩ số')}"></span>
+                </div>
+                <div style="font-weight:500;" th:text="${gc.title}"></div>
+                <div class="secondary" style="font-size:12px;" th:text="${gc.expertName + ' · ' + gc.scheduleInfo}"></div>
+                <div class="mono muted" style="font-size:11px;" th:text="${'Lỗ hổng chung: ' + gc.sharedGapsCsv}"></div>
+
+                <div class="row-between" style="padding-top:10px;border-top:1px solid var(--border-hairline);">
+                    <span class="mono" style="font-size:12px;"
+                          th:text="${'Sĩ số: ' + gc.enrolledCount + '/' + gc.maxCapacity + ' (Tối thiểu ' + gc.minRequired + ')'}"></span>
+                    <div class="row-inline">
+                        <button type="button" class="btn btn--sm btn--secondary"
+                                th:attr="onclick='oylg.groupAction(' + ${gc.id} + ', \'ADD_STUDENT\')'">+ Ghép thêm 1 HS</button>
+                        <button th:if="${gc.status != 'ACTIVE_RUNNING'}"
+                                type="button" class="btn btn--sm btn--primary"
+                                th:attr="onclick='oylg.groupAction(' + ${gc.id} + ', \'ACTIVATE\')'">Khai giảng lớp</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

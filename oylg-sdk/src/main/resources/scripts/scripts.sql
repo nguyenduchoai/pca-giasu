@@ -1,155 +1,157 @@
 -- =====================================================================
--- OYLG ("All Your Life") Custom Schema on EzyPlatform
--- Tuân thủ chuẩn SSOT: Tái sử dụng ezy_users, ezy_user_meta, ezy_admins,
--- ezy_medias, ecommerce_orders, ecommerce_shop_branches, ezyarticle_posts
+-- OYLG ("All Your Life") Native Schema on EzyPlatform
+-- SSOT: Reuses ezy_users, ezy_user_meta, ezy_admins, ezy_settings, ezy_medias,
+-- ecommerce_products, ecommerce_orders, ecommerce_shop_branches, ezyarticle_posts
 -- =====================================================================
 
 CREATE TABLE IF NOT EXISTS `oylg_student_profiles` (
     `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-    `user_id` bigint unsigned NOT NULL DEFAULT 0 COMMENT 'FK -> ezy_users.id (STUDENT)',
-    `parent_user_id` bigint unsigned NOT NULL DEFAULT 0 COMMENT 'FK -> ezy_users.id (PARENT)',
+    `user_id` bigint unsigned NOT NULL DEFAULT 0,
+    `parent_user_id` bigint unsigned NOT NULL DEFAULT 0,
     `student_code` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-    `current_grade` int NOT NULL DEFAULT 1,
+    `full_name` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `parent_name` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `parent_phone` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `current_grade` int NOT NULL DEFAULT 9,
     `school_name` varchar(250) COLLATE utf8mb4_unicode_520_ci,
     `target_school` varchar(250) COLLATE utf8mb4_unicode_520_ci,
     `target_major` varchar(250) COLLATE utf8mb4_unicode_520_ci,
-    `riasec_code` varchar(16) COLLATE utf8mb4_unicode_520_ci,
+    `riasec_code` varchar(32) COLLATE utf8mb4_unicode_520_ci,
+    `session_credits_remaining` int NOT NULL DEFAULT 0,
+    `streak_days` int NOT NULL DEFAULT 0,
+    `xp_points` int NOT NULL DEFAULT 0,
+    `mood_status` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'STEADY',
     `overall_health_status` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'NORMAL',
     `allergies_json` mediumtext COLLATE utf8mb4_unicode_520_ci,
-    `medical_notes` mediumtext COLLATE utf8mb4_unicode_520_ci,
+    `daily_tasks_json` mediumtext COLLATE utf8mb4_unicode_520_ci,
     `created_at` datetime NOT NULL,
     `updated_at` datetime NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `key_student_code` (`student_code`),
-    UNIQUE KEY `key_user_id` (`user_id`),
     INDEX `index_parent_user_id_id` (`parent_user_id`, `id`),
-    INDEX `index_current_grade_id` (`current_grade`, `id`),
-    INDEX `index_overall_health_status_id` (`overall_health_status`, `id`)
+    INDEX `index_current_grade_id` (`current_grade`, `id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 CREATE TABLE IF NOT EXISTS `oylg_expert_profiles` (
     `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-    `user_id` bigint unsigned NOT NULL DEFAULT 0 COMMENT 'FK -> ezy_users.id (CAREER_EXPERT / LIFE_COACH / SUBJECT_EXPERT / SUBJECT_LEAD)',
+    `user_id` bigint unsigned NOT NULL DEFAULT 0,
     `expert_code` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `display_name` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `role_title` varchar(200) COLLATE utf8mb4_unicode_520_ci NOT NULL,
     `expert_role` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'SUBJECT_EXPERT',
-    `tier` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'STANDARD',
+    `tier` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'SENIOR',
     `subjects_json` mediumtext COLLATE utf8mb4_unicode_520_ci,
-    `landing_page_slug` varchar(160) COLLATE utf8mb4_unicode_520_ci COMMENT 'Liên kết ezyarticle PAGE chuẩn Consulting Theme',
+    `bio_summary` mediumtext COLLATE utf8mb4_unicode_520_ci,
+    `highlight_metric` varchar(250) COLLATE utf8mb4_unicode_520_ci,
+    `portrait_url` varchar(500) COLLATE utf8mb4_unicode_520_ci,
+    `landing_page_slug` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
     `base_payout_per_session` decimal(18,2) NOT NULL DEFAULT 250000.00,
     `review_rate_per_item` decimal(18,2) NOT NULL DEFAULT 15000.00,
+    `student_count` int NOT NULL DEFAULT 0,
     `verified_status` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'VERIFIED',
-    `rating_avg` decimal(5,2) NOT NULL DEFAULT 5.00,
+    `rating_avg` decimal(5,2) NOT NULL DEFAULT 4.95,
     `created_at` datetime NOT NULL,
     `updated_at` datetime NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `key_expert_code` (`expert_code`),
-    UNIQUE KEY `key_user_id` (`user_id`),
-    INDEX `index_expert_role_tier` (`expert_role`, `tier`),
-    INDEX `index_verified_status_id` (`verified_status`, `id`)
+    UNIQUE KEY `key_landing_page_slug` (`landing_page_slug`),
+    INDEX `index_expert_role_tier` (`expert_role`, `tier`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 CREATE TABLE IF NOT EXISTS `oylg_curriculum_units` (
     `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-    `unit_code` varchar(64) COLLATE utf8mb4_unicode_520_ci NOT NULL COMMENT 'Mã YCCĐ GDPT 2018 Kết nối tri thức',
-    `subject_code` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL COMMENT 'MATH, PHYS, CHEM, ENG, LIT',
+    `unit_code` varchar(64) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `subject_code` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL,
     `grade` int NOT NULL,
-    `semester` int NOT NULL DEFAULT 1,
+    `prerequisite_code` varchar(64) COLLATE utf8mb4_unicode_520_ci,
     `topic_name` varchar(300) COLLATE utf8mb4_unicode_520_ci NOT NULL,
     `yccd_description` mediumtext COLLATE utf8mb4_unicode_520_ci NOT NULL,
-    `cognitive_levels_json` mediumtext COLLATE utf8mb4_unicode_520_ci,
+    `exam_weight` int NOT NULL DEFAULT 8,
     `approval_status` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'APPROVED',
-    `approved_by_admin_id` bigint unsigned NOT NULL DEFAULT 0 COMMENT 'FK -> ezy_admins.id (CONTENT_APPROVER)',
     `created_at` datetime NOT NULL,
     `updated_at` datetime NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `key_unit_code` (`unit_code`),
-    INDEX `index_subject_grade` (`subject_code`, `grade`),
-    INDEX `index_approval_status` (`approval_status`, `id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
-
-CREATE TABLE IF NOT EXISTS `oylg_curriculum_prerequisites` (
-    `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-    `unit_id` bigint unsigned NOT NULL,
-    `prerequisite_unit_id` bigint unsigned NOT NULL,
-    `dependency_weight` decimal(5,2) NOT NULL DEFAULT 1.00,
-    `created_at` datetime NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `key_unit_prereq` (`unit_id`, `prerequisite_unit_id`),
-    INDEX `index_unit_id` (`unit_id`),
-    INDEX `index_prerequisite_unit_id` (`prerequisite_unit_id`)
+    INDEX `index_subject_grade` (`subject_code`, `grade`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 CREATE TABLE IF NOT EXISTS `oylg_mastery_states` (
     `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-    `student_user_id` bigint unsigned NOT NULL,
-    `unit_id` bigint unsigned NOT NULL,
-    `mastery_score` int NOT NULL DEFAULT 0 COMMENT '0 - 100',
-    `mastery_level` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'NOT_STARTED',
+    `student_id` bigint unsigned NOT NULL,
+    `unit_code` varchar(64) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `mastery_score` int NOT NULL DEFAULT 0,
+    `mastery_level` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'NOT_STARTED',
     `is_root_cause_gap` tinyint(1) NOT NULL DEFAULT 0,
-    `last_tested_at` datetime,
     `updated_at` datetime NOT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE KEY `key_student_unit` (`student_user_id`, `unit_id`),
-    INDEX `index_student_root_gap` (`student_user_id`, `is_root_cause_gap`)
+    UNIQUE KEY `key_student_unit` (`student_id`, `unit_code`),
+    INDEX `index_student_root_gap` (`student_id`, `is_root_cause_gap`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 CREATE TABLE IF NOT EXISTS `oylg_learning_cases` (
     `id` bigint unsigned NOT NULL AUTO_INCREMENT,
     `case_code` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
     `student_user_id` bigint unsigned NOT NULL,
-    `parent_user_id` bigint unsigned NOT NULL,
+    `parent_user_id` bigint unsigned NOT NULL DEFAULT 0,
     `career_expert_user_id` bigint unsigned NOT NULL DEFAULT 0,
     `life_coach_user_id` bigint unsigned NOT NULL DEFAULT 0,
     `care_agent_admin_id` bigint unsigned NOT NULL DEFAULT 0,
-    `current_tier` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'TIER_1_CAREER',
+    `current_tier` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'TIER_3_COMPANION',
     `case_status` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'ACTIVE',
-    `r1_report_status` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'PENDING_AI_DRAFT',
-    `r2_report_status` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'LOCKED',
+    `traffic_light` varchar(16) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'YELLOW',
+    `weekly_hours_used` decimal(4,1) NOT NULL DEFAULT 9.5,
+    `weekly_hours_quota` decimal(4,1) NOT NULL DEFAULT 14.0,
+    `attendance_rate` int NOT NULL DEFAULT 96,
+    `r1_report_status` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'APPROVED',
+    `r2_report_status` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'PENDING_COACH_APPROVAL',
     `r3_report_status` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'LOCKED',
     `remedial_ratio_percent` int NOT NULL DEFAULT 60,
     `current_grade_ratio_percent` int NOT NULL DEFAULT 40,
+    `internal_b3_note` mediumtext COLLATE utf8mb4_unicode_520_ci,
+    `parent_b3_summary` mediumtext COLLATE utf8mb4_unicode_520_ci,
     `created_at` datetime NOT NULL,
     `updated_at` datetime NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `key_case_code` (`case_code`),
-    INDEX `index_student_user_id` (`student_user_id`, `id`),
-    INDEX `index_parent_user_id` (`parent_user_id`, `id`),
-    INDEX `index_current_tier_status` (`current_tier`, `case_status`)
+    INDEX `index_student_user_id` (`student_user_id`, `id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 CREATE TABLE IF NOT EXISTS `oylg_lesson_records` (
     `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-    `case_id` bigint unsigned NOT NULL,
-    `student_user_id` bigint unsigned NOT NULL,
-    `expert_user_id` bigint unsigned NOT NULL,
-    `subject_code` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-    `delivery_mode` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'ONLINE_ZOOM' COMMENT 'ONLINE_ZOOM, AT_CENTER, AT_HOME',
-    `class_type` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'ONE_ON_ONE' COMMENT 'ONE_ON_ONE, SMALL_GROUP, LARGE_GROUP',
-    `branch_id` bigint unsigned NOT NULL DEFAULT 0 COMMENT 'FK -> ecommerce_shop_branches.id',
+    `case_id` bigint unsigned NOT NULL DEFAULT 0,
+    `student_id` bigint unsigned NOT NULL,
+    `student_name` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `expert_name` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `subject_label` varchar(120) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `unit_code` varchar(64) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `topic_title` varchar(250) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `schedule_label` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `room_or_link` varchar(250) COLLATE utf8mb4_unicode_520_ci,
+    `delivery_mode` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'AT_CENTER',
+    `class_type` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'ONE_ON_ONE',
+    `lesson_status` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'SCHEDULED',
+    `understanding_level` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'MASTERED',
+    `mood_observed` varchar(64) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'Tập trung cao',
+    `focus_score` int NOT NULL DEFAULT 5,
     `session_price` decimal(18,2) NOT NULL DEFAULT 0.00,
     `expert_payout_amount` decimal(18,2) NOT NULL DEFAULT 0.00,
-    `covered_unit_ids_json` mediumtext COLLATE utf8mb4_unicode_520_ci,
     `structured_notes` mediumtext COLLATE utf8mb4_unicode_520_ci,
-    `sanitized_parent_summary` mediumtext COLLATE utf8mb4_unicode_520_ci COMMENT 'Đã lọc SĐT/Zalo theo Guardrail #1',
+    `sanitized_parent_summary` mediumtext COLLATE utf8mb4_unicode_520_ci,
     `dlp_masked_count` int NOT NULL DEFAULT 0,
     `submitted_within_24h` tinyint(1) NOT NULL DEFAULT 1,
-    `payout_eligible` tinyint(1) NOT NULL DEFAULT 1,
-    `scheduled_at` datetime NOT NULL,
-    `completed_at` datetime,
     `created_at` datetime NOT NULL,
     `updated_at` datetime NOT NULL,
     PRIMARY KEY (`id`),
-    INDEX `index_case_id_scheduled_at` (`case_id`, `scheduled_at`),
-    INDEX `index_expert_user_id_completed_at` (`expert_user_id`, `completed_at`),
-    INDEX `index_student_user_id_id` (`student_user_id`, `id`)
+    INDEX `index_student_status` (`student_id`, `lesson_status`),
+    INDEX `index_lesson_status` (`lesson_status`, `id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 CREATE TABLE IF NOT EXISTS `oylg_safety_flags` (
     `id` bigint unsigned NOT NULL AUTO_INCREMENT,
     `student_user_id` bigint unsigned NOT NULL,
     `case_id` bigint unsigned NOT NULL DEFAULT 0,
-    `source_module` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL COMMENT 'B3_SCREENING, AI_CHAT, LESSON_NOTE, BOARDING',
-    `severity` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'AMBER' COMMENT 'GREEN, AMBER, RED_URGENT',
+    `source_module` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `severity` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'AMBER',
     `trigger_excerpt` mediumtext COLLATE utf8mb4_unicode_520_ci NOT NULL,
     `ai_risk_analysis` mediumtext COLLATE utf8mb4_unicode_520_ci,
     `emergency_hotline_shown` varchar(64) COLLATE utf8mb4_unicode_520_ci DEFAULT '111 / 115',
@@ -159,136 +161,50 @@ CREATE TABLE IF NOT EXISTS `oylg_safety_flags` (
     `created_at` datetime NOT NULL,
     `updated_at` datetime NOT NULL,
     PRIMARY KEY (`id`),
-    INDEX `index_severity_status` (`severity`, `status`),
-    INDEX `index_student_user_id_id` (`student_user_id`, `id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
-
-CREATE TABLE IF NOT EXISTS `oylg_order_attributions` (
-    `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-    `order_id` bigint unsigned NOT NULL COMMENT 'FK -> ecommerce_orders.id',
-    `customer_user_id` bigint unsigned NOT NULL,
-    `sales_rep_user_id` bigint unsigned NOT NULL DEFAULT 0 COMMENT 'CTV Tầng 1 (10%) hoặc Leader tự bán (15%)',
-    `sales_leader_user_id` bigint unsigned NOT NULL DEFAULT 0 COMMENT 'Leader Tầng 2 (5%)',
-    `attribution_channel` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'REFERRAL_LINK',
-    `referral_code` varchar(64) COLLATE utf8mb4_unicode_520_ci,
-    `is_self_purchase` tinyint(1) NOT NULL DEFAULT 0,
-    `is_renewal_or_care_upsell` tinyint(1) NOT NULL DEFAULT 0,
-    `first_payment_amount` decimal(18,2) NOT NULL DEFAULT 0.00,
-    `six_month_contract_value` decimal(18,2) NOT NULL DEFAULT 0.00,
-    `dthh_commission_base` decimal(18,2) NOT NULL DEFAULT 0.00 COMMENT 'max(first_payment, 6_month_value)',
-    `collected_amount_to_date` decimal(18,2) NOT NULL DEFAULT 0.00,
-    `lock_expires_at` datetime NOT NULL,
-    `created_at` datetime NOT NULL,
-    `updated_at` datetime NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `key_order_id` (`order_id`),
-    INDEX `index_sales_rep_user_id` (`sales_rep_user_id`, `id`),
-    INDEX `index_sales_leader_user_id` (`sales_leader_user_id`, `id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
-
-CREATE TABLE IF NOT EXISTS `oylg_commissions` (
-    `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-    `attribution_id` bigint unsigned NOT NULL,
-    `order_id` bigint unsigned NOT NULL,
-    `beneficiary_user_id` bigint unsigned NOT NULL,
-    `tier_type` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL COMMENT 'TIER_1_REP_10, TIER_2_LEADER_5, LEADER_DIRECT_15',
-    `commission_rate_percent` decimal(5,2) NOT NULL,
-    `total_entitled_amount` decimal(18,2) NOT NULL,
-    `unlocked_payable_amount` decimal(18,2) NOT NULL DEFAULT 0.00 COMMENT 'PAY_AS_COLLECTED theo tỷ lệ thực thu',
-    `paid_amount` decimal(18,2) NOT NULL DEFAULT 0.00,
-    `hold_until_at` datetime NOT NULL COMMENT 'Giữ 14 ngày chờ qua kỳ hoàn tiền 100%',
-    `status` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'HOLD_14_DAYS',
-    `created_at` datetime NOT NULL,
-    `updated_at` datetime NOT NULL,
-    PRIMARY KEY (`id`),
-    INDEX `index_beneficiary_status` (`beneficiary_user_id`, `status`),
-    INDEX `index_order_id` (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
-
-CREATE TABLE IF NOT EXISTS `oylg_residencies` (
-    `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-    `student_user_id` bigint unsigned NOT NULL,
-    `branch_id` bigint unsigned NOT NULL COMMENT 'FK -> ecommerce_shop_branches.id',
-    `residency_type` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'DAY_BOARDING' COMMENT 'FULL_BOARDING, DAY_BOARDING',
-    `room_code` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-    `bed_code` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-    `warden_admin_id` bigint unsigned NOT NULL DEFAULT 0,
-    `meal_opt_out_json` mediumtext COLLATE utf8mb4_unicode_520_ci,
-    `avg_sleep_hours` decimal(4,1) NOT NULL DEFAULT 8.0,
-    `status` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'ACTIVE',
-    `start_date` date NOT NULL,
-    `end_date` date,
-    `created_at` datetime NOT NULL,
-    `updated_at` datetime NOT NULL,
-    PRIMARY KEY (`id`),
-    INDEX `index_branch_status` (`branch_id`, `status`),
-    INDEX `index_student_user_id` (`student_user_id`, `id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
-
-CREATE TABLE IF NOT EXISTS `oylg_authorized_pickups` (
-    `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-    `student_user_id` bigint unsigned NOT NULL,
-    `guardian_full_name` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-    `relationship` varchar(64) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-    `phone_number` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-    `national_id_masked` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-    `photo_media_id` bigint unsigned NOT NULL DEFAULT 0 COMMENT 'FK -> ezy_medias.id',
-    `qr_pass_token` varchar(128) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-    `is_active` tinyint(1) NOT NULL DEFAULT 1,
-    `created_at` datetime NOT NULL,
-    `updated_at` datetime NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `key_qr_pass_token` (`qr_pass_token`),
-    INDEX `index_student_active` (`student_user_id`, `is_active`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
-
-CREATE TABLE IF NOT EXISTS `oylg_boarding_checkins` (
-    `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-    `residency_id` bigint unsigned NOT NULL,
-    `student_user_id` bigint unsigned NOT NULL,
-    `checkpoint_type` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL COMMENT 'ARRIVE, LEAVE, NIGHT_ROLLCALL, MORNING_WAKEUP',
-    `authorized_pickup_id` bigint unsigned NOT NULL DEFAULT 0,
-    `verified_by_admin_id` bigint unsigned NOT NULL DEFAULT 0,
-    `verification_status` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'VERIFIED_SAFE',
-    `sleep_hours_logged` decimal(4,1) NOT NULL DEFAULT 0.0,
-    `notes` mediumtext COLLATE utf8mb4_unicode_520_ci,
-    `checked_at` datetime NOT NULL,
-    PRIMARY KEY (`id`),
-    INDEX `index_student_checked_at` (`student_user_id`, `checked_at`),
-    INDEX `index_residency_checkpoint` (`residency_id`, `checkpoint_type`)
+    INDEX `index_severity_status` (`severity`, `status`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 CREATE TABLE IF NOT EXISTS `oylg_service_packages` (
     `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-    `ecommerce_product_id` bigint unsigned NOT NULL DEFAULT 0 COMMENT 'FK -> ecommerce_products.id',
+    `ecommerce_product_id` bigint unsigned NOT NULL DEFAULT 0,
     `package_code` varchar(64) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-    `package_tier` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'TIER_1_CAREER' COMMENT 'TIER_1_CAREER, TIER_2_SCREENING, TIER_3_COMPANION, BOARDING',
+    `package_tier` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `tier_badge` varchar(120) COLLATE utf8mb4_unicode_520_ci NOT NULL,
     `title` varchar(250) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `summary` mediumtext COLLATE utf8mb4_unicode_520_ci,
+    `features_json` mediumtext COLLATE utf8mb4_unicode_520_ci,
     `session_credits_granted` int NOT NULL DEFAULT 0,
     `billing_term_months` int NOT NULL DEFAULT 1,
     `discount_percent` decimal(5,2) NOT NULL DEFAULT 0.00,
     `list_price_vnd` decimal(18,2) NOT NULL DEFAULT 0.00,
     `net_price_vnd` decimal(18,2) NOT NULL DEFAULT 0.00,
+    `six_month_reference_vnd` decimal(18,2) NOT NULL DEFAULT 0.00,
+    `featured` tinyint(1) NOT NULL DEFAULT 0,
     `status` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'ACTIVE',
     `created_at` datetime NOT NULL,
     `updated_at` datetime NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `key_package_code` (`package_code`),
-    INDEX `index_ecommerce_product_id` (`ecommerce_product_id`),
     INDEX `index_package_tier_status` (`package_tier`, `status`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 CREATE TABLE IF NOT EXISTS `oylg_ecommerce_order_wallets` (
     `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-    `ecommerce_order_id` bigint unsigned NOT NULL COMMENT 'FK -> ecommerce_orders.id',
+    `ecommerce_order_id` bigint unsigned NOT NULL DEFAULT 0,
     `order_code` varchar(64) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-    `parent_user_id` bigint unsigned NOT NULL DEFAULT 0,
-    `student_user_id` bigint unsigned NOT NULL DEFAULT 0,
+    `student_id` bigint unsigned NOT NULL DEFAULT 1,
+    `parent_name` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `parent_phone` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `student_name` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `package_title` varchar(250) COLLATE utf8mb4_unicode_520_ci NOT NULL,
     `voucher_code` varchar(64) COLLATE utf8mb4_unicode_520_ci,
     `referral_code` varchar(64) COLLATE utf8mb4_unicode_520_ci,
     `subtotal_amount_vnd` decimal(18,2) NOT NULL DEFAULT 0.00,
     `discount_amount_vnd` decimal(18,2) NOT NULL DEFAULT 0.00,
     `net_paid_amount_vnd` decimal(18,2) NOT NULL DEFAULT 0.00,
+    `dthh_base_vnd` decimal(18,2) NOT NULL DEFAULT 0.00,
+    `rep_commission_vnd` decimal(18,2) NOT NULL DEFAULT 0.00,
+    `leader_commission_vnd` decimal(18,2) NOT NULL DEFAULT 0.00,
     `total_sessions_granted` int NOT NULL DEFAULT 0,
     `consumed_sessions_count` int NOT NULL DEFAULT 0,
     `payment_channel` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'VIETQR_PAYOS',
@@ -299,6 +215,109 @@ CREATE TABLE IF NOT EXISTS `oylg_ecommerce_order_wallets` (
     `updated_at` datetime NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `key_order_code` (`order_code`),
-    INDEX `index_parent_student` (`parent_user_id`, `student_user_id`),
-    INDEX `index_payment_status` (`payment_status`, `created_at`)
+    INDEX `index_student_id` (`student_id`, `id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
+CREATE TABLE IF NOT EXISTS `oylg_consultation_leads` (
+    `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+    `parent_name` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `phone` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `student_name` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `grade` int NOT NULL DEFAULT 9,
+    `province` varchar(120) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'Đắk Lắk',
+    `service_interest` varchar(300) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `channel` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'ONLINE',
+    `referral_code` varchar(64) COLLATE utf8mb4_unicode_520_ci,
+    `assigned_expert` varchar(160) COLLATE utf8mb4_unicode_520_ci,
+    `quoted_amount_vnd` decimal(18,2) NOT NULL DEFAULT 4500000.00,
+    `stage` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'NEW',
+    `created_at` datetime NOT NULL,
+    `updated_at` datetime NOT NULL,
+    PRIMARY KEY (`id`),
+    INDEX `index_stage_id` (`stage`, `id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
+CREATE TABLE IF NOT EXISTS `oylg_question_items` (
+    `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+    `question_code` varchar(64) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `tool_group` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `subject_label` varchar(120) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `unit_code` varchar(120) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `author_name` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `stem_text` mediumtext COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `formula_latex` varchar(500) COLLATE utf8mb4_unicode_520_ci,
+    `options_json` mediumtext COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `irt_discrimination` decimal(5,2) NOT NULL DEFAULT 0.42,
+    `triggers_safety_flag` tinyint(1) NOT NULL DEFAULT 0,
+    `approval_status` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'PENDING_APPROVAL',
+    `created_at` datetime NOT NULL,
+    `updated_at` datetime NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `key_question_code` (`question_code`),
+    INDEX `index_approval_status` (`approval_status`, `id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
+CREATE TABLE IF NOT EXISTS `oylg_group_classes` (
+    `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+    `group_code` varchar(64) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `title` varchar(250) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `expert_name` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `schedule_info` varchar(200) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `shared_gaps_csv` varchar(300) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `enrolled_count` int NOT NULL DEFAULT 2,
+    `min_required` int NOT NULL DEFAULT 3,
+    `max_capacity` int NOT NULL DEFAULT 5,
+    `deadline_label` varchar(64) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `status` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'WAITING',
+    `created_at` datetime NOT NULL,
+    `updated_at` datetime NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `key_group_code` (`group_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
+CREATE TABLE IF NOT EXISTS `oylg_residencies` (
+    `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+    `student_id` bigint unsigned NOT NULL,
+    `student_name` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `grade` int NOT NULL DEFAULT 9,
+    `residency_type` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'DAY_BOARDING',
+    `room_code` varchar(64) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `bed_code` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `allergy_warning` varchar(250) COLLATE utf8mb4_unicode_520_ci,
+    `avg_sleep_hours` decimal(4,1) NOT NULL DEFAULT 7.8,
+    `status` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'ACTIVE',
+    `created_at` datetime NOT NULL,
+    `updated_at` datetime NOT NULL,
+    PRIMARY KEY (`id`),
+    INDEX `index_student_id` (`student_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
+CREATE TABLE IF NOT EXISTS `oylg_authorized_pickups` (
+    `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+    `student_id` bigint unsigned NOT NULL,
+    `guardian_full_name` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `relationship` varchar(120) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `phone_number` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `national_id_masked` varchar(64) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `qr_pass_token` varchar(128) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `is_authorized` tinyint(1) NOT NULL DEFAULT 1,
+    `verification_note` varchar(250) COLLATE utf8mb4_unicode_520_ci,
+    `created_at` datetime NOT NULL,
+    `updated_at` datetime NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `key_qr_pass_token` (`qr_pass_token`),
+    INDEX `index_student_authorized` (`student_id`, `is_authorized`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
+CREATE TABLE IF NOT EXISTS `oylg_boarding_checkins` (
+    `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+    `student_id` bigint unsigned NOT NULL,
+    `student_name` varchar(160) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `checkpoint_type` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `time_label` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+    `verification_status` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'VERIFIED_SAFE',
+    `notes` mediumtext COLLATE utf8mb4_unicode_520_ci,
+    `checked_at` datetime NOT NULL,
+    PRIMARY KEY (`id`),
+    INDEX `index_student_checked_at` (`student_id`, `checked_at`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;

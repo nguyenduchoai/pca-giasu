@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{ezytheme}">
+<body>
+<div layout:fragment="content" class="oylg-container oylg-section--tight stack-24">
+
+    <div class="row-between">
+        <a href="/" class="btn btn--sm btn--secondary">← Quay về Trang chủ</a>
+        <div class="row-inline">
+            <a th:each="m : ${experts}"
+               th:href="${'/pages/' + m.landingPageSlug}"
+               class="btn btn--sm"
+               th:classappend="${m.landingPageSlug == expert.landingPageSlug ? 'btn--primary' : 'btn--outline'}"
+               th:text="${m.displayName}">Chuyên gia</a>
+        </div>
+    </div>
+
+    <div class="split-asym card" style="align-items:start;">
+        <div class="stack-20">
+            <div class="row-inline" style="gap:20px;align-items:flex-start;">
+                <img th:src="${expert.portraitUrl}" th:alt="${expert.displayName}"
+                     style="width:112px;height:112px;object-fit:cover;border-radius:12px;border:1px solid var(--border-hairline);" />
+                <div class="stack-8" style="flex:1;min-width:220px;">
+                    <div class="row-inline">
+                        <span class="tag tag--accent">Hội đồng Chuyên môn Chính thức</span>
+                        <span class="tag mono" th:text="${'Đánh giá ' + expert.ratingAvg + '/5.0'}">5.0/5.0</span>
+                    </div>
+                    <h1 class="section-title" th:text="${expert.displayName}">Cố vấn Tracie Anh</h1>
+                    <div class="secondary" style="font-weight:500;" th:text="${expert.roleTitle}">Chức danh</div>
+                </div>
+            </div>
+
+            <p class="secondary" style="font-size:15px;line-height:25px;" th:text="${expert.bioSummary}"></p>
+
+            <div class="grid-2">
+                <div class="card card--compact stack-8" style="background:var(--bg-page);">
+                    <div class="stat-label">Lĩnh vực chuyên môn phụ trách</div>
+                    <div style="font-weight:500;" th:text="${expert.subjectsJson}"></div>
+                    <div class="muted" style="font-size:12px;">Hình thức: Online qua Zoom · Tại Trung tâm Buôn Ma Thuột</div>
+                </div>
+                <div class="card card--compact stack-8" style="background:var(--bg-page);">
+                    <div class="stat-label">Dấu ấn đồng hành thực tế</div>
+                    <div style="font-weight:500;" th:text="${expert.highlightMetric}"></div>
+                    <div class="muted mono" style="font-size:12px;" th:text="${'Đã đồng hành ' + expert.studentCount + ' học sinh'}"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card--compact stack-16" style="background:var(--bg-page);">
+            <div>
+                <div class="eyebrow" style="margin-bottom:4px;">Đặt lịch tham vấn trực tiếp</div>
+                <h2 class="card-title" th:text="${'Đăng ký làm việc cùng ' + expert.displayName}"></h2>
+            </div>
+
+            <form onsubmit="oylg.submitLeadForm(event, this)" class="stack-12">
+                <input type="hidden" name="assignedExpert" th:value="${expert.displayName}" />
+                <input type="hidden" name="serviceInterest" th:value="${'Đặt lịch tham vấn 1-1 cùng ' + expert.displayName}" />
+                <div>
+                    <label class="field-label">Họ tên Phụ huynh</label>
+                    <input name="parentName" class="input" required="required" placeholder="Ví dụ: Chị Nguyễn Thị Lan" />
+                </div>
+                <div>
+                    <label class="field-label">Số điện thoại liên hệ</label>
+                    <input name="phone" class="input" required="required" placeholder="Ví dụ: 0905 123 489" />
+                </div>
+                <div class="grid-2" style="gap:10px;">
+                    <div>
+                        <label class="field-label">Họ tên Học sinh</label>
+                        <input name="studentName" class="input" required="required" placeholder="Nguyễn Minh Khôi" />
+                    </div>
+                    <div>
+                        <label class="field-label">Khối lớp</label>
+                        <select name="grade" class="select">
+                            <option value="5">Tiểu học</option>
+                            <option value="9" selected="selected">Lớp 9</option>
+                            <option value="11">THPT</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn--accent btn--lg btn--full">Gửi yêu cầu đặt lịch hẹn</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

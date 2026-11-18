@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{ezytheme}">
+<body>
+<div layout:fragment="content" class="stack-24">
+
+    <div class="row-between">
+        <div>
+            <h1 class="page-title">Kiosk Quản sinh Nội trú, Bán trú &amp; Đón trả QR An toàn (M21)</h1>
+            <div class="muted" style="font-size:13px;">Cơ sở Trung tâm TP. Buôn Ma Thuột · Điểm danh 4 mốc/ngày, tách thực đơn dị ứng và xác thực người đón</div>
+        </div>
+    </div>
+
+    <!-- 1. ROOM OCCUPANCY & ALLERGY ALERTS -->
+    <div class="grid-3">
+        <div th:each="res : ${residencies}" class="card stack-8">
+            <div class="row-between">
+                <span class="tag mono" th:text="${res.roomCode + ' · ' + res.bedCode}"></span>
+                <span class="tag tag--pos" th:text="${res.residencyType}">DAY_BOARDING</span>
+            </div>
+            <div style="font-size:16px;font-weight:500;" th:text="${res.studentName + ' (Lớp ' + res.grade + ')'}"></div>
+            <div class="secondary" style="font-size:12px;" th:text="${res.allergyWarning}"></div>
+            <div class="muted mono" style="font-size:11px;" th:text="${'Giờ ngủ trung bình: ' + res.avgSleepHours + 'h/đêm'}"></div>
+        </div>
+
+        <div class="card stack-8">
+            <div class="stat-label">Công suất lưu trú hiện tại</div>
+            <div class="stat-figure">24 / 30 giường</div>
+            <div class="stat-delta">Ca trực hiện tại: Thầy Vũ Hải Nam (Ca Chiều – Tối)</div>
+        </div>
+    </div>
+
+    <!-- 2. QR PICKUP VERIFICATION KIOSK & REALTIME LOG -->
+    <div class="grid-2">
+        <div class="card stack-16">
+            <div>
+                <h2 class="card-title">Xác thực Người đón học sinh Bán trú (Nguyễn Minh Khôi)</h2>
+                <div class="muted" style="font-size:12px;">Đối chiếu mã QR và CCCD với danh sách được Phụ huynh ủy quyền trước khi bàn giao</div>
+            </div>
+
+            <div class="stack-8">
+                <div th:each="pk : ${pickups}"
+                     class="card card--compact row-between"
+                     th:style="${pk.authorized ? 'background:var(--bg-page);' : 'background:var(--neg-soft);'}">
+                    <div>
+                        <div style="font-weight:500;" th:text="${pk.guardianFullName + ' · ' + pk.relationship}"></div>
+                        <div class="muted mono" style="font-size:11px;" th:text="${'SĐT: ' + pk.phoneNumber + ' · CCCD: ' + pk.nationalIdMasked}"></div>
+                        <div style="font-size:12px;margin-top:4px;"
+                             th:style="${pk.authorized ? 'color:var(--pos);' : 'color:var(--neg);font-weight:500;'}"
+                             th:text="${pk.verificationNote}"></div>
+                    </div>
+                    <button type="button"
+                            class="btn btn--sm"
+                            th:classappend="${pk.authorized ? 'btn--primary' : 'btn--outline'}"
+                            th:attr="onclick='oylg.verifyPickup(' + ${pk.id} + ')'"
+                            th:text="${pk.authorized ? 'Quét QR bàn giao' : 'Thử quét người lạ'}">
+                    </button>
+                </div>
+            </div>
+
+            <div id="pickupVerifyResult" style="display:none;"></div>
+        </div>
+
+        <div class="card stack-16">
+            <div>
+                <h2 class="card-title">Nhật ký Điểm danh 4 Mốc &amp; Bàn giao Thời gian thực</h2>
+                <div class="muted" style="font-size:12px;">Lưu trữ trực tiếp vào MySQL và đồng bộ tức thời sang Cổng Phụ huynh</div>
+            </div>
+
+            <div class="stack-8">
+                <div th:each="ci : ${checkins}" class="card card--compact row-between" style="background:var(--bg-page);">
+                    <div style="flex:1;min-width:200px;">
+                        <div class="row-inline">
+                            <span class="mono" style="font-size:12px;font-weight:500;" th:text="${ci.timeLabel}">11:40</span>
+                            <strong th:text="${ci.studentName}"></strong>
+                        </div>
+                        <div class="secondary" style="font-size:12px;margin-top:4px;" th:text="${ci.notes}"></div>
+                    </div>
+                    <span class="tag mono"
+                          th:classappend="${ci.verificationStatus == 'VERIFIED_SAFE' ? 'tag--pos' : 'tag--neg'}"
+                          th:text="${ci.checkpointType}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

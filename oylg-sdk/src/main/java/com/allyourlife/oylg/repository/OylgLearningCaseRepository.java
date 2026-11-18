@@ -8,12 +8,8 @@ import java.util.List;
 
 @EzyRepository("oylgLearningCaseRepository")
 public interface OylgLearningCaseRepository extends EzyDatabaseRepository<Long, OylgLearningCase> {
-
     OylgLearningCase findByCaseCode(String caseCode);
-
     List<OylgLearningCase> findByStudentUserId(long studentUserId);
-
     List<OylgLearningCase> findByParentUserId(long parentUserId);
-
     long countByCaseStatus(String caseStatus);
 }

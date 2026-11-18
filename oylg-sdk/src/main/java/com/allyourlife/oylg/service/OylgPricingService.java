@@ -2,6 +2,7 @@ package com.allyourlife.oylg.service;
 
 import com.allyourlife.oylg.constant.OylgConstants;
 import com.tvd12.ezyfox.bean.annotation.EzySingleton;
+import org.youngmonkeys.ezyplatform.entity.DataType;
 import org.youngmonkeys.ezyplatform.service.SettingService;
 
 import java.math.BigDecimal;
@@ -26,9 +27,18 @@ public class OylgPricingService {
     public BigDecimal getBaseSessionPrice() {
         long basePrice = settingService.getLongValue(
             OylgConstants.SETTING_BASE_SESSION_PRICE,
-            500000L
+            200000L
         );
         return BigDecimal.valueOf(basePrice);
+    }
+
+    public void setBaseSessionPrice(long newBasePrice) {
+        long sanitized = Math.max(50000L, newBasePrice);
+        settingService.saveSetting(
+            OylgConstants.SETTING_BASE_SESSION_PRICE,
+            DataType.LONG,
+            sanitized
+        );
     }
 
     public BigDecimal getExpertTierMultiplier(String expertTier) {

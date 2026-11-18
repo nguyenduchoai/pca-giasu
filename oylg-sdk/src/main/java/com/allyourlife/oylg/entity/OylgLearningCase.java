@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -39,6 +40,18 @@ public class OylgLearningCase {
     @Column(name = "case_status")
     private String caseStatus;
 
+    @Column(name = "traffic_light")
+    private String trafficLight;
+
+    @Column(name = "weekly_hours_used")
+    private BigDecimal weeklyHoursUsed;
+
+    @Column(name = "weekly_hours_quota")
+    private BigDecimal weeklyHoursQuota;
+
+    @Column(name = "attendance_rate")
+    private int attendanceRate;
+
     @Column(name = "r1_report_status")
     private String r1ReportStatus;
 
@@ -54,14 +67,19 @@ public class OylgLearningCase {
     @Column(name = "current_grade_ratio_percent")
     private int currentGradeRatioPercent;
 
+    @Column(name = "internal_b3_note")
+    private String internalB3Note;
+
+    @Column(name = "parent_b3_summary")
+    private String parentB3Summary;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public OylgLearningCase() {
-    }
+    public OylgLearningCase() {}
 
     public long getId() {
         return id;
@@ -135,6 +153,38 @@ public class OylgLearningCase {
         this.caseStatus = caseStatus;
     }
 
+    public String getTrafficLight() {
+        return trafficLight;
+    }
+
+    public void setTrafficLight(String trafficLight) {
+        this.trafficLight = trafficLight;
+    }
+
+    public BigDecimal getWeeklyHoursUsed() {
+        return weeklyHoursUsed;
+    }
+
+    public void setWeeklyHoursUsed(BigDecimal weeklyHoursUsed) {
+        this.weeklyHoursUsed = weeklyHoursUsed;
+    }
+
+    public BigDecimal getWeeklyHoursQuota() {
+        return weeklyHoursQuota;
+    }
+
+    public void setWeeklyHoursQuota(BigDecimal weeklyHoursQuota) {
+        this.weeklyHoursQuota = weeklyHoursQuota;
+    }
+
+    public int getAttendanceRate() {
+        return attendanceRate;
+    }
+
+    public void setAttendanceRate(int attendanceRate) {
+        this.attendanceRate = attendanceRate;
+    }
+
     public String getR1ReportStatus() {
         return r1ReportStatus;
     }
@@ -173,6 +223,22 @@ public class OylgLearningCase {
 
     public void setCurrentGradeRatioPercent(int currentGradeRatioPercent) {
         this.currentGradeRatioPercent = currentGradeRatioPercent;
+    }
+
+    public String getInternalB3Note() {
+        return internalB3Note;
+    }
+
+    public void setInternalB3Note(String internalB3Note) {
+        this.internalB3Note = internalB3Note;
+    }
+
+    public String getParentB3Summary() {
+        return parentB3Summary;
+    }
+
+    public void setParentB3Summary(String parentB3Summary) {
+        this.parentB3Summary = parentB3Summary;
     }
 
     public LocalDateTime getCreatedAt() {

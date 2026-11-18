@@ -3,8 +3,12 @@ set -e
 export EZYPLATFORM_HOME=${EZYPLATFORM_HOME:-/Users/nguyenduchoai/Data/Github/pca-giasu/.ezy-runtime/ezyplatform/ezyplatform}
 export EZYPLATFORM_SDK=${EZYPLATFORM_SDK:-/Users/nguyenduchoai/Data/Github/pca-giasu/.ezy-runtime/ezyplatform-sdk/ezyplatform-sdk}
 
-# Use OpenJDK for Maven compilation
-export JAVA_HOME=/opt/homebrew/opt/openjdk
+# Auto-detect OpenJDK for Maven compilation (Intel / Apple Silicon)
+if [ -d "/usr/local/opt/openjdk/libexec/openjdk.jdk/Contents/Home" ]; then
+  export JAVA_HOME="/usr/local/opt/openjdk/libexec/openjdk.jdk/Contents/Home"
+elif [ -d "/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home" ]; then
+  export JAVA_HOME="/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home"
+fi
 export PATH="$JAVA_HOME/bin:$EZYPLATFORM_SDK/bin:$PATH"
 
 mvn -pl . clean install -Dcheckstyle.skip=true

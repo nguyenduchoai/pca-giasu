@@ -3,121 +3,495 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{ezyadmin}">
 <head>
-    <script>
-        const oylg = {};
-    </script>
+    <style>
+        .oylg-admin-wrap { font-variant-numeric: tabular-nums; }
+        .oylg-stat-card {
+            background: #ffffff;
+            border: 1px solid rgba(23, 23, 23, 0.08);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 16px;
+        }
+        .oylg-stat-label { font-size: 12px; color: #525252; margin-bottom: 6px; }
+        .oylg-stat-val { font-size: 26px; font-weight: 600; color: #171717; line-height: 1.1; }
+        .oylg-stat-meta { font-size: 12px; color: #737373; margin-top: 6px; }
+        .oylg-panel {
+            background: #ffffff;
+            border: 1px solid rgba(23, 23, 23, 0.08);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .oylg-panel-head {
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(23, 23, 23, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .oylg-panel-title { font-size: 15px; font-weight: 600; color: #171717; margin: 0; }
+        .oylg-nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+        .oylg-nav-tabs a {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #525252;
+            background: #f4f4f5;
+            text-decoration: none;
+        }
+        .oylg-nav-tabs a.active {
+            background: #171717;
+            color: #ffffff;
+        }
+        .oylg-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .oylg-badge-green { background: rgba(22,163,74,0.1); color: #15803d; }
+        .oylg-badge-red { background: rgba(220,38,38,0.1); color: #b91c1c; }
+        .oylg-badge-amber { background: rgba(200,75,49,0.1); color: #C84B31; }
+        .oylg-badge-neutral { background: #f4f4f5; color: #525252; }
+        .oylg-btn-accent {
+            background: #C84B31;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .oylg-btn-ghost {
+            background: #f4f4f5;
+            color: #171717;
+            border: 1px solid rgba(23,23,23,0.1);
+            border-radius: 8px;
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-<div layout:fragment="content" class="row">
-    <!-- 4 Chỉ số Morning Pulse chuẩn EzyAdmin (AdminLTE 3 Small Boxes) -->
-    <div class="col-lg-3 col-6">
-        <div class="small-box bg-danger">
-            <div class="inner">
-                <h3 id="redSafetyAlertCount">2</h3>
-                <p>[[#{safety_alerts}]] (111 / 115)</p>
-            </div>
-            <div class="icon">
-                <i class="fas fa-shield-alt"></i>
-            </div>
-            <a href="/oylg/safety-alerts" class="small-box-footer">
-                Xử lý khẩn cấp <i class="fas fa-arrow-circle-right"></i>
-            </a>
-        </div>
+<div layout:fragment="content" class="oylg-admin-wrap">
+    <!-- Sub-navigation across all OYLG Admin Views -->
+    <div class="oylg-nav-tabs">
+        <a href="/oylg/dashboard" th:classappend="${currentMenu == 'dashboard' ? 'active' : ''}">Tổng quan</a>
+        <a href="/oylg/cases" th:classappend="${currentMenu == 'cases' ? 'active' : ''}">Hồ sơ 3 Tầng</a>
+        <a href="/oylg/content-approvals" th:classappend="${currentMenu == 'content_approvals' ? 'active' : ''}">Duyệt câu hỏi B1–B4</a>
+        <a href="/oylg/curriculum-graph" th:classappend="${currentMenu == 'curriculum_graph' ? 'active' : ''}">Đồ thị YCCĐ</a>
+        <a href="/oylg/safety-alerts" th:classappend="${currentMenu == 'safety_alerts' ? 'active' : ''}">Cảnh báo M14</a>
+        <a href="/oylg/pricing-payouts" th:classappend="${currentMenu == 'pricing_payouts' ? 'active' : ''}">Bảng giá B6</a>
+        <a href="/oylg/commissions" th:classappend="${currentMenu == 'commissions' ? 'active' : ''}">Đơn hàng &amp; Hoa hồng</a>
+        <a href="/oylg/boarding" th:classappend="${currentMenu == 'boarding' ? 'active' : ''}">Nội trú &amp; QR</a>
+        <a href="/oylg/settings" th:classappend="${currentMenu == 'settings' ? 'active' : ''}">Cấu hình SSOT</a>
     </div>
-    <div class="col-lg-3 col-6">
-        <div class="small-box bg-warning">
-            <div class="inner">
-                <h3 id="pendingApprovalCount">18</h3>
-                <p>Chờ duyệt Nội dung AI &amp; R1-R4 (M04)</p>
+
+    <!-- 4 Morning Metrics (Always visible on dashboard) -->
+    <div class="row" th:if="${currentMenu == 'dashboard'}">
+        <div class="col-md-3 col-sm-6">
+            <div class="oylg-stat-card">
+                <div class="oylg-stat-label">Doanh thu gói học (VietQR)</div>
+                <div class="oylg-stat-val">18.480.000đ</div>
+                <div class="oylg-stat-meta" th:text="${orders.size() + ' đơn hàng đã đối soát'}">2 đơn hàng</div>
             </div>
-            <div class="icon">
-                <i class="fas fa-check-double"></i>
-            </div>
-            <a href="/oylg/content-approvals" class="small-box-footer">
-                Duyệt hàng loạt (Cố vấn Tracie Anh) <i class="fas fa-arrow-circle-right"></i>
-            </a>
         </div>
-    </div>
-    <div class="col-lg-3 col-6">
-        <div class="small-box bg-info">
-            <div class="inner">
-                <h3 id="activeCaseCount">142</h3>
-                <p>Hồ sơ Học tập 3 Tầng đang chạy</p>
+        <div class="col-md-3 col-sm-6">
+            <div class="oylg-stat-card">
+                <div class="oylg-stat-label">Hồ sơ đồng hành đang chạy</div>
+                <div class="oylg-stat-val" th:text="${cases.size() + ' học sinh'}">3 học sinh</div>
+                <div class="oylg-stat-meta">1 hồ sơ cần giảm tải giấc ngủ</div>
             </div>
-            <div class="icon">
-                <i class="fas fa-user-graduate"></i>
-            </div>
-            <a href="/oylg/cases" class="small-box-footer">
-                Xem Bản đồ Thành công &amp; YCCĐ <i class="fas fa-arrow-circle-right"></i>
-            </a>
         </div>
-    </div>
-    <div class="col-lg-3 col-6">
-        <div class="small-box bg-success">
-            <div class="inner">
-                <h3 id="boardingSafeRate">99.4%</h3>
-                <p>Tỷ lệ Đón trả QR An toàn &amp; Nội trú</p>
+        <div class="col-md-3 col-sm-6">
+            <div class="oylg-stat-card">
+                <div class="oylg-stat-label">Câu hỏi B1–B4 chờ thẩm định</div>
+                <div class="oylg-stat-val" th:text="${questions.size()}">4</div>
+                <div class="oylg-stat-meta">Kiểm duyệt bởi Hội đồng Chuyên môn</div>
             </div>
-            <div class="icon">
-                <i class="fas fa-bed"></i>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="oylg-stat-card">
+                <div class="oylg-stat-label">Đơn giá cơ sở B6 (SSOT)</div>
+                <div class="oylg-stat-val" th:text="${#numbers.formatInteger(baseSessionPrice, 3, 'POINT') + 'đ'}">200.000đ</div>
+                <div class="oylg-stat-meta">Áp dụng cho buổi chuẩn 90 phút</div>
             </div>
-            <a href="/oylg/boarding" class="small-box-footer">
-                Kiểm tra 4 Điểm danh &amp; QR <i class="fas fa-arrow-circle-right"></i>
-            </a>
         </div>
     </div>
 
-    <!-- Bảng Hồ sơ Học tập 3 Tầng & Trạng thái Duyệt Báo cáo R1/R2/R3 -->
-    <div class="col-12">
-        <div class="card card-primary card-outline">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h3 class="card-title">
-                    <i class="fas fa-layer-group mr-1"></i>
-                    Điều phối Hồ sơ Học tập 3 Tầng (Hướng nghiệp R1 ➔ Cố vấn Cuộc sống R2/R3 ➔ Bù hổng 60/40)
-                </h3>
-                <div class="card-tools">
-                    <a href="/ezyarticle/pages/fragments" class="btn btn-sm btn-outline-primary">
-                        <i class="fas fa-puzzle-piece"></i> Sửa Page Fragments Website
-                    </a>
-                </div>
-            </div>
-            <div class="card-body table-responsive p-0">
-                <table id="oylgCasesTable" class="table table-bordered table-hover text-nowrap">
-                    <thead>
-                    <tr>
-                        <th>Mã Case</th>
-                        <th>Học sinh / Lớp</th>
-                        <th>Tầng Dịch vụ Hiện tại</th>
-                        <th>Báo cáo R1 / R2 / R3</th>
-                        <th>Gốc rễ Hổng YCCĐ</th>
-                        <th>Tỷ lệ Lộ trình</th>
-                        <th>Bảo vệ DLP &amp; An toàn</th>
-                        <th>Thao tác</th>
-                    </tr>
-                    </thead>
-                    <tbody id="oylgCasesTableBody"></tbody>
-                </table>
-            </div>
+    <!-- 1. CASES TABLE -->
+    <div class="oylg-panel" th:if="${currentMenu == 'dashboard' || currentMenu == 'cases'}">
+        <div class="oylg-panel-head">
+            <h3 class="oylg-panel-title">Hồ sơ Học sinh Đồng hành 3 Tầng &amp; Ví Buổi Học</h3>
+            <a href="http://localhost:18080/coach" target="_blank" class="oylg-btn-ghost">Mở Bàn làm việc Cố vấn (:18080)</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                <tr>
+                    <th>Mã HS</th>
+                    <th>Học sinh &amp; Trường</th>
+                    <th>Phụ huynh</th>
+                    <th>Mục tiêu đầu ra</th>
+                    <th>Ví buổi còn lại</th>
+                    <th>Điểm XP</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="st : ${students}">
+                    <td><code th:text="${st.studentCode}">HS-2026-0089</code></td>
+                    <td>
+                        <strong th:text="${st.fullName}">Nguyễn Minh Khôi</strong>
+                        <div class="text-muted small" th:text="${'Lớp ' + st.currentGrade + ' · ' + st.schoolName}"></div>
+                    </td>
+                    <td>
+                        <span th:text="${st.parentName}"></span>
+                        <div class="text-muted small" th:text="${st.parentPhone}"></div>
+                    </td>
+                    <td th:text="${st.targetMajor}"></td>
+                    <td><strong th:text="${st.sessionCreditsRemaining + ' buổi'}"></strong></td>
+                    <td th:text="${st.xpPoints + ' XP'}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 2. GROUP CLASSES (M09.2) -->
+    <div class="oylg-panel" th:if="${currentMenu == 'dashboard' || currentMenu == 'pricing_payouts'}">
+        <div class="oylg-panel-head">
+            <h3 class="oylg-panel-title">Điều phối Lớp Nhóm Nhỏ Ghép Theo Lỗ Hổng Gốc Chung (M09.2)</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                <tr>
+                    <th>Mã lớp</th>
+                    <th>Chuyên đề bù lỗ hổng</th>
+                    <th>Chuyên gia &amp; Lịch học</th>
+                    <th>Sĩ số</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="gc : ${groupClasses}">
+                    <td><code th:text="${gc.groupCode}"></code></td>
+                    <td>
+                        <strong th:text="${gc.title}"></strong>
+                        <div class="text-muted small" th:text="${'YCCĐ: ' + gc.sharedGapsCsv}"></div>
+                    </td>
+                    <td>
+                        <div th:text="${gc.expertName}"></div>
+                        <div class="text-muted small" th:text="${gc.scheduleInfo}"></div>
+                    </td>
+                    <td th:text="${gc.enrolledCount + ' / ' + gc.maxCapacity + ' (Tối thiểu ' + gc.minRequired + ')'}"></td>
+                    <td>
+                        <span class="oylg-badge"
+                              th:classappend="${gc.status == 'ACTIVE_RUNNING' ? 'oylg-badge-green' : (gc.status == 'READY' ? 'oylg-badge-amber' : 'oylg-badge-neutral')}"
+                              th:text="${gc.status}"></span>
+                    </td>
+                    <td>
+                        <button type="button" class="oylg-btn-ghost mr-1"
+                                th:attr="onclick='oylgGroupAction(' + ${gc.id} + ', \'ADD_STUDENT\')'">+ Ghép thêm 1 HS</button>
+                        <button type="button" class="oylg-btn-accent"
+                                th:if="${gc.status != 'ACTIVE_RUNNING'}"
+                                th:attr="onclick='oylgGroupAction(' + ${gc.id} + ', \'ACTIVATE\')'">Khai giảng</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 3. CONTENT APPROVALS (B1-B4) -->
+    <div class="oylg-panel" th:if="${currentMenu == 'content_approvals'}">
+        <div class="oylg-panel-head">
+            <h3 class="oylg-panel-title">Hàng đợi Phê duyệt Câu hỏi Đánh giá B1–B4 (M04)</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                <tr>
+                    <th>Mã câu hỏi</th>
+                    <th>Bộ công cụ / YCCĐ</th>
+                    <th>Nội dung câu hỏi</th>
+                    <th>Độ phân biệt IRT</th>
+                    <th>Trạng thái</th>
+                    <th>Thẩm định</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="q : ${questions}">
+                    <td><code th:text="${q.questionCode}"></code></td>
+                    <td>
+                        <div th:text="${q.subjectLabel}"></div>
+                        <div class="text-muted small" th:text="${q.unitCode}"></div>
+                    </td>
+                    <td>
+                        <div th:text="${q.stemText}"></div>
+                        <code th:if="${q.formulaLatex != null && !q.formulaLatex.isEmpty()}" th:text="${q.formulaLatex}"></code>
+                    </td>
+                    <td>
+                        <span class="oylg-badge"
+                              th:classappend="${q.irtDiscrimination.doubleValue() < 0 ? 'oylg-badge-red' : 'oylg-badge-green'}"
+                              th:text="${q.irtDiscrimination}"></span>
+                    </td>
+                    <td><span class="oylg-badge oylg-badge-neutral" th:text="${q.approvalStatus}"></span></td>
+                    <td>
+                        <button type="button" class="oylg-btn-accent mr-1"
+                                th:attr="onclick='oylgReviewQuestion(' + ${q.id} + ', \'APPROVED\')'">Phê duyệt</button>
+                        <button type="button" class="oylg-btn-ghost"
+                                th:attr="onclick='oylgReviewQuestion(' + ${q.id} + ', \'REVISION_REQUESTED\')'">Yêu cầu sửa</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 4. CURRICULUM GRAPH -->
+    <div class="oylg-panel" th:if="${currentMenu == 'curriculum_graph'}">
+        <div class="oylg-panel-head">
+            <h3 class="oylg-panel-title">Đồ thị Tiên quyết YCCĐ (Chương trình GDPT 2018)</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                <tr>
+                    <th>Mã YCCĐ</th>
+                    <th>Khối lớp</th>
+                    <th>Tiên quyết lớp dưới</th>
+                    <th>Chủ đề kiến thức</th>
+                    <th>Trạng thái mẫu (HS-2026-0089)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="u : ${heatmapUnits}">
+                    <td><code th:text="${u.get('unitCode')}"></code></td>
+                    <td th:text="${'Lớp ' + u.get('grade')}"></td>
+                    <td><code th:text="${u.get('prerequisiteCode') != '' ? u.get('prerequisiteCode') : 'Gốc Tiểu học'}"></code></td>
+                    <td>
+                        <strong th:text="${u.get('topicName')}"></strong>
+                        <div class="text-muted small" th:text="${u.get('yccdDescription')}"></div>
+                    </td>
+                    <td>
+                        <span class="oylg-badge"
+                              th:classappend="${u.get('rootCauseGap') ? 'oylg-badge-red' : 'oylg-badge-green'}"
+                              th:text="${u.get('masteryLevel') + ' (' + u.get('masteryScore') + '%)'}"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 5. SAFETY ALERTS M14 -->
+    <div class="oylg-panel" th:if="${currentMenu == 'safety_alerts'}">
+        <div class="oylg-panel-head">
+            <h3 class="oylg-panel-title">Nhật ký Cảnh báo An toàn Tâm lý &amp; Nội trú (M14 · Tổng đài 111 / 115)</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                <tr>
+                    <th>Nguồn phát hiện</th>
+                    <th>Mức độ</th>
+                    <th>Trích dẫn tín hiệu</th>
+                    <th>Khuyến nghị xử lý</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="f : ${safetyFlags}">
+                    <td th:text="${f.sourceModule}"></td>
+                    <td>
+                        <span class="oylg-badge"
+                              th:classappend="${f.severity == 'RED_URGENT' ? 'oylg-badge-red' : 'oylg-badge-amber'}"
+                              th:text="${f.severity}"></span>
+                    </td>
+                    <td th:text="${f.triggerExcerpt}"></td>
+                    <td th:text="${f.aiRiskAnalysis}"></td>
+                    <td><span class="oylg-badge oylg-badge-neutral" th:text="${f.status}"></span></td>
+                    <td>
+                        <button type="button" class="oylg-btn-accent"
+                                th:if="${f.status != 'RESOLVED_BY_COUNCIL'}"
+                                th:attr="onclick='oylgResolveFlag(' + ${f.id} + ')'">Xác nhận đã xử lý</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 6. PRICING & PACKAGES -->
+    <div class="oylg-panel" th:if="${currentMenu == 'pricing_payouts' || currentMenu == 'settings'}">
+        <div class="oylg-panel-head">
+            <h3 class="oylg-panel-title">Cấu hình Đơn giá Cơ sở B6 &amp; Danh mục Gói Dịch vụ SSOT</h3>
+        </div>
+        <div class="p-3 border-bottom d-flex align-items-center" style="gap:12px;">
+            <label class="mb-0 font-weight-medium">Đơn giá cơ sở 1 buổi 90p (VNĐ):</label>
+            <input type="number" id="adminBasePriceInput" class="form-control" style="max-width:180px;" th:value="${baseSessionPrice}" />
+            <button type="button" class="oylg-btn-accent" onclick="oylgSaveBasePrice()">Lưu vào ezy_settings</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                <tr>
+                    <th>Mã gói</th>
+                    <th>Tên gói đồng hành</th>
+                    <th>Số buổi cấp</th>
+                    <th>Giá niêm yết</th>
+                    <th>Giá chính thức (SSOT)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="pkg : ${packages}">
+                    <td><code th:text="${pkg.packageCode}"></code></td>
+                    <td th:text="${pkg.title}"></td>
+                    <td th:text="${pkg.sessionCreditsGranted + ' buổi'}"></td>
+                    <td th:text="${#numbers.formatInteger(pkg.listPriceVnd, 3, 'POINT') + 'đ'}"></td>
+                    <td><strong th:text="${#numbers.formatInteger(pkg.netPriceVnd, 3, 'POINT') + 'đ'}"></strong></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 7. ORDERS & 2-TIER COMMISSIONS -->
+    <div class="oylg-panel" th:if="${currentMenu == 'commissions'}">
+        <div class="oylg-panel-head">
+            <h3 class="oylg-panel-title">Sổ cái Đơn hàng VietQR &amp; Phân bổ Hoa hồng 2 Cấp (PAY_AS_COLLECTED)</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                <tr>
+                    <th>Mã đơn</th>
+                    <th>Phụ huynh / Học sinh</th>
+                    <th>Gói dịch vụ</th>
+                    <th>Thực thu</th>
+                    <th>HH CTV (10%)</th>
+                    <th>HH Leader (5%)</th>
+                    <th>Trạng thái</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="ord : ${orders}">
+                    <td><code th:text="${ord.orderCode}"></code></td>
+                    <td>
+                        <strong th:text="${ord.parentName}"></strong>
+                        <div class="text-muted small" th:text="${ord.studentName}"></div>
+                    </td>
+                    <td th:text="${ord.packageTitle}"></td>
+                    <td th:text="${#numbers.formatInteger(ord.netPaidAmountVnd, 3, 'POINT') + 'đ'}"></td>
+                    <td th:text="${#numbers.formatInteger(ord.repCommissionVnd, 3, 'POINT') + 'đ'}"></td>
+                    <td th:text="${#numbers.formatInteger(ord.leaderCommissionVnd, 3, 'POINT') + 'đ'}"></td>
+                    <td>
+                        <span class="oylg-badge"
+                              th:classappend="${ord.paymentStatus == 'PAID' ? 'oylg-badge-green' : 'oylg-badge-red'}"
+                              th:text="${ord.paymentStatus}"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 8. BOARDING & QR PICKUP -->
+    <div class="oylg-panel" th:if="${currentMenu == 'boarding'}">
+        <div class="oylg-panel-head">
+            <h3 class="oylg-panel-title">Lưu trú Nội trú / Bán trú &amp; Nhật ký Đón trả QR (M21)</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                <tr>
+                    <th>Thời gian</th>
+                    <th>Học sinh</th>
+                    <th>Mốc kiểm soát</th>
+                    <th>Trạng thái</th>
+                    <th>Ghi chú xác thực</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="ci : ${checkins}">
+                    <td th:text="${ci.timeLabel}"></td>
+                    <td th:text="${ci.studentName}"></td>
+                    <td><code th:text="${ci.checkpointType}"></code></td>
+                    <td>
+                        <span class="oylg-badge"
+                              th:classappend="${ci.verificationStatus == 'VERIFIED_SAFE' ? 'oylg-badge-green' : 'oylg-badge-red'}"
+                              th:text="${ci.verificationStatus}"></span>
+                    </td>
+                    <td th:text="${ci.notes}"></td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
-<th:block layout:fragment="modals">
-    <th:block th:replace="~{fragments/prompt :: content(id='approve-batch-modal', title=#{confirm}, body=#{confirm_approve_batch}, confirmButton=#{approve_selected}, closeButton=#{close})}" />
-</th:block>
-
-<script layout:fragment="scripts" th:inline="javascript">
-/*<![CDATA[*/
-ezyadmin.messages.save_successfully = /*[[#{save_successfully}]]*/ 'Lưu thành công!';
-/*]]>*/
-oylg.onBatchApproveClick = function() {
-    $('#approve-batch-modal').modal('show');
-};
-ezyadmin.onPromptConfirmed = function(modalId) {
-    if (modalId === 'approve-batch-modal') {
-        ezyadmin.shortToast('bg-success', 'OYLG Content Gate', ezyadmin.messages.save_successfully);
-    }
-};
+<script layout:fragment="scripts">
+function oylgSaveBasePrice() {
+    var val = document.getElementById('adminBasePriceInput').value;
+    $.ajax({
+        type: 'POST',
+        url: '/oylg/api/v1/oylg/settings/base-price',
+        contentType: 'application/json',
+        data: JSON.stringify({ basePriceVnd: val }),
+        success: function() { location.reload(); },
+        error: function() {
+            $.ajax({
+                type: 'POST',
+                url: '/api/v1/oylg/settings/base-price',
+                contentType: 'application/json',
+                data: JSON.stringify({ basePriceVnd: val }),
+                success: function() { location.reload(); }
+            });
+        }
+    });
+}
+function oylgReviewQuestion(id, status) {
+    $.ajax({
+        type: 'POST',
+        url: '/api/v1/oylg/questions/' + id + '/review',
+        contentType: 'application/json',
+        data: JSON.stringify({ status: status }),
+        success: function() { location.reload(); }
+    });
+}
+function oylgResolveFlag(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/api/v1/oylg/safety-flags/' + id + '/resolve',
+        contentType: 'application/json',
+        data: '{}',
+        success: function() { location.reload(); }
+    });
+}
+function oylgGroupAction(id, action) {
+    $.ajax({
+        type: 'POST',
+        url: '/api/v1/oylg/group-classes/' + id + '/action',
+        contentType: 'application/json',
+        data: JSON.stringify({ action: action }),
+        success: function() { location.reload(); }
+    });
+}
 </script>
 </body>
 </html>
