@@ -27,10 +27,17 @@ public class OylgAdminViewDecorator implements ViewDecorator {
         this.safetyFlagRepository = safetyFlagRepository;
     }
 
+    private static final String LOGIN_ROUNDED_FONT_HEAD =
+        "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">"
+            + "<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>"
+            + "<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Quicksand:wght@600;700&display=swap\">"
+            + "<style>body,.btn,.form-control,.custom-select{font-family:'Nunito',sans-serif!important;font-weight:500}h1,h2,h3,h4,.login-logo,.card-title{font-family:'Quicksand','Nunito',sans-serif!important;font-weight:700!important}.login-box .card,.btn,.form-control,.custom-select{border-radius:12px}</style>";
+
     @Override
     public void decorate(HttpServletRequest request, View view) {
         Long adminId = (Long) request.getAttribute(AdminId.class.getName());
         if (adminId == null) {
+            view.appendValueToVariable("additionalHeads", LOGIN_ROUNDED_FONT_HEAD);
             return;
         }
         view.appendValueToVariable(
