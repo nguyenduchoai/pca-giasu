@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -19,6 +19,12 @@
         <socket.monitor.version>0.0.1</socket.monitor.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+    <ezyarticle.version>1.5.6</ezyarticle.version>
+        <ezymail.version>0.3.3</ezymail.version>
+        <javax.mail.version>1.6.2</javax.mail.version>
+        <jsoup.version>1.18.3</jsoup.version>
+        <ezylogin.version>0.4.7</ezylogin.version>
+    <ezysupport.version>0.6.2</ezysupport.version>
     </properties>
 
     <modules>
@@ -35,6 +41,59 @@
             <version>${ezy.platform.version}</version>
             <scope>test</scope>
         </dependency>
+    <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>${javax.mail.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${javax.servlet.version}</version>
+            <optional>true</optional>
+        <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>${jsoup.version}</version>
+        <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.youngmonkeys</groupId>
+            <artifactId>ezyarticle-sdk</artifactId>
+            <version>${ezyarticle.version}</version>
+            <scope>system</scope>
+            <systemPath>${ezyplatform.home}/admin/plugins/ezyarticle/lib/ezyarticle-sdk-${ezyarticle.version}.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.youngmonkeys</groupId>
+            <artifactId>ezyplatform-common-sdk</artifactId>
+            <version>${ezy.platform.version}</version>
+        <scope>provided</scope>
+        </dependency>
+    <dependency>
+            <groupId>com.tvd12</groupId>
+            <artifactId>ezyhttp-server-core</artifactId>
+            <version>${ezy.http.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.youngmonkeys</groupId>
+            <artifactId>ezymail-sdk</artifactId>
+            <version>${ezymail.version}</version>
+            <scope>system</scope>
+            <systemPath>
+                ${ezyplatform.home}/web/plugins/ezymail/lib/ezymail-sdk-${ezymail.version}.jar
+            </systemPath>
+        </dependency>
+    <dependency>
+            <groupId>com.tvd12</groupId>
+            <artifactId>ezyhttp-server-thymeleaf</artifactId>
+            <version>${ezy.http.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -46,7 +105,6 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <proc>none</proc>
                 </configuration>
             </plugin>
             <plugin>

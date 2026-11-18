@@ -1,17 +1,22 @@
 package com.allyourlife.oylg.admin.controller.api;
 
+import com.allyourlife.oylg.admin.service.AdminOylgSettingService;
 import com.allyourlife.oylg.entity.OylgDigestDispatch;
 import com.allyourlife.oylg.entity.OylgGroupClass;
 import com.allyourlife.oylg.entity.OylgQuestionItem;
 import com.allyourlife.oylg.entity.OylgSafetyFlag;
+import com.allyourlife.oylg.model.OylgSiteSettings;
 import com.allyourlife.oylg.service.OylgPlatformService;
 import com.allyourlife.oylg.service.OylgPricingService;
 import com.allyourlife.oylg.service.OylgSecurityAndLedgerService;
+import com.tvd12.ezyfox.annotation.EzyFeature;
 import com.tvd12.ezyhttp.core.response.ResponseEntity;
 import com.tvd12.ezyhttp.server.core.annotation.Api;
 import com.tvd12.ezyhttp.server.core.annotation.Authenticated;
 import com.tvd12.ezyhttp.server.core.annotation.Controller;
+import com.tvd12.ezyhttp.server.core.annotation.DoGet;
 import com.tvd12.ezyhttp.server.core.annotation.DoPost;
+import com.tvd12.ezyhttp.server.core.annotation.DoPut;
 import com.tvd12.ezyhttp.server.core.annotation.PathVariable;
 import com.tvd12.ezyhttp.server.core.annotation.RequestBody;
 
@@ -21,30 +26,50 @@ import java.util.Map;
 
 @Api
 @Authenticated
-@Controller("/api/v1/oylg")
+@Controller("/api/v1")
+@EzyFeature("oylg")
 public class AdminOylgApiController {
 
     private final OylgPlatformService platformService;
     private final OylgPricingService pricingService;
     private final OylgSecurityAndLedgerService securityAndLedgerService;
+    private final AdminOylgSettingService settingService;
 
     public AdminOylgApiController(
         OylgPlatformService platformService,
         OylgPricingService pricingService,
-        OylgSecurityAndLedgerService securityAndLedgerService
+        OylgSecurityAndLedgerService securityAndLedgerService,
+        AdminOylgSettingService settingService
     ) {
         this.platformService = platformService;
         this.pricingService = pricingService;
         this.securityAndLedgerService = securityAndLedgerService;
+        this.settingService = settingService;
+    }
+
+    @DoGet("/settings")
+    public OylgSiteSettings settingsGet() {
+        return settingService.getSettings();
+    }
+
+    @DoPut("/settings")
+    public ResponseEntity settingsPut(@RequestBody OylgSiteSettings request) {
+        settingService.saveSettings(request != null ? request : new OylgSiteSettings());
+        return ResponseEntity.noContent();
     }
 
     @DoPost("/settings/base-price")
     public ResponseEntity saveBasePrice(@RequestBody Map<String, Object> req) {
         long price = 200000L;
         if (req != null && req.get("basePriceVnd") != null) {
-            price = Long.parseLong(String.valueOf(req.get("basePriceVnd")).replaceAll("[^0-9]", ""));
+            price = Long.parseLong(
+                String.valueOf(req.get("basePriceVnd")).replaceAll("[^0-9]", "")
+            );
         }
         pricingService.setBaseSessionPrice(price);
+        OylgSiteSettings cur = settingService.getSettings();
+        cur.setBaseSessionPriceVnd(pricingService.getBaseSessionPrice().longValue());
+        settingService.saveSettings(cur);
         Map<String, Object> res = new HashMap<>();
         res.put("ok", true);
         res.put("basePriceVnd", pricingService.getBaseSessionPrice());
@@ -65,7 +90,9 @@ public class AdminOylgApiController {
     public ResponseEntity sendDigest(@RequestBody Map<String, Object> req) {
         long studentId = 1L;
         if (req != null && req.get("studentId") != null) {
-            studentId = Long.parseLong(String.valueOf(req.get("studentId")).replaceAll("[^0-9]", ""));
+            studentId = Long.parseLong(
+                String.valueOf(req.get("studentId")).replaceAll("[^0-9]", "")
+            );
         }
         OylgDigestDispatch d = securityAndLedgerService.dispatchEveningDigest(studentId);
         Map<String, Object> res = new HashMap<>();

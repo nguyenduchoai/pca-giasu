@@ -9,6 +9,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" ezy:vhref="/css/style.css" />
+    <style th:if="${themeSettings != null}" th:inline="css">
+    :root {
+        --accent: [(${themeSettings.validPrimaryColor})];
+    }
+    </style>
 </head>
 <body th:attr="data-shell=${shellMode != null ? shellMode : 'public'}">
 <div layout:fragment="page">
@@ -104,11 +109,16 @@
 
     <!-- CASE 2: WARM EDITORIAL SHELL (Public Website, Parent Portal, Student Workspace) -->
     <div th:if="${shellMode != 'app'}">
+        <div th:if="${shellMode == 'public' and themeSettings != null and themeSettings.announcementEnabled and !#strings.isEmpty(themeSettings.announcementText)}"
+             style="background:var(--accent);color:#fff;font-size:12px;font-weight:500;text-align:center;padding:7px 16px;">
+            <span th:text="${themeSettings.announcementText}"></span>
+        </div>
         <header th:replace="~{fragments/header :: header}"></header>
         <main layout:fragment="content"></main>
         <footer th:if="${shellMode == 'public'}" th:replace="~{fragments/footer :: footer}"></footer>
     </div>
 
+    <th:block th:replace="~{ezycommon/loading :: content}" />
     <th:block th:replace="~{fragments/modals :: modals}"></th:block>
 </div>
 

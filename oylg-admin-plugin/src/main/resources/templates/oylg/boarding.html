@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:ezy="http://www.ezyplatform.com/thymeleaf/layout"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{ezyadmin}">
+<body>
+<div layout:fragment="content" class="oylg-num">
+    <div class="card card-danger card-outline">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-bell mr-1"></i> Cảnh báo an toàn tâm lý &amp; học đường</h3>
+        </div>
+        <div class="card-body table-responsive p-0">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Học sinh</th>
+                        <th>Nguồn phát hiện</th>
+                        <th>Nội dung cần lưu ý</th>
+                        <th>Trạng thái</th>
+                        <th class="text-right">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="fl : ${safetyFlags}">
+                        <td class="font-weight-bold" th:text="${fl.studentName}"></td>
+                        <td th:text="${fl.sourceChannel}"></td>
+                        <td th:text="${fl.detectedExcerpt}"></td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${fl.status == 'RESOLVED' ? 'badge-success' : 'badge-danger'}"
+                                  th:text="${fl.status == 'RESOLVED' ? 'Đã xử lý' : 'Cần Cố vấn xác minh'}"></span>
+                        </td>
+                        <td class="text-right">
+                            <button th:if="${fl.status != 'RESOLVED'}"
+                                    type="button" class="btn btn-xs btn-primary"
+                                    th:attr="onclick='oylgAdmin.resolveFlag(' + ${fl.id} + ')'">Đánh dấu đã xử lý</button>
+                            <span th:if="${fl.status == 'RESOLVED'}" class="text-muted small">Hoàn tất</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-id-card mr-1"></i> Danh sách người đón được ủy quyền (Nguyễn Minh Khôi)</h3>
+                </div>
+                <div class="card-body table-responsive p-0">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Người đón</th>
+                                <th>Quan hệ</th>
+                                <th>Mã đón hiện tại</th>
+                                <th>Quyền đón</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="pk : ${pickups}">
+                                <td class="font-weight-bold" th:text="${pk.guardianFullName}"></td>
+                                <td th:text="${pk.relationship}"></td>
+                                <td><code th:text="${liveTotpMap.get(pk.id)}"></code></td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${pk.authorized ? 'badge-success' : 'badge-danger'}"
+                                          th:text="${pk.authorized ? 'Được phép đón' : 'Chặn bàn giao'}"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-clipboard-check mr-1"></i> Nhật ký điểm danh Bán trú &amp; Nội trú</h3>
+                </div>
+                <div class="card-body table-responsive p-0">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Giờ</th>
+                                <th>Học sinh</th>
+                                <th>Ghi chú</th>
+                                <th>Mốc</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="ci : ${checkins}">
+                                <td><code th:text="${ci.timeLabel}"></code></td>
+                                <td class="font-weight-bold" th:text="${ci.studentName}"></td>
+                                <td th:text="${ci.notes}"></td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${ci.verificationStatus == 'VERIFIED_SAFE' ? 'badge-success' : 'badge-danger'}"
+                                          th:text="${ci.checkpointType == 'ARRIVE' ? 'Đến lớp' : (ci.checkpointType == 'MEAL' ? 'Ăn trưa' : (ci.checkpointType == 'NIGHT_ROLLCALL' ? 'Điểm danh tối' : 'Chặn người lạ'))}"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="import-module-scripts">
+    <script ezy:vsrc="/oylg/js/admin.js"></script>
+</th:block>
+</body>
+</html>

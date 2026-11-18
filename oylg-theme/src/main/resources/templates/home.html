@@ -115,7 +115,7 @@
     </section>
 
     <!-- 3. UNIFIED PACKAGES & DYNAMIC FEE SIMULATOR -->
-    <section id="bang-gia-goi-hoc" class="oylg-section">
+    <section id="bang-gia-goi-hoc" class="oylg-section" th:if="${themeSettings == null or themeSettings.showPackages}">
         <div class="oylg-container stack-32">
             <div class="row-between">
                 <div class="stack-8">
@@ -253,7 +253,7 @@
     </section>
 
     <!-- 4. COUNCIL OF EXPERTS -->
-    <section id="hoi-dong-chuyen-gia" class="oylg-section">
+    <section id="hoi-dong-chuyen-gia" class="oylg-section" th:if="${themeSettings == null or themeSettings.showExperts}">
         <div class="oylg-container stack-32">
             <div class="stack-8">
                 <div class="eyebrow">Đội ngũ chuyên gia &amp; Cố vấn đồng hành</div>
@@ -282,7 +282,7 @@
     </section>
 
     <!-- 5. DAY-BOARDING & QR PICKUP SAFETY -->
-    <section id="noi-tru-an-toan" class="oylg-section">
+    <section id="noi-tru-an-toan" class="oylg-section" th:if="${themeSettings == null or themeSettings.showBoarding}">
         <div class="oylg-container">
             <div class="card stack-24">
                 <div class="row-between">
@@ -320,7 +320,7 @@
     </section>
 
     <!-- 6. 1-1 CONSULTATION BOOKING -->
-    <section id="dat-lich-tu-van" class="oylg-section">
+    <section id="dat-lich-tu-van" class="oylg-section" th:if="${themeSettings == null or themeSettings.showConsultation}">
         <div class="oylg-container">
             <div class="split-asym card" style="align-items:center;">
                 <div class="stack-16">

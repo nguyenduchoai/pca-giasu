@@ -1,0 +1,40 @@
+<!-- admin-customization: oylg warm studio v1 -->
+<script id="oylgCustomAdminFoot">
+(function () {
+    try {
+        if (window.self !== window.top) {
+            return;
+        }
+        var nav = document.querySelector('.main-header .navbar-nav');
+        if (!nav || document.getElementById('oylgHeaderWebShortcut')) {
+            return;
+        }
+        var texts = {
+            vi: { openWeb: 'Xem Website', tutorHub: 'Quản lý Gia sư' },
+            en: { openWeb: 'Open Website', tutorHub: 'Tutor Hub' }
+        };
+        var lang = (document.documentElement.lang || 'vi').split('-')[0];
+        var t = texts[lang] || texts.vi;
+        var esc = (window.ezyadmin && typeof ezyadmin.escapeHtml === 'function')
+            ? function (s) { return ezyadmin.escapeHtml(String(s)); }
+            : function (s) { return String(s); };
+
+        var liHub = document.createElement('li');
+        liHub.id = 'oylgHeaderWebShortcut';
+        liHub.className = 'nav-item d-none d-sm-inline-block';
+        liHub.innerHTML = '<a href="/oylg/dashboard" class="nav-link font-weight-bold">'
+            + '<i class="fas fa-graduation-cap mr-1 text-primary"></i>'
+            + esc(t.tutorHub) + '</a>';
+        nav.appendChild(liHub);
+
+        var liWeb = document.createElement('li');
+        liWeb.className = 'nav-item d-none d-md-inline-block';
+        liWeb.innerHTML = '<a href="http://localhost:18080" target="_blank" rel="noopener" class="nav-link">'
+            + '<i class="fas fa-external-link-alt mr-1"></i>'
+            + esc(t.openWeb) + '</a>';
+        nav.appendChild(liWeb);
+    } catch (e) {
+        /* leave default admin usable */
+    }
+})();
+</script>

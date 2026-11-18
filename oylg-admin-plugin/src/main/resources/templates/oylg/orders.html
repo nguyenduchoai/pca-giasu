@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:ezy="http://www.ezyplatform.com/thymeleaf/layout"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{ezyadmin}">
+<body>
+<div layout:fragment="content" class="oylg-num">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-box-open mr-1"></i> Các gói học đang mở bán trên Website</h3>
+        </div>
+        <div class="card-body table-responsive p-0">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Mã gói</th>
+                        <th>Tên gói học</th>
+                        <th>Nhóm lộ trình</th>
+                        <th class="text-right">Số buổi cấp</th>
+                        <th class="text-right">Giá niêm yết</th>
+                        <th class="text-right">Học phí ưu đãi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="pkg : ${packages}">
+                        <td><code th:text="${pkg.packageCode}"></code></td>
+                        <td class="font-weight-bold" th:text="${pkg.title}"></td>
+                        <td><span class="badge badge-info" th:text="${pkg.tierBadge}"></span></td>
+                        <td class="text-right" th:text="${pkg.sessionCreditsGranted + ' buổi'}"></td>
+                        <td class="text-right text-muted" th:text="${#numbers.formatInteger(pkg.listPriceVnd, 3, 'POINT') + 'đ'}"></td>
+                        <td class="text-right font-weight-bold" th:text="${#numbers.formatInteger(pkg.netPriceVnd, 3, 'POINT') + 'đ'}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-receipt mr-1"></i> Danh sách Đơn hàng &amp; Xác nhận chuyển khoản</h3>
+        </div>
+        <div class="card-body table-responsive p-0">
+            <table class="table table-hover text-nowrap mb-0">
+                <thead>
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Phụ huynh &amp; Học sinh</th>
+                        <th>Gói đăng ký</th>
+                        <th class="text-right">Số buổi</th>
+                        <th class="text-right">Thực thu</th>
+                        <th>Trạng thái</th>
+                        <th class="text-right">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="ord : ${orders}">
+                        <td><code th:text="${ord.orderCode}"></code></td>
+                        <td th:text="${ord.parentName + ' · ' + ord.studentName}"></td>
+                        <td th:text="${ord.packageTitle}"></td>
+                        <td class="text-right" th:text="${'+' + ord.totalSessionsGranted + ' buổi'}"></td>
+                        <td class="text-right font-weight-bold" th:text="${#numbers.formatInteger(ord.netPaidAmountVnd, 3, 'POINT') + 'đ'}"></td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${ord.paymentStatus == 'PAID' ? 'badge-success' : (ord.paymentStatus == 'PENDING_PAYMENT' ? 'badge-warning' : 'badge-secondary')}"
+                                  th:text="${ord.paymentStatus == 'PAID' ? 'Đã thanh toán' : (ord.paymentStatus == 'PENDING_PAYMENT' ? 'Chờ chuyển khoản' : 'Đã hoàn phí')}"></span>
+                        </td>
+                        <td class="text-right">
+                            <button th:if="${ord.paymentStatus == 'PENDING_PAYMENT'}"
+                                    type="button"
+                                    class="btn btn-xs btn-primary"
+                                    th:data-order="${ord.orderCode}"
+                                    onclick="oylgAdmin.confirmPayment(this.getAttribute('data-order'))">
+                                Xác nhận đã thu
+                            </button>
+                            <span th:if="${ord.paymentStatus != 'PENDING_PAYMENT'}" class="text-muted small">Đã đối soát</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-users-cog mr-1"></i> Lớp nhóm nhỏ (3–5 học sinh)</h3>
+                </div>
+                <div class="card-body table-responsive p-0">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Tên lớp nhóm</th>
+                                <th>Sĩ số</th>
+                                <th>Trạng thái</th>
+                                <th class="text-right">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="gc : ${groupClasses}">
+                                <td>
+                                    <div class="font-weight-bold" th:text="${gc.title}"></div>
+                                    <small class="text-muted" th:text="${gc.expertName + ' · ' + gc.scheduleInfo}"></small>
+                                </td>
+                                <td th:text="${gc.enrolledCount + '/' + gc.maxCapacity}"></td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${gc.status == 'ACTIVE_RUNNING' ? 'badge-success' : 'badge-warning'}"
+                                          th:text="${gc.status == 'ACTIVE_RUNNING' ? 'Đang học' : 'Chờ khai giảng'}"></span>
+                                </td>
+                                <td class="text-right text-nowrap">
+                                    <button type="button" class="btn btn-xs btn-outline-secondary"
+                                            th:attr="onclick='oylgAdmin.groupAction(' + ${gc.id} + ', \'ADD_STUDENT\')'">+1 HS</button>
+                                    <button th:if="${gc.status != 'ACTIVE_RUNNING'}"
+                                            type="button" class="btn btn-xs btn-primary"
+                                            th:attr="onclick='oylgAdmin.groupAction(' + ${gc.id} + ', \'ACTIVATE\')'">Mở lớp</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-history mr-1"></i> Lịch sử cộng / trừ buổi học</h3>
+                </div>
+                <div class="card-body table-responsive p-0">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Mã giao dịch</th>
+                                <th>Nội dung</th>
+                                <th class="text-right">Biến động</th>
+                                <th class="text-right">Số dư</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="tx : ${walletLedger}">
+                                <td><code th:text="${tx.txCode}"></code></td>
+                                <td th:text="${tx.description}"></td>
+                                <td class="text-right font-weight-bold"
+                                    th:classappend="${tx.deltaSessions >= 0 ? 'text-success' : 'text-danger'}"
+                                    th:text="${(tx.deltaSessions >= 0 ? '+' : '') + tx.deltaSessions + ' buổi'}"></td>
+                                <td class="text-right" th:text="${tx.balanceAfter + ' buổi'}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="import-module-scripts">
+    <script ezy:vsrc="/oylg/js/admin.js"></script>
+</th:block>
+</body>
+</html>

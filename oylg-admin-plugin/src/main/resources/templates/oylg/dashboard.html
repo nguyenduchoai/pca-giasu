@@ -1,615 +1,184 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{ezyadmin}">
-<head>
-    <style>
-        .oylg-studio { font-variant-numeric: tabular-nums; }
-        .oylg-kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-        .oylg-kpi {
-            background: #ffffff;
-            border: 1px solid rgba(23, 23, 23, 0.08);
-            border-radius: 12px;
-            padding: 18px 20px;
-        }
-        .oylg-kpi__label { font-size: 12px; color: #525252; }
-        .oylg-kpi__val { font-size: 28px; font-weight: 500; color: #171717; line-height: 1.1; margin-top: 8px; }
-        .oylg-kpi__delta { font-size: 12px; color: #737373; margin-top: 8px; }
-        .oylg-split {
-            display: grid;
-            grid-template-columns: 1.65fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        .oylg-card {
-            background: #ffffff;
-            border: 1px solid rgba(23, 23, 23, 0.08);
-            border-radius: 12px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-        .oylg-card__head {
-            padding: 16px 20px;
-            border-bottom: 1px solid rgba(23, 23, 23, 0.08);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .oylg-card__title { font-size: 15px; font-weight: 500; color: #171717; margin: 0; }
-        .oylg-card__sub { font-size: 12px; color: #737373; margin-top: 2px; }
-        .oylg-tag {
-            display: inline-flex;
-            align-items: center;
-            height: 22px;
-            padding: 0 8px;
-            border-radius: 5px;
-            font-size: 11px;
-            font-weight: 500;
-            background: #f4f4f5;
-            color: #525252;
-        }
-        .oylg-tag--pos { background: rgba(22, 163, 74, 0.10); color: #15803d; }
-        .oylg-tag--neg { background: rgba(220, 38, 38, 0.10); color: #b91c1c; }
-        .oylg-tag--accent { background: rgba(200, 75, 49, 0.10); color: #c84b31; }
-        .oylg-btn {
-            height: 34px;
-            padding: 0 14px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 500;
-            border: 1px solid rgba(23, 23, 23, 0.14);
-            background: #ffffff;
-            color: #171717;
-            cursor: pointer;
-        }
-        .oylg-btn--accent { background: #c84b31; border-color: #c84b31; color: #ffffff; }
-        .oylg-btn--dark { background: #171717; border-color: #171717; color: #ffffff; }
-        @media (max-width: 992px) {
-            .oylg-kpi-grid, .oylg-split { grid-template-columns: 1fr; }
-        }
-    </style>
-</head>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:ezy="http://www.ezyplatform.com/thymeleaf/layout"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{ezyadmin}">
 <body>
-<div layout:fragment="content" class="oylg-studio">
-
-    <!-- 1. TỔNG QUAN -->
-    <th:block th:if="${currentMenu == 'dashboard'}">
-        <div class="oylg-kpi-grid">
-            <div class="oylg-kpi">
-                <div class="oylg-kpi__label">Học phí đã thu tháng này</div>
-                <div class="oylg-kpi__val">18.480.000đ</div>
-                <div class="oylg-kpi__delta">+24% so với tháng trước</div>
-            </div>
-            <div class="oylg-kpi">
-                <div class="oylg-kpi__label">Học sinh đang theo học</div>
-                <div class="oylg-kpi__val" th:text="${students.size() + ' em'}">3 em</div>
-                <div class="oylg-kpi__delta">1 em cần giảm bài tập tối</div>
-            </div>
-            <div class="oylg-kpi">
-                <div class="oylg-kpi__label">Câu hỏi chờ duyệt</div>
-                <div class="oylg-kpi__val" th:text="${questions.size() + ' câu'}">4 câu</div>
-                <div class="oylg-kpi__delta">Kiểm tra trước khi giao cho học sinh</div>
-            </div>
-            <div class="oylg-kpi">
-                <div class="oylg-kpi__label">Học phí chuẩn 1 buổi</div>
-                <div class="oylg-kpi__val" th:text="${#numbers.formatInteger(baseSessionPrice, 3, 'POINT') + 'đ'}">200.000đ</div>
-                <div class="oylg-kpi__delta">Thời lượng 90 phút / buổi</div>
+<div layout:fragment="content" class="oylg-num">
+    <div class="row">
+        <div class="col-lg-3 col-sm-6">
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <h3 th:text="${cases.size() + ' học sinh'}">3 học sinh</h3>
+                    <p class="mb-0">Hồ sơ đang đồng hành</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <a href="/oylg/cases" class="small-box-footer">
+                    Xem danh sách học sinh <i class="fas fa-arrow-circle-right"></i>
+                </a>
             </div>
         </div>
-
-        <div class="oylg-split">
-            <div class="oylg-card mb-0">
-                <div class="oylg-card__head">
-                    <div>
-                        <h3 class="oylg-card__title">Doanh thu học phí 6 tháng gần nhất</h3>
-                        <div class="oylg-card__sub">Cột màu cam là tháng hiện tại</div>
-                    </div>
-                    <span class="oylg-tag oylg-tag--accent mono">Tháng 11/2026</span>
+        <div class="col-lg-3 col-sm-6">
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>18.480.000đ</h3>
+                    <p class="mb-0" th:text="${orders.size() + ' đơn hàng đã ghi nhận'}">3 đơn hàng</p>
                 </div>
-                <div style="padding:20px;">
-                    <svg viewBox="0 0 640 200" style="width:100%;height:200px;display:block;">
-                        <line x1="40" y1="24" x2="620" y2="24" stroke="rgba(23,23,23,0.06)" />
-                        <line x1="40" y1="74" x2="620" y2="74" stroke="rgba(23,23,23,0.06)" />
-                        <line x1="40" y1="124" x2="620" y2="124" stroke="rgba(23,23,23,0.06)" />
-                        <line x1="40" y1="170" x2="620" y2="170" stroke="rgba(23,23,23,0.10)" />
-                        <text x="6" y="28" fill="#737373" font-size="10" font-family="JetBrains Mono">24tr</text>
-                        <text x="6" y="78" fill="#737373" font-size="10" font-family="JetBrains Mono">16tr</text>
-                        <text x="6" y="128" fill="#737373" font-size="10" font-family="JetBrains Mono">8tr</text>
-                        <text x="14" y="174" fill="#737373" font-size="10" font-family="JetBrains Mono">0</text>
-                        <rect x="72" y="128" width="36" height="42" rx="4" fill="#e4e4e7" />
-                        <rect x="172" y="110" width="36" height="60" rx="4" fill="#e4e4e7" />
-                        <rect x="272" y="92" width="36" height="78" rx="4" fill="#e4e4e7" />
-                        <rect x="372" y="80" width="36" height="90" rx="4" fill="#e4e4e7" />
-                        <rect x="472" y="64" width="36" height="106" rx="4" fill="#d4d4d8" />
-                        <rect x="564" y="40" width="36" height="130" rx="4" fill="#c84b31" />
-                        <text x="78" y="190" fill="#737373" font-size="11" font-family="JetBrains Mono">T06</text>
-                        <text x="178" y="190" fill="#737373" font-size="11" font-family="JetBrains Mono">T07</text>
-                        <text x="278" y="190" fill="#737373" font-size="11" font-family="JetBrains Mono">T08</text>
-                        <text x="378" y="190" fill="#737373" font-size="11" font-family="JetBrains Mono">T09</text>
-                        <text x="478" y="190" fill="#737373" font-size="11" font-family="JetBrains Mono">T10</text>
-                        <text x="570" y="190" fill="#171717" font-weight="500" font-size="11" font-family="JetBrains Mono">T11</text>
-                    </svg>
+                <div class="icon">
+                    <i class="fas fa-receipt"></i>
                 </div>
+                <a href="/oylg/orders" class="small-box-footer">
+                    Quản lý đơn hàng &amp; gói học <i class="fas fa-arrow-circle-right"></i>
+                </a>
             </div>
-
-            <div class="oylg-card mb-0">
-                <div class="oylg-card__head">
-                    <h3 class="oylg-card__title">Thao tác nhanh</h3>
+        </div>
+        <div class="col-lg-3 col-sm-6">
+            <div class="small-box bg-warning">
+                <div class="inner">
+                    <h3 th:text="${#numbers.formatInteger(baseSessionPrice, 3, 'POINT') + 'đ'}">200.000đ</h3>
+                    <p class="mb-0">Học phí chuẩn 1 buổi (90 phút)</p>
                 </div>
-                <div style="padding:18px 20px;">
-                    <label style="font-size:12px;font-weight:500;color:#525252;">Học phí cơ bản 1 buổi (VNĐ)</label>
-                    <div class="d-flex mt-1 mb-3" style="gap:8px;">
-                        <input type="number" id="adminBasePriceInput" class="form-control mono" th:value="${baseSessionPrice.longValue()}" />
-                        <button type="button" class="oylg-btn oylg-btn--dark" onclick="oylgSaveBasePrice()">Lưu</button>
-                    </div>
+                <div class="icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <a href="/oylg/settings" class="small-box-footer">
+                    Điều chỉnh biểu phí &amp; giao diện <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6">
+            <div class="small-box bg-danger">
+                <div class="inner">
+                    <h3 th:text="${safetyFlags.size() + ' cảnh báo'}">1 cảnh báo</h3>
+                    <p class="mb-0">Bán trú &amp; An toàn học đường</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <a href="/oylg/boarding" class="small-box-footer">
+                    Kiểm tra điểm danh &amp; đón trả <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
 
-                    <div style="border-top:1px solid rgba(23,23,23,0.08);padding-top:14px;">
-                        <div style="font-size:12px;font-weight:500;color:#525252;margin-bottom:8px;">Bản tin tối gửi Phụ huynh</div>
-                        <button type="button" class="oylg-btn oylg-btn--accent w-100 mb-2" onclick="oylgDispatchDigest(1)">
-                            Gửi bản tin kết quả học hôm nay
-                        </button>
-                        <a href="http://localhost:18080/" target="_blank" class="oylg-btn w-100" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">
-                            Xem trang chủ Website ↗
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-receipt mr-1"></i> Đơn hàng gói học mới nhất</h3>
+                    <div class="card-tools">
+                        <a href="/oylg/orders" class="btn btn-tool" title="Xem tất cả đơn hàng">
+                            <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="oylg-card">
-            <div class="oylg-card__head">
-                <div>
-                    <h3 class="oylg-card__title">Lớp nhóm chờ khai giảng</h3>
-                    <div class="oylg-card__sub">Đủ từ 3 học sinh trở lên mới mở lớp</div>
+                <div class="card-body table-responsive p-0">
+                    <table class="table table-hover text-nowrap mb-0">
+                        <thead>
+                            <tr>
+                                <th>Mã đơn</th>
+                                <th>Phụ huynh &amp; Học sinh</th>
+                                <th>Gói học</th>
+                                <th class="text-right">Số tiền</th>
+                                <th>Trạng thái</th>
+                                <th class="text-right">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="ord : ${orders}">
+                                <td><code th:text="${ord.orderCode}"></code></td>
+                                <td th:text="${ord.parentName + ' · ' + ord.studentName}"></td>
+                                <td th:text="${ord.packageTitle}"></td>
+                                <td class="text-right font-weight-bold" th:text="${#numbers.formatInteger(ord.netPaidAmountVnd, 3, 'POINT') + 'đ'}"></td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${ord.paymentStatus == 'PAID' ? 'badge-success' : (ord.paymentStatus == 'PENDING_PAYMENT' ? 'badge-warning' : 'badge-secondary')}"
+                                          th:text="${ord.paymentStatus == 'PAID' ? 'Đã thanh toán' : (ord.paymentStatus == 'PENDING_PAYMENT' ? 'Chờ chuyển khoản' : 'Đã hoàn phí')}"></span>
+                                </td>
+                                <td class="text-right">
+                                    <button th:if="${ord.paymentStatus == 'PENDING_PAYMENT'}"
+                                            type="button"
+                                            class="btn btn-xs btn-primary"
+                                            th:data-order="${ord.orderCode}"
+                                            onclick="oylgAdmin.confirmPayment(this.getAttribute('data-order'))">
+                                        Xác nhận đã thu
+                                    </button>
+                                    <span th:if="${ord.paymentStatus != 'PENDING_PAYMENT'}" class="text-muted small">Hoàn tất</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="table-responsive">
-                <table class="table mb-0">
-                    <thead>
-                    <tr>
-                        <th>Tên lớp</th>
-                        <th>Giáo viên &amp; Lịch học</th>
-                        <th>Sĩ số</th>
-                        <th>Trạng thái</th>
-                        <th class="text-right">Thao tác</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="gc : ${groupClasses}">
-                        <td style="font-weight:500;" th:text="${gc.title}"></td>
-                        <td th:text="${gc.expertName + ' · ' + gc.scheduleInfo}"></td>
-                        <td class="mono" th:text="${gc.enrolledCount + '/' + gc.maxCapacity + ' học sinh'}"></td>
-                        <td>
-                            <span class="oylg-tag"
-                                  th:classappend="${gc.status == 'ACTIVE_RUNNING' ? 'oylg-tag--pos' : (gc.status == 'READY' ? 'oylg-tag--accent' : '')}"
-                                  th:text="${gc.status == 'ACTIVE_RUNNING' ? 'Đang học' : (gc.status == 'READY' ? 'Đủ sĩ số' : 'Đang gom lớp')}"></span>
-                        </td>
-                        <td class="text-right">
-                            <button type="button" class="oylg-btn mr-1"
-                                    th:attr="onclick='oylgGroupAction(' + ${gc.id} + ', \'ADD_STUDENT\')'">+ Thêm 1 HS</button>
-                            <button th:if="${gc.status != 'ACTIVE_RUNNING'}"
-                                    type="button" class="oylg-btn oylg-btn--dark"
-                                    th:attr="onclick='oylgGroupAction(' + ${gc.id} + ', \'ACTIVATE\')'">Mở lớp</button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
         </div>
-    </th:block>
 
-    <!-- 2. HỌC SINH -->
-    <th:block th:if="${currentMenu == 'cases'}">
-        <div class="oylg-card">
-            <div class="oylg-card__head">
-                <div>
-                    <h3 class="oylg-card__title">Danh sách học sinh</h3>
-                    <div class="oylg-card__sub">Theo dõi thông tin trường lớp, phụ huynh và số buổi học còn lại</div>
+        <div class="col-lg-4">
+            <div class="card card-primary card-outline">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-bolt mr-1"></i> Lối tắt vận hành nhanh</h3>
+                </div>
+                <div class="card-body">
+                    <div class="list-group mb-3">
+                        <a th:href="${webUrl}" target="_blank" rel="noopener" class="list-group-item list-group-item-action">
+                            <i class="fas fa-external-link-alt fa-fw text-primary mr-2"></i> Mở Trang chủ Website
+                        </a>
+                        <a th:href="|${webUrl}/parent|" target="_blank" rel="noopener" class="list-group-item list-group-item-action">
+                            <i class="fas fa-users fa-fw text-primary mr-2"></i> Mở Cổng Phụ huynh
+                        </a>
+                        <a th:href="|${webUrl}/coach|" target="_blank" rel="noopener" class="list-group-item list-group-item-action">
+                            <i class="fas fa-chalkboard-teacher fa-fw text-primary mr-2"></i> Mở Bàn làm việc Giáo viên
+                        </a>
+                        <a href="/oylg/settings" class="list-group-item list-group-item-action">
+                            <i class="fas fa-sliders-h fa-fw text-primary mr-2"></i> Chỉnh màu sắc, thanh thông báo &amp; giá buổi học
+                        </a>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-block" onclick="oylgAdmin.sendDigest(1)">
+                        <i class="fas fa-paper-plane mr-1"></i> Gửi báo cáo cuối ngày cho Phụ huynh
+                    </button>
                 </div>
             </div>
-            <div class="table-responsive">
-                <table class="table mb-0">
-                    <thead>
-                    <tr>
-                        <th>Mã HS</th>
-                        <th>Học sinh</th>
-                        <th>Phụ huynh</th>
-                        <th>Định hướng mục tiêu</th>
-                        <th class="text-right">Buổi còn lại</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="st : ${students}">
-                        <td><code th:text="${st.studentCode}"></code></td>
-                        <td>
-                            <div style="font-weight:500;" th:text="${st.fullName}"></div>
-                            <div class="text-muted small" th:text="${'Lớp ' + st.currentGrade + ' · ' + st.schoolName}"></div>
-                        </td>
-                        <td>
-                            <div th:text="${st.parentName}"></div>
-                            <div class="text-muted small mono" th:text="${st.parentPhone}"></div>
-                        </td>
-                        <td th:text="${st.targetMajor}"></td>
-                        <td class="text-right mono"><strong th:text="${st.sessionCreditsRemaining + ' buổi'}"></strong></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
         </div>
+    </div>
 
-        <div class="oylg-card">
-            <div class="oylg-card__head">
-                <div>
-                    <h3 class="oylg-card__title">Chủ đề kiến thức đang theo dõi (Nguyễn Minh Khôi · Lớp 9)</h3>
-                    <div class="oylg-card__sub">Các phần bị hổng ở lớp dưới được đánh dấu đỏ để gia sư ưu tiên dạy bù trước</div>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="table mb-0">
-                    <thead>
-                    <tr>
-                        <th>Khối lớp</th>
-                        <th>Chủ đề bài học</th>
-                        <th>Mức độ nắm bài</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="u : ${heatmapUnits}">
-                        <td th:text="${'Lớp ' + u.get('grade')}"></td>
-                        <td>
-                            <div style="font-weight:500;" th:text="${u.get('topicName')}"></div>
-                            <div class="text-muted small" th:text="${u.get('yccdDescription')}"></div>
-                        </td>
-                        <td>
-                            <span class="oylg-tag"
-                                  th:classappend="${u.get('rootCauseGap') ? 'oylg-tag--neg' : (u.get('masteryScore') >= 70 ? 'oylg-tag--pos' : 'oylg-tag--accent')}"
-                                  th:text="${u.get('rootCauseGap') ? 'Cần dạy bù (' + u.get('masteryScore') + '%)' : (u.get('masteryScore') >= 70 ? 'Đã vững (' + u.get('masteryScore') + '%)' : 'Đang luyện tập (' + u.get('masteryScore') + '%)')}"></span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-phone-volume mr-1"></i> Phụ huynh mới đăng ký tư vấn</h3>
         </div>
-    </th:block>
-
-    <!-- 3. ĐƠN HÀNG & GÓI HỌC -->
-    <th:block th:if="${currentMenu == 'commissions'}">
-        <div class="oylg-card">
-            <div class="oylg-card__head">
-                <div>
-                    <h3 class="oylg-card__title">Đơn đăng ký gói học</h3>
-                    <div class="oylg-card__sub">Xác nhận khi tiền chuyển khoản đã về tài khoản để cộng buổi cho học sinh</div>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="table mb-0">
-                    <thead>
-                    <tr>
-                        <th>Mã đơn</th>
-                        <th>Phụ huynh / Học sinh</th>
-                        <th>Gói đăng ký</th>
-                        <th class="text-right">Số tiền</th>
-                        <th class="text-right">Hoa hồng CTV</th>
-                        <th>Trạng thái</th>
-                        <th class="text-right">Thao tác</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="ord : ${orders}">
-                        <td><code th:text="${ord.orderCode}"></code></td>
-                        <td>
-                            <div style="font-weight:500;" th:text="${ord.parentName}"></div>
-                            <div class="text-muted small" th:text="${ord.studentName}"></div>
-                        </td>
-                        <td th:text="${ord.packageTitle}"></td>
-                        <td class="text-right mono" th:text="${#numbers.formatInteger(ord.netPaidAmountVnd, 3, 'POINT') + 'đ'}"></td>
-                        <td class="text-right mono" th:text="${#numbers.formatInteger(ord.repCommissionVnd, 3, 'POINT') + 'đ'}"></td>
-                        <td>
-                            <span class="oylg-tag"
-                                  th:classappend="${ord.paymentStatus == 'PAID' ? 'oylg-tag--pos' : (ord.paymentStatus == 'PENDING_PAYMENT' ? 'oylg-tag--accent' : 'oylg-tag--neg')}"
-                                  th:text="${ord.paymentStatus == 'PAID' ? 'Đã thanh toán' : (ord.paymentStatus == 'PENDING_PAYMENT' ? 'Chờ chuyển khoản' : 'Đã hoàn tiền')}"></span>
-                        </td>
-                        <td class="text-right">
-                            <button th:if="${ord.paymentStatus == 'PENDING_PAYMENT'}"
-                                    type="button" class="oylg-btn oylg-btn--accent"
-                                    th:data-order="${ord.orderCode}"
-                                    onclick="oylgConfirmWebhook(this.getAttribute('data-order'))">
-                                Xác nhận đã thu tiền
-                            </button>
-                            <span th:if="${ord.paymentStatus != 'PENDING_PAYMENT'}" class="text-muted small">Hoàn tất</span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="oylg-card">
-            <div class="oylg-card__head">
-                <div>
-                    <h3 class="oylg-card__title">Bảng giá các gói học hiện hành</h3>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="table mb-0">
-                    <thead>
-                    <tr>
-                        <th>Tên gói học</th>
-                        <th class="text-right">Số buổi</th>
-                        <th class="text-right">Giá gốc</th>
-                        <th class="text-right">Học phí áp dụng</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="pkg : ${packages}">
-                        <td style="font-weight:500;" th:text="${pkg.title}"></td>
-                        <td class="text-right mono" th:text="${pkg.sessionCreditsGranted + ' buổi'}"></td>
-                        <td class="text-right mono text-muted" th:text="${#numbers.formatInteger(pkg.listPriceVnd, 3, 'POINT') + 'đ'}"></td>
-                        <td class="text-right mono"><strong th:text="${#numbers.formatInteger(pkg.netPriceVnd, 3, 'POINT') + 'đ'}"></strong></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="oylg-card">
-            <div class="oylg-card__head">
-                <h3 class="oylg-card__title">Lịch sử cộng / trừ buổi học</h3>
-            </div>
-            <div class="table-responsive">
-                <table class="table mb-0">
-                    <thead>
-                    <tr>
-                        <th>Học sinh</th>
-                        <th>Nội dung</th>
-                        <th class="text-right">Thay đổi</th>
-                        <th class="text-right">Còn lại</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="tx : ${walletLedger}">
-                        <td style="font-weight:500;" th:text="${tx.studentName}"></td>
-                        <td th:text="${tx.description}"></td>
-                        <td class="text-right mono"
-                            th:style="${tx.deltaSessions >= 0 ? 'color:#15803d;font-weight:500;' : 'color:#b91c1c;font-weight:500;'}"
-                            th:text="${(tx.deltaSessions >= 0 ? '+' : '') + tx.deltaSessions + ' buổi'}"></td>
-                        <td class="text-right mono" th:text="${tx.balanceAfter + ' buổi'}"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </th:block>
-
-    <!-- 4. NGÂN HÀNG ĐỀ -->
-    <div class="oylg-card" th:if="${currentMenu == 'content_approvals'}">
-        <div class="oylg-card__head">
-            <div>
-                <h3 class="oylg-card__title">Duyệt câu hỏi kiểm tra đầu vào</h3>
-                <div class="oylg-card__sub">Câu hỏi phải được duyệt trước khi hiển thị cho học sinh làm bài</div>
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table class="table mb-0">
+        <div class="card-body table-responsive p-0">
+            <table class="table table-hover text-nowrap mb-0">
                 <thead>
-                <tr>
-                    <th>Môn / Nhóm</th>
-                    <th>Câu hỏi</th>
-                    <th>Giáo viên biên soạn</th>
-                    <th>Trạng thái</th>
-                    <th class="text-right">Thao tác</th>
-                </tr>
+                    <tr>
+                        <th>Phụ huynh</th>
+                        <th>Học sinh</th>
+                        <th>Nhu cầu học tập</th>
+                        <th>Tỉnh / Thành</th>
+                        <th>Trạng thái</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr th:each="q : ${questions}">
-                    <td style="font-weight:500;" th:text="${q.subjectLabel}"></td>
-                    <td th:text="${q.stemText}"></td>
-                    <td th:text="${q.authorName}"></td>
-                    <td>
-                        <span class="oylg-tag"
-                              th:classappend="${q.approvalStatus == 'APPROVED' ? 'oylg-tag--pos' : (q.approvalStatus == 'REVISION_REQUESTED' ? 'oylg-tag--neg' : '')}"
-                              th:text="${q.approvalStatus == 'APPROVED' ? 'Đã duyệt' : (q.approvalStatus == 'REVISION_REQUESTED' ? 'Cần sửa lại' : 'Chờ duyệt')}"></span>
-                    </td>
-                    <td class="text-right">
-                        <button type="button" class="oylg-btn oylg-btn--dark mr-1"
-                                th:attr="onclick='oylgReviewQuestion(' + ${q.id} + ', \'APPROVED\')'">Duyệt</button>
-                        <button type="button" class="oylg-btn"
-                                th:attr="onclick='oylgReviewQuestion(' + ${q.id} + ', \'REVISION_REQUESTED\')'">Yêu cầu sửa</button>
-                    </td>
-                </tr>
+                    <tr th:each="ld : ${leads}">
+                        <td class="font-weight-bold" th:text="${ld.parentName + ' (' + ld.phone + ')'}"></td>
+                        <td th:text="${ld.studentName + ' · Lớp ' + ld.grade}"></td>
+                        <td th:text="${ld.serviceInterest}"></td>
+                        <td th:text="${ld.province}"></td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${ld.stage == 'PAID' ? 'badge-success' : (ld.stage == 'SCHEDULED' ? 'badge-warning' : 'badge-info')}"
+                                  th:text="${ld.stage == 'PAID' ? 'Đã đóng học phí' : (ld.stage == 'SCHEDULED' ? 'Đã hẹn tư vấn' : 'Mới đăng ký')}"></span>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
-
-    <!-- 5. BÁN TRÚ & AN TOÀN -->
-    <th:block th:if="${currentMenu == 'boarding'}">
-        <div class="oylg-card">
-            <div class="oylg-card__head">
-                <div>
-                    <h3 class="oylg-card__title">Danh sách người được phép đón học sinh</h3>
-                    <div class="oylg-card__sub">Mã đón 6 số tự đổi mỗi phút trên máy Phụ huynh để đối chiếu tại cổng</div>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="table mb-0">
-                    <thead>
-                    <tr>
-                        <th>Họ tên người đón</th>
-                        <th>Quan hệ</th>
-                        <th>Số điện thoại</th>
-                        <th>Mã đón hiện tại</th>
-                        <th>Quyền đón</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="pk : ${pickups}">
-                        <td style="font-weight:500;" th:text="${pk.guardianFullName}"></td>
-                        <td th:text="${pk.relationship}"></td>
-                        <td class="mono" th:text="${pk.phoneNumber}"></td>
-                        <td><code th:text="${liveTotpMap.get(pk.id)}"></code></td>
-                        <td>
-                            <span class="oylg-tag"
-                                  th:classappend="${pk.authorized ? 'oylg-tag--pos' : 'oylg-tag--neg'}"
-                                  th:text="${pk.authorized ? 'Được phép đón' : 'Từ chối bàn giao'}"></span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="oylg-card">
-            <div class="oylg-card__head">
-                <div>
-                    <h3 class="oylg-card__title">Lưu ý sức khỏe &amp; An toàn học sinh</h3>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="table mb-0">
-                    <thead>
-                    <tr>
-                        <th>Mức độ</th>
-                        <th>Nội dung cần lưu ý</th>
-                        <th>Hướng xử lý</th>
-                        <th class="text-right">Trạng thái</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="f : ${safetyFlags}">
-                        <td>
-                            <span class="oylg-tag"
-                                  th:classappend="${f.severity == 'RED_URGENT' ? 'oylg-tag--neg' : 'oylg-tag--accent'}"
-                                  th:text="${f.severity == 'RED_URGENT' ? 'Khẩn cấp' : 'Cần theo dõi'}"></span>
-                        </td>
-                        <td th:text="${f.triggerExcerpt}"></td>
-                        <td th:text="${f.aiRiskAnalysis}"></td>
-                        <td class="text-right">
-                            <button th:if="${f.status != 'RESOLVED_BY_COUNCIL'}"
-                                    type="button" class="oylg-btn oylg-btn--dark"
-                                    th:attr="onclick='oylgResolveFlag(' + ${f.id} + ')'">Đánh dấu đã xử lý</button>
-                            <span th:if="${f.status == 'RESOLVED_BY_COUNCIL'}" class="oylg-tag oylg-tag--pos">Đã xử lý</span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </th:block>
-
-    <!-- 6. CÀI ĐẶT -->
-    <th:block th:if="${currentMenu == 'settings'}">
-        <div class="oylg-card">
-            <div class="oylg-card__head">
-                <div>
-                    <h3 class="oylg-card__title">Cài đặt mức học phí cơ bản</h3>
-                </div>
-            </div>
-            <div style="padding:18px 20px;" class="d-flex align-items-center flex-wrap">
-                <label class="mr-3 mb-0" style="font-size:13px;">Đơn giá chuẩn 1 buổi 90 phút (VNĐ):</label>
-                <input type="number" id="adminBasePriceInput" class="form-control mono mr-2" style="max-width:180px;" th:value="${baseSessionPrice.longValue()}" />
-                <button type="button" class="oylg-btn oylg-btn--dark" onclick="oylgSaveBasePrice()">Lưu cài đặt</button>
-            </div>
-        </div>
-
-        <div class="oylg-card">
-            <div class="oylg-card__head">
-                <div>
-                    <h3 class="oylg-card__title">Tài khoản đăng nhập của các vai trò (Mật khẩu mẫu: oylg2026)</h3>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="table mb-0">
-                    <thead>
-                    <tr>
-                        <th>Số điện thoại</th>
-                        <th>Người dùng</th>
-                        <th>Vai trò</th>
-                        <th>Trang làm việc</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="acc : ${portalAccounts}">
-                        <td><code th:text="${acc.phone}"></code></td>
-                        <td style="font-weight:500;" th:text="${acc.fullName}"></td>
-                        <td th:text="${acc.roleLabel}"></td>
-                        <td><code th:text="${acc.defaultRoute}"></code></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </th:block>
-
 </div>
-
-<script layout:fragment="scripts">
-function oylgSaveBasePrice() {
-    var el = document.getElementById('adminBasePriceInput');
-    if (!el) return;
-    $.ajax({
-        type: 'POST',
-        url: '/api/v1/oylg/settings/base-price',
-        contentType: 'application/json',
-        data: JSON.stringify({ basePriceVnd: el.value }),
-        success: function() { location.reload(); }
-    });
-}
-function oylgConfirmWebhook(orderCode) {
-    $.ajax({
-        type: 'POST',
-        url: '/api/v1/oylg/webhooks/payment',
-        contentType: 'application/json',
-        data: JSON.stringify({ orderCode: orderCode }),
-        success: function() { location.reload(); }
-    });
-}
-function oylgDispatchDigest(studentId) {
-    $.ajax({
-        type: 'POST',
-        url: '/api/v1/oylg/digests/dispatch',
-        contentType: 'application/json',
-        data: JSON.stringify({ studentId: studentId }),
-        success: function(res) {
-            alert(res.summary || 'Đã gửi bản tin tối cho phụ huynh');
-            location.reload();
-        }
-    });
-}
-function oylgReviewQuestion(id, status) {
-    $.ajax({
-        type: 'POST',
-        url: '/api/v1/oylg/questions/' + id + '/review',
-        contentType: 'application/json',
-        data: JSON.stringify({ status: status }),
-        success: function() { location.reload(); }
-    });
-}
-function oylgResolveFlag(id) {
-    $.ajax({
-        type: 'POST',
-        url: '/api/v1/oylg/safety-flags/' + id + '/resolve',
-        contentType: 'application/json',
-        data: '{}',
-        success: function() { location.reload(); }
-    });
-}
-function oylgGroupAction(id, action) {
-    $.ajax({
-        type: 'POST',
-        url: '/api/v1/oylg/group-classes/' + id + '/action',
-        contentType: 'application/json',
-        data: JSON.stringify({ action: action }),
-        success: function() { location.reload(); }
-    });
-}
-</script>
+<th:block layout:fragment="import-module-scripts">
+    <script ezy:vsrc="/oylg/js/admin.js"></script>
+</th:block>
 </body>
 </html>

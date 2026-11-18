@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:ezy="http://www.ezyplatform.com/thymeleaf/layout"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{ezyadmin}">
+<body>
+<div layout:fragment="content" class="oylg-num">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-user-graduate mr-1"></i> Danh sách Học sinh &amp; Số buổi còn lại</h3>
+            <div class="card-tools">
+                <a th:href="|${webUrl}/coach|" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">
+                    Mở Bàn làm việc Giáo viên <i class="fas fa-external-link-alt ml-1"></i>
+                </a>
+            </div>
+        </div>
+        <div class="card-body table-responsive p-0">
+            <table class="table table-hover text-nowrap mb-0">
+                <thead>
+                    <tr>
+                        <th>Mã hồ sơ</th>
+                        <th>Họ tên học sinh</th>
+                        <th>Khối lớp &amp; Trường</th>
+                        <th>Phụ huynh</th>
+                        <th>Ngành mục tiêu</th>
+                        <th class="text-right">Buổi còn lại</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="st : ${students}">
+                        <td><code th:text="${st.studentCode}"></code></td>
+                        <td class="font-weight-bold" th:text="${st.fullName}"></td>
+                        <td th:text="${'Lớp ' + st.currentGrade + ' · ' + st.schoolName}"></td>
+                        <td th:text="${st.parentName + ' (' + st.parentPhone + ')'}"></td>
+                        <td th:text="${st.targetMajor}"></td>
+                        <td class="text-right"><span class="badge badge-primary" th:text="${st.sessionCreditsRemaining + ' buổi'}"></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-sitemap mr-1"></i> Tiến độ chuyên đề mẫu — Nguyễn Minh Khôi (Lớp 9)</h3>
+        </div>
+        <div class="card-body table-responsive p-0">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Mã chuyên đề</th>
+                        <th>Khối lớp</th>
+                        <th>Tên bài học</th>
+                        <th class="text-right">Mức độ nắm bài</th>
+                        <th>Đánh giá</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="u : ${heatmapUnits}">
+                        <td><code th:text="${u.get('unitCode')}"></code></td>
+                        <td th:text="${'Lớp ' + u.get('grade')}"></td>
+                        <td th:text="${u.get('topicName')}"></td>
+                        <td class="text-right font-weight-bold" th:text="${u.get('masteryScore') + '%'}"></td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${u.get('rootCauseGap') ? 'badge-danger' : (u.get('masteryScore') >= 70 ? 'badge-success' : 'badge-warning')}"
+                                  th:text="${u.get('rootCauseGap') ? 'Mất gốc cần bù trước' : (u.get('masteryScore') >= 70 ? 'Đã nắm vững' : 'Cần ôn thêm')}"></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="import-module-scripts">
+    <script ezy:vsrc="/oylg/js/admin.js"></script>
+</th:block>
+</body>
+</html>

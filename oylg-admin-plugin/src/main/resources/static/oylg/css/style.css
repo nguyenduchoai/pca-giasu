@@ -1,0 +1,19 @@
+.icon-oylg {
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    line-height: 1;
+    font-size: 1.2em !important;
+    text-align: center;
+}
+
+.icon-oylg::before {
+    content: "";
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+    background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 14.18L5 13.36V17c0 2.21 3.13 4 7 4s7-1.79 7-4v-3.64l-7 3.82z'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 14.18L5 13.36V17c0 2.21 3.13 4 7 4s7-1.79 7-4v-3.64l-7 3.82z'/%3E%3C/svg%3E") center / contain no-repeat;
+}

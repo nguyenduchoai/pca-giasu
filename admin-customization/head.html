@@ -1,0 +1,189 @@
+<!-- admin-customization: oylg warm studio v1 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Arabic:wght@400;600&display=swap">
+<style id="oylgCustomAdminBrand">
+:root {
+    --custom-font: 'Be Vietnam Pro', 'Noto Sans Arabic', 'Source Sans Pro', -apple-system, sans-serif;
+    --custom-mono: 'JetBrains Mono', monospace;
+    --custom-primary: #c84b31;
+    --custom-primary-hover: #ad3c24;
+    --custom-primary-soft: rgba(200, 75, 49, .14);
+    --custom-sidebar-bg: #141416;
+    --custom-sidebar-hover: rgba(255, 255, 255, .07);
+    --custom-page-bg: #f6f5f2;
+    --custom-border: #e5e2dc;
+    --custom-heading: #171717;
+    --custom-muted: #66635c;
+    --custom-radius: 12px;
+    --custom-radius-sm: 8px;
+    --custom-shadow: 0 1px 2px rgba(16, 24, 40, .04), 0 1px 3px rgba(16, 24, 40, .06);
+}
+
+body,
+h1, h2, h3, h4, h5, h6,
+.btn, .form-control, .custom-select, .input-group-text,
+.dropdown-menu, .modal, .tooltip, .popover, .toast,
+.brand-link, .nav-sidebar .nav-link {
+    font-family: var(--custom-font);
+}
+
+code, pre, .oylg-num {
+    font-family: var(--custom-mono);
+    font-variant-numeric: tabular-nums;
+}
+
+.content-header h1 {
+    font-weight: 600;
+    font-size: 1.45rem;
+    letter-spacing: -.02em;
+}
+
+body:not(.dark-mode) .content-header h1 {
+    color: var(--custom-heading);
+}
+
+body:not(.dark-mode) .content-wrapper {
+    background-color: var(--custom-page-bg);
+}
+
+body:not(.dark-mode):not([data-theme-color]) .main-header.navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--custom-border);
+    box-shadow: none;
+}
+
+body:not(.dark-mode):not([data-theme-color]) .main-sidebar,
+body:not(.dark-mode):not([data-theme-color]) .main-sidebar .brand-link {
+    background-color: var(--custom-sidebar-bg) !important;
+}
+
+.main-sidebar .brand-link {
+    border-bottom-color: rgba(255, 255, 255, .08) !important;
+}
+
+.main-sidebar .brand-text {
+    font-weight: 600 !important;
+    letter-spacing: .01em;
+}
+
+.nav-sidebar .nav-link {
+    border-radius: var(--custom-radius-sm);
+    font-size: .9rem;
+}
+
+body:not(.dark-mode):not([data-theme-color]) .nav-sidebar .nav-link:not(.active):hover {
+    background-color: var(--custom-sidebar-hover);
+}
+
+body:not([data-theme-color]) .sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
+body:not([data-theme-color]) .sidebar-dark-primary .nav-treeview > .nav-item > .nav-link.active {
+    background-color: var(--custom-primary) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(200, 75, 49, .28);
+}
+
+.card, .small-box {
+    border-radius: var(--custom-radius);
+}
+
+.card {
+    border: 1px solid var(--custom-border);
+    box-shadow: var(--custom-shadow);
+}
+
+body.dark-mode .card {
+    border-color: var(--ezy-dark-border);
+}
+
+.card > .card-header:first-child {
+    border-start-start-radius: calc(var(--custom-radius) - 1px);
+    border-start-end-radius: calc(var(--custom-radius) - 1px);
+}
+
+.card-title {
+    font-weight: 600;
+}
+
+.small-box {
+    box-shadow: var(--custom-shadow);
+}
+
+.small-box > .small-box-footer {
+    border-end-start-radius: var(--custom-radius);
+    border-end-end-radius: var(--custom-radius);
+}
+
+.btn {
+    border-radius: var(--custom-radius-sm);
+    font-weight: 500;
+}
+
+body:not([data-theme-color]) .btn-primary {
+    background-color: var(--custom-primary);
+    border-color: var(--custom-primary);
+}
+
+body:not([data-theme-color]) .btn-primary:hover,
+body:not([data-theme-color]) .btn-primary:focus {
+    background-color: var(--custom-primary-hover);
+    border-color: var(--custom-primary-hover);
+}
+
+body:not([data-theme-color]) .btn-outline-primary {
+    color: var(--custom-primary);
+    border-color: var(--custom-primary);
+}
+
+body:not([data-theme-color]) .btn-outline-primary:hover {
+    color: #ffffff;
+    background-color: var(--custom-primary);
+}
+
+body:not([data-theme-color]) .card-primary.card-outline {
+    border-top-color: var(--custom-primary);
+}
+
+body:not([data-theme-color]) .page-item.active .page-link,
+body:not([data-theme-color]) .custom-control-input:checked ~ .custom-control-label::before,
+body:not([data-theme-color]) .bg-primary,
+body:not([data-theme-color]) .badge-primary {
+    background-color: var(--custom-primary) !important;
+    border-color: var(--custom-primary) !important;
+}
+
+body:not([data-theme-color]):not(.dark-mode) .text-primary {
+    color: var(--custom-primary) !important;
+}
+
+.form-control,
+.custom-select,
+.input-group-text {
+    border-radius: var(--custom-radius-sm);
+}
+
+.form-control:focus,
+.custom-select:focus {
+    border-color: var(--custom-primary);
+    box-shadow: 0 0 0 3px var(--custom-primary-soft);
+}
+
+body:not(.dark-mode) .table thead th {
+    color: #525252;
+    font-weight: 600;
+    font-size: .82rem;
+    border-bottom-width: 1px;
+}
+
+.badge {
+    border-radius: 6px;
+    font-weight: 500;
+    padding: .32em .55em;
+}
+
+body:not(.dark-mode) .main-footer {
+    color: var(--custom-muted);
+    border-top-color: var(--custom-border);
+    font-size: .84rem;
+}
+</style>

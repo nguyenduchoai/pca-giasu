@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:ezy="http://www.ezyplatform.com/thymeleaf/layout"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{ezyadmin}">
+<body>
+<div layout:fragment="content" class="oylg-num">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-book-open mr-1"></i> Ngân hàng câu hỏi &amp; Duyệt đề kiểm tra</h3>
+            <div class="card-tools">
+                <a th:href="|${webUrl}/studio|" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">
+                    Mở trang Soạn câu hỏi mới <i class="fas fa-external-link-alt ml-1"></i>
+                </a>
+            </div>
+        </div>
+        <div class="card-body table-responsive p-0">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Mã câu</th>
+                        <th>Môn &amp; Chuyên đề</th>
+                        <th>Nội dung câu hỏi</th>
+                        <th>Người soạn</th>
+                        <th>Trạng thái</th>
+                        <th class="text-right">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="q : ${questions}">
+                        <td><code th:text="${q.questionCode}"></code></td>
+                        <td>
+                            <div class="font-weight-bold" th:text="${q.subjectLabel}"></div>
+                            <small class="text-muted" th:text="${q.unitCode}"></small>
+                        </td>
+                        <td th:text="${q.stemText}"></td>
+                        <td th:text="${q.authorName}"></td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${q.approvalStatus == 'APPROVED' ? 'badge-success' : (q.approvalStatus == 'REVISION_REQUESTED' ? 'badge-danger' : 'badge-warning')}"
+                                  th:text="${q.approvalStatus == 'APPROVED' ? 'Đã duyệt' : (q.approvalStatus == 'REVISION_REQUESTED' ? 'Cần sửa lại' : 'Chờ duyệt')}"></span>
+                        </td>
+                        <td class="text-right text-nowrap">
+                            <button type="button" class="btn btn-xs btn-outline-secondary"
+                                    th:attr="onclick='oylgAdmin.reviewQuestion(' + ${q.id} + ', \'REVISION_REQUESTED\')'">Yêu cầu sửa</button>
+                            <button type="button" class="btn btn-xs btn-success"
+                                    th:attr="onclick='oylgAdmin.reviewQuestion(' + ${q.id} + ', \'APPROVED\')'">Phê duyệt</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="import-module-scripts">
+    <script ezy:vsrc="/oylg/js/admin.js"></script>
+</th:block>
+</body>
+</html>

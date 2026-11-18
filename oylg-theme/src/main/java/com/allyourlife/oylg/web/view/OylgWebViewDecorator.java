@@ -1,6 +1,8 @@
 package com.allyourlife.oylg.web.view;
 
+import com.allyourlife.oylg.model.OylgSiteSettings;
 import com.allyourlife.oylg.service.OylgPlatformService;
+import com.allyourlife.oylg.web.service.WebOylgSettingService;
 import com.tvd12.ezyfox.bean.annotation.EzyAutoBind;
 import com.tvd12.ezyfox.bean.annotation.EzySingleton;
 import com.tvd12.ezyhttp.server.core.view.View;
@@ -19,12 +21,18 @@ public class OylgWebViewDecorator extends WebViewDecorator {
     @EzyAutoBind
     private OylgPlatformService platformService;
 
+    @EzyAutoBind
+    private WebOylgSettingService webSettingService;
+
     @Override
     public void decorate(HttpServletRequest request, View view) {
         super.decorate(request, view);
-        view.setVariableIfAbsent("mainMenu", buildDefaultMainMenu());
-        view.setVariableIfAbsent("commonFragments", buildDefaultCommonFragments());
-        view.setVariableIfAbsent("footerFragments", buildDefaultFooterFragments());
+        OylgSiteSettings settings = webSettingService != null
+            ? webSettingService.getSettings()
+            : new OylgSiteSettings();
+        view.setVariableIfAbsent("themeSettings", settings);
+        view.setVariableIfAbsent("mainMenu", buildDefaultMainMenu(settings));
+        view.setVariableIfAbsent("footerFragments", buildDefaultFooterFragments(settings));
         view.setVariableIfAbsent("currentYear", LocalDate.now().getYear());
         view.setVariableIfAbsent("shellMode", "public");
         view.setVariableIfAbsent("activeNav", "home");
@@ -33,7 +41,7 @@ public class OylgWebViewDecorator extends WebViewDecorator {
         }
     }
 
-    private List<Map<String, String>> buildDefaultMainMenu() {
+    private List<Map<String, String>> buildDefaultMainMenu(OylgSiteSettings settings) {
         return Arrays.asList(
             menuItem("Phương pháp", "/#mo-hinh-3-tang"),
             menuItem("Học phí", "/#bang-gia-goi-hoc"),
@@ -43,16 +51,7 @@ public class OylgWebViewDecorator extends WebViewDecorator {
         );
     }
 
-    private Map<String, String> buildDefaultCommonFragments() {
-        Map<String, String> map = new LinkedHashMap<>();
-        map.put(
-            "main_header_announcement",
-            "Hướng nghiệp, Cố vấn Cuộc sống & Gia sư bù lỗ hổng gốc Lớp 1–12"
-        );
-        return map;
-    }
-
-    private Map<String, String> buildDefaultFooterFragments() {
+    private Map<String, String> buildDefaultFooterFragments(OylgSiteSettings settings) {
         Map<String, String> map = new LinkedHashMap<>();
         map.put(
             "company_intro",
@@ -60,7 +59,9 @@ public class OylgWebViewDecorator extends WebViewDecorator {
         );
         map.put(
             "contact_information",
-            "TP. Buôn Ma Thuột, Đắk Lắk · Tổng đài tư vấn: 1900 636 888 · Đường dây Bảo vệ Trẻ em: 111"
+            "TP. Buôn Ma Thuột, Đắk Lắk · Tổng đài tư vấn: "
+                + settings.getHotline()
+                + " · Đường dây Bảo vệ Trẻ em: 111"
         );
         return map;
     }

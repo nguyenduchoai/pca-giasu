@@ -41,6 +41,10 @@
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+.d-none {
+    display: none !important;
+}
+
 body[data-shell="app"] {
     --bg-page: #fafafa;
     --bg-card: #ffffff;

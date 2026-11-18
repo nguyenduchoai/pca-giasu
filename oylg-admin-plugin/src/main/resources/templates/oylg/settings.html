@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:ezy="http://www.ezyplatform.com/thymeleaf/layout"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{ezyadmin}">
+<head>
+    <link rel="stylesheet" type="text/css" ezy:vhref="/oylg/css/admin.css" />
+</head>
+<body>
+<div layout:fragment="content" class="oylg-num">
+    <div class="callout callout-info">
+        <p class="mb-0">
+            <i class="fas fa-info-circle text-info mr-1"></i>
+            Mọi thay đổi về màu sắc thương hiệu, thanh thông báo, bật/tắt phân khu và học phí chuẩn 1 buổi sẽ tự động đồng bộ ra Website sau tối đa 3 giây.
+        </p>
+    </div>
+
+    <div class="card card-primary card-outline card-outline-tabs">
+        <div class="card-header p-0 border-bottom-0">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#oylgTabAppearance" role="tab">
+                        <i class="fas fa-palette mr-1"></i> Giao diện Website
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#oylgTabPricing" role="tab">
+                        <i class="fas fa-coins mr-1"></i> Học phí &amp; Tài khoản mẫu
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="oylgTabAppearance" role="tabpanel">
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Màu nhấn thương hiệu</label>
+                        <div class="col-md-7">
+                            <div class="d-flex align-items-center">
+                                <input type="color" id="oylgPrimaryColorPicker" class="mr-2"
+                                       style="width:44px;height:38px;border:1px solid #ced4da;border-radius:6px;"
+                                       th:value="${settings.validPrimaryColor}"
+                                        oninput="document.getElementById('oylgPrimaryColor').value=this.value;oylgAdmin.syncSettingsPreview()" />
+                                <input type="text" id="oylgPrimaryColor" class="form-control" style="max-width:160px;"
+                                       maxlength="7" th:value="${settings.validPrimaryColor}"
+                                       oninput="oylgAdmin.syncSettingsPreview()" />
+                            </div>
+                            <div class="d-flex flex-wrap mt-2" style="gap:8px;">
+                                <button type="button" class="oylg-color-swatch" style="background:#c84b31" onclick="oylgAdmin.pickSwatch('#c84b31')" title="Cam đất Terracotta"></button>
+                                <button type="button" class="oylg-color-swatch" style="background:#1f6f54" onclick="oylgAdmin.pickSwatch('#1f6f54')" title="Xanh rừng ấm"></button>
+                                <button type="button" class="oylg-color-swatch" style="background:#2b4c7e" onclick="oylgAdmin.pickSwatch('#2b4c7e')" title="Xanh học thuật"></button>
+                                <button type="button" class="oylg-color-swatch" style="background:#8c3b2b" onclick="oylgAdmin.pickSwatch('#8c3b2b')" title="Đỏ gạch cổ điển"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Thanh thông báo đầu trang</label>
+                        <div class="col-md-7">
+                            <div class="custom-control custom-switch mb-2">
+                                <input type="checkbox" class="custom-control-input" id="oylgAnnouncementEnabled"
+                                       th:checked="${settings.announcementEnabled}"
+                                       onchange="oylgAdmin.syncSettingsPreview()" />
+                                <label class="custom-control-label" for="oylgAnnouncementEnabled">Hiển thị thanh thông báo trên Trang chủ</label>
+                            </div>
+                            <input type="text" id="oylgAnnouncementText" class="form-control"
+                                   th:value="${settings.announcementText}"
+                                   oninput="oylgAdmin.syncSettingsPreview()" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Số tổng đài tư vấn</label>
+                        <div class="col-md-4">
+                            <input type="text" id="oylgHotline" class="form-control" th:value="${settings.hotline}" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Các phân khu trên Trang chủ</label>
+                        <div class="col-md-7">
+                            <div class="custom-control custom-switch mb-2">
+                                <input type="checkbox" class="custom-control-input" id="oylgShowPackages" th:checked="${settings.showPackages}" />
+                                <label class="custom-control-label" for="oylgShowPackages">Hiển thị Bảng giá Gói học &amp; Công cụ tính học phí</label>
+                            </div>
+                            <div class="custom-control custom-switch mb-2">
+                                <input type="checkbox" class="custom-control-input" id="oylgShowExperts" th:checked="${settings.showExperts}" />
+                                <label class="custom-control-label" for="oylgShowExperts">Hiển thị Đội ngũ Chuyên gia &amp; Cố vấn</label>
+                            </div>
+                            <div class="custom-control custom-switch mb-2">
+                                <input type="checkbox" class="custom-control-input" id="oylgShowBoarding" th:checked="${settings.showBoarding}" />
+                                <label class="custom-control-label" for="oylgShowBoarding">Hiển thị Dịch vụ Bán trú &amp; Đón trả QR</label>
+                            </div>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="oylgShowConsultation" th:checked="${settings.showConsultation}" />
+                                <label class="custom-control-label" for="oylgShowConsultation">Hiển thị Biểu mẫu đặt lịch tư vấn 1–1</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Xem trước nhanh</label>
+                        <div class="col-md-7">
+                            <div class="oylg-preview-box">
+                                <div id="oylgPreviewBar" class="oylg-preview-bar"
+                                     th:style="${'background:' + settings.validPrimaryColor}"
+                                     th:text="${settings.announcementText}"></div>
+                                <div class="p-3 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>All Your Life (OYLG)</strong>
+                                        <div class="text-muted small">Hướng nghiệp · Cố vấn · Gia sư 1–1</div>
+                                    </div>
+                                    <span id="oylgPreviewBtn" class="btn btn-sm text-white"
+                                          th:style="${'background:' + settings.validPrimaryColor}">Đăng ký lộ trình</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="oylgTabPricing" role="tabpanel">
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Học phí chuẩn 1 buổi (VNĐ)</label>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <input type="number" id="oylgBasePrice" class="form-control" min="50000" step="10000"
+                                       th:value="${settings.baseSessionPriceVnd}" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">VNĐ / buổi 90p</span>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">Tự động nhân hệ số theo cấp học, cấp độ giáo viên và hình thức học.</small>
+                        </div>
+                    </div>
+
+                    <h5 class="mt-4 mb-3">Danh sách tài khoản mẫu trên Cổng thành viên (:18080/login)</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Họ tên</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Vai trò</th>
+                                    <th>Mật khẩu thử nghiệm</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="acc : ${portalAccounts}">
+                                    <td class="font-weight-bold" th:text="${acc.fullName}"></td>
+                                    <td><code th:text="${acc.phone}"></code></td>
+                                    <td th:text="${acc.roleLabel}"></td>
+                                    <td><code>oylg2026</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a th:href="${webUrl}" target="_blank" rel="noopener" class="btn btn-outline-secondary">
+                <i class="fas fa-external-link-alt mr-1"></i> Xem Website
+            </a>
+            <button type="button" class="btn btn-primary" onclick="oylgAdmin.saveSiteSettings()">
+                <i class="fas fa-save mr-1"></i> Lưu cài đặt
+            </button>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="import-module-scripts">
+    <script ezy:vsrc="/oylg/js/admin.js"></script>
+</th:block>
+</body>
+</html>
