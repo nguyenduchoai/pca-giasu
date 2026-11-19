@@ -77,8 +77,15 @@ sh cli.sh "console web"
 
 ### Bước 4: Triển khai lên Máy chủ EzyPlatform (Production)
 1. Tải gói cài đặt **`oylg-1.0.0.zip`** (từ `target/project/oylg-1.0.0.zip` hoặc mục **GitHub Releases**).
-2. Trên EzyAdmin Production (`:9090`), cài trước 4 Plugin miễn phí từ Market: **`ezyarticle`**, **`ezylogin`**, **`ezysupport`**, **`ezymail`**.
+2. Trên EzyAdmin Production (`:9090`), cài trước các Plugin miễn phí từ Market: **`ezyarticle`**, **`ezylogin`**, **`ezysupport`**, **`ezymail`**, **`sites`**, **`data-backup`**.
 3. Vào **Modules → Add New → From File**, tải lên `oylg-1.0.0.zip`, bật kích hoạt (`Activate`) `oylg-admin-plugin`, `oylg-web-plugin`, `oylg-theme` và khởi động lại Admin + Web.
+
+### Bước 5: Sao lưu dữ liệu thời gian thực về máy tính (EzyPlatform App)
+1. Bật MySQL Binary Log (`--server-id=1 --log-bin=mysql-bin --binlog-format=ROW --binlog-row-image=FULL`) và cấp quyền `RELOAD, REPLICATION SLAVE, REPLICATION CLIENT` cho tài khoản database.
+2. Trên EzyAdmin (`:9090`):
+   - **Sites → Cài đặt**: Bật **Tín hiệu máy chủ** (gửi heartbeat mỗi 15 giây cho cả Admin & Web).
+   - **Data Backup → Cài đặt**: Tích chọn **Cho phép sao lưu dữ liệu thời gian thực**, bấm **Lưu** và **Tạo bản đầy đủ cơ sở dữ liệu ngay** (`dump.sql.gz` kèm vị trí binlog).
+3. Mở ứng dụng **`EzyPlatform.app`** trên máy tính (`/Applications/EzyPlatform.app`), đăng nhập địa chỉ Admin (`http://localhost:9090` hoặc domain Production), vào **Các site → Máy chủ → Sao lưu**, bấm **Cài EzyPlatform Backup** và chọn **Dùng thư mục mặc định** (`~/EzyPlatform-Backups`).
 
 ---
 
